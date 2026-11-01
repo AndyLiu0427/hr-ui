@@ -49,7 +49,7 @@ export class TextareaComponent implements FormValueControl<string> {
 
   // Component Inputs
   readonly id = input<string>();
-  readonly name = input<string>();
+  readonly name = input<string>('');
   readonly label = input<string>();
   readonly placeholder = input<string>('');
   readonly helperText = input<string>();

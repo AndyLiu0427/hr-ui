@@ -54,7 +54,7 @@ export class CheckboxComponent implements FormCheckboxControl {
    *  a longer explanation of a complex toggle (what happens when on/off). */
   readonly description = input<string>();
   readonly id = input<string>();
-  readonly name = input<string>();
+  readonly name = input<string>('');
   readonly htmlValue = input<string>();
 
   // Outputs

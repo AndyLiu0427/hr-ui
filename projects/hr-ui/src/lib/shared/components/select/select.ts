@@ -124,7 +124,7 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
   /** Local copy of `touched`, so the control still tracks its own blur when no form field is bound. */
   readonly isTouched = linkedSignal(this.touched);
   readonly invalid = input<boolean>(false);
-  readonly name = input<string>();
+  readonly name = input<string>('');
   readonly dirty = input<boolean>(false);
   readonly pending = input<boolean>(false);
 

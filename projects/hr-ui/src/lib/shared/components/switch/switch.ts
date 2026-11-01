@@ -53,7 +53,7 @@ export class SwitchComponent implements FormCheckboxControl {
   // Component Inputs
   readonly label = input<string>();
   readonly id = input<string>();
-  readonly name = input<string>();
+  readonly name = input<string>('');
   readonly color = input<SwitchColor>('primary');
 
   // Outputs

@@ -175,7 +175,8 @@ export class DropdownMenuComponent {
     // Handle outside clicks, ignoring child component overlays and their backdrops
     this.overlayRef.outsidePointerEvents().subscribe(event => {
       const target = event.target as HTMLElement;
-      const overlayPane = this.overlayRef.overlayElement;
+      // This callback belongs to the overlay, so the overlay exists whenever it runs.
+      const overlayPane = this.overlayRef!.overlayElement;
       const isInsideThisOverlay = overlayPane.contains(target);
       const isInOtherCdkOverlay = target.closest('.cdk-overlay-pane') !== null;
       const isBackdropClick = target.classList.contains('cdk-overlay-backdrop');
@@ -226,6 +227,6 @@ export class DropdownMenuComponent {
   }
 
   isHeader(item: MenuItem, _sectionIndex: number, _itemIndex: number): boolean {
-    return item.header;
+    return item.header ?? false;
   }
 }

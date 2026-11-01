@@ -51,7 +51,7 @@ export class InputComponent implements FormValueControl<string> {
   readonly inputElement = viewChild.required<ElementRef<HTMLInputElement>>('inputElement');
 
   readonly id = input<string>();
-  readonly name = input<string>();
+  readonly name = input<string>('');
   readonly label = input<string>();
   readonly placeholder = input<string>('');
   readonly helperText = input<string>();

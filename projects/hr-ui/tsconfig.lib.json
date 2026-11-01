@@ -5,6 +5,7 @@
   "compilerOptions": {
     "outDir": "../../out-tsc/lib",
     "declaration": true,
+    "strictNullChecks": true,
     "declarationMap": true,
     "types": []
   },
