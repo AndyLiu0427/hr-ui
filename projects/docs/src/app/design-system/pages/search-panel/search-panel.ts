@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 
-import { AvatarComponent } from 'hr-ui';
-import { BadgeComponent } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { IconComponent } from 'hr-ui';
-import { SearchPanelComponent } from 'hr-ui';
-import { SearchPanelEmptyDirective, SearchPanelRowDirective } from 'hr-ui';
-import type { SearchPanelItem } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
-import { HighlightPipe } from 'hr-ui';
+import { AvatarComponent } from 'ngx-hr-ui';
+import { BadgeComponent } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { IconComponent } from 'ngx-hr-ui';
+import { SearchPanelComponent } from 'ngx-hr-ui';
+import { SearchPanelEmptyDirective, SearchPanelRowDirective } from 'ngx-hr-ui';
+import type { SearchPanelItem } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
+import { HighlightPipe } from 'ngx-hr-ui';
 
 interface DemoCommand extends SearchPanelItem {
   name: string;

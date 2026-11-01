@@ -1,11 +1,11 @@
 import { Component, signal, ChangeDetectionStrategy, computed } from '@angular/core';
 import { form, FormField, required, minLength, maxLength, submit } from '@angular/forms/signals';
 import { JsonPipe } from '@angular/common';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent, CardFooterComponent, CardHeaderComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { TextareaComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent, CardFooterComponent, CardHeaderComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { TextareaComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-textarea-page',

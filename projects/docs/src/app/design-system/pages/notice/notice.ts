@@ -1,13 +1,13 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 
 import { TitleCasePipe } from '@angular/common';
-import { NoticeComponent, NoticeVariant } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent, CardHeaderComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { IconComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { NoticeComponent, NoticeVariant } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent, CardHeaderComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { IconComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-notice-page',

@@ -1,11 +1,11 @@
 import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
-import { SwitchComponent, type SwitchColor } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent, CardFooterComponent, CardHeaderComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { SwitchComponent, type SwitchColor } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent, CardFooterComponent, CardHeaderComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface SwitchConfig {
   label: string;
@@ -245,7 +245,7 @@ export class SwitchPageComponent {
   generateImportCode(): string {
     return `import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SwitchComponent } from 'hr-ui';
+import { SwitchComponent } from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-settings-form',

@@ -1,4 +1,4 @@
-import type { SidebarItem } from 'hr-ui';
+import type { SidebarItem } from 'ngx-hr-ui';
 
 /**
  * What the sidebar remembers for one user: the groups left open, and the pinned pages in the order

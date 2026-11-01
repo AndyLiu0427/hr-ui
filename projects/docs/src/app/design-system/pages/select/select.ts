@@ -1,11 +1,11 @@
 import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent, CardHeaderComponent, CardFooterComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { SelectComponent, SelectOption } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent, CardHeaderComponent, CardFooterComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { SelectComponent, SelectOption } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface SelectConfig {
   value: string | number | null;
@@ -280,7 +280,7 @@ export class SelectPageComponent {
   generateImportCode(): string {
     return `import { Component, signal } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
-import { SelectComponent, SelectOption } from 'hr-ui';
+import { SelectComponent, SelectOption } from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-select-form',
@@ -315,7 +315,7 @@ export class SelectFormComponent {
 // The SelectComponent implements FormValueControl<T> interface
 
 import { Component, signal } from '@angular/core';
-import { SelectComponent, SelectOption } from 'hr-ui';
+import { SelectComponent, SelectOption } from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-signal-forms-example',

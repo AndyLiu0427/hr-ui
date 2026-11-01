@@ -3,15 +3,15 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Subject, filter, takeUntil } from 'rxjs';
 
-import { ButtonComponent } from 'hr-ui';
-import { ThemeControllerComponent } from 'hr-ui';
-import { IconComponent } from 'hr-ui';
-import { SearchPanelComponent } from 'hr-ui';
-import { SearchPanelEmptyDirective, SearchPanelRowDirective } from 'hr-ui';
-import { UnifiedSidebarComponent, type SidebarItem } from 'hr-ui';
-import { KbdComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
-import { HighlightPipe } from 'hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { ThemeControllerComponent } from 'ngx-hr-ui';
+import { IconComponent } from 'ngx-hr-ui';
+import { SearchPanelComponent } from 'ngx-hr-ui';
+import { SearchPanelEmptyDirective, SearchPanelRowDirective } from 'ngx-hr-ui';
+import { UnifiedSidebarComponent, type SidebarItem } from 'ngx-hr-ui';
+import { KbdComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
+import { HighlightPipe } from 'ngx-hr-ui';
 import { designSystemPages, designSystemSidebarConfig, searchDesignSystemPages, type DesignSystemPage } from './sidebar.config';
 
 @Component({

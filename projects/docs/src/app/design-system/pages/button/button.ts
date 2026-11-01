@@ -6,11 +6,11 @@ import {
   ButtonVariant as AppButtonVariant,
   ButtonSize as AppButtonSize,
   ButtonShape
-} from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+} from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface ButtonConfig {
   text: string;

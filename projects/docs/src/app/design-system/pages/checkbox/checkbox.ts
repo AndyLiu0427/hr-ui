@@ -1,11 +1,11 @@
 import { Component, ChangeDetectionStrategy, signal, viewChildren, computed } from '@angular/core';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { JsonPipe } from '@angular/common';
-import { CheckboxComponent, CheckboxState } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent, CardFooterComponent, CardHeaderComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { CheckboxComponent, CheckboxState } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent, CardFooterComponent, CardHeaderComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface CheckboxConfig {
   state: CheckboxState;
@@ -255,7 +255,7 @@ export class MyComponent {
   generateImportCode(): string {
     return `import { Component, signal, computed } from '@angular/core';
 import { form, required } from '@angular/forms/signals';
-import { CheckboxComponent } from 'hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-checkbox-form',

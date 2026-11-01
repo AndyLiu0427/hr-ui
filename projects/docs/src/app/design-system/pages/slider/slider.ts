@@ -1,12 +1,12 @@
 import { Component, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { SliderComponent, PercentageChangeEvent } from 'hr-ui';
-import { CodeCopyComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardHeaderComponent, CardContentComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
+import { SliderComponent, PercentageChangeEvent } from 'ngx-hr-ui';
+import { CodeCopyComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardHeaderComponent, CardContentComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
 
 interface SliderConfig {
   leftPercent: number;

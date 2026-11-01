@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { CardComponent } from 'hr-ui';
-import { IconComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { CardComponent } from 'ngx-hr-ui';
+import { IconComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface SemanticToken {
   label: string;

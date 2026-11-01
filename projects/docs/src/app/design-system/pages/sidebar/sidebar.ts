@@ -1,11 +1,11 @@
 import { Component, ChangeDetectionStrategy, computed, signal } from '@angular/core';
 
-import { UnifiedSidebarComponent, type SidebarConfig, type SidebarItem, type SidebarSection } from 'hr-ui';
+import { UnifiedSidebarComponent, type SidebarConfig, type SidebarItem, type SidebarSection } from 'ngx-hr-ui';
 import { pinnedPages, togglePinnedPage, type SidebarLayout } from '../../../core/layout/sidebar/sidebar-layout.util';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
-import { IconComponent } from 'hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
+import { IconComponent } from 'ngx-hr-ui';
 
 // Every demo route loads this same page, so a click only moves the current row.
 const DEMO_ROUTE = '/sidebar/';

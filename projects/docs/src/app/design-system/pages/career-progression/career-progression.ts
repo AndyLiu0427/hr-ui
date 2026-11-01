@@ -1,11 +1,11 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 import {
   CareerProgressionAssignment,
   CareerProgressionComponent,
   CareerProgressionContract
-} from 'hr-ui';
+} from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-career-progression-page',

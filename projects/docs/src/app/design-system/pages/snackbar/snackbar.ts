@@ -1,13 +1,13 @@
 import { Component, ChangeDetectionStrategy, signal, inject, computed } from '@angular/core';
 import { TitleCasePipe, UpperCasePipe } from '@angular/common';
-import { SnackbarService } from 'hr-ui';
-import { SnackbarType, SnackbarPosition, SnackbarSize } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent, CardHeaderComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { SelectComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { SnackbarService } from 'ngx-hr-ui';
+import { SnackbarType, SnackbarPosition, SnackbarSize } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent, CardHeaderComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { SelectComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface SnackbarConfig {
   message: string;

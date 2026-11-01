@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { RadioComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent, CardHeaderComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { RadioComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent, CardHeaderComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface RadioOption {
   value: string;

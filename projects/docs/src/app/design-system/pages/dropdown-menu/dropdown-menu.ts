@@ -1,12 +1,12 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 
-import { DropdownMenuComponent } from 'hr-ui';
-import { MenuItem, MenuAlign, MenuSection } from 'hr-ui';
-import { ButtonComponent, ButtonColor, ButtonVariant, ButtonSize } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { DropdownMenuComponent } from 'ngx-hr-ui';
+import { MenuItem, MenuAlign, MenuSection } from 'ngx-hr-ui';
+import { ButtonComponent, ButtonColor, ButtonVariant, ButtonSize } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface DropdownMenuConfig {
   triggerText: string;

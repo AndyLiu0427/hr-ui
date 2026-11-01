@@ -1,10 +1,10 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { TabsComponent, TabItem } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { SwitchComponent } from 'hr-ui';
+import { TabsComponent, TabItem } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { SwitchComponent } from 'ngx-hr-ui';
 import { FormsModule } from '@angular/forms';
 
 interface TabsConfig {

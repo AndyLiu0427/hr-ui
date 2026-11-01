@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
-import { ThemeControllerComponent } from 'hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
+import { ThemeControllerComponent } from 'ngx-hr-ui';
 
 interface ThemeExample {
   title: string;

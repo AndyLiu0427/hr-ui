@@ -12,12 +12,12 @@ import { JsonPipe, UpperCasePipe, TitleCasePipe } from '@angular/common';
 // - Field state signals: valid(), touched(), dirty(), errors()
 // ═══════════════════════════════════════════════════════════════════════════
 import { form, required, email, minLength, maxLength, pattern, FormField } from '@angular/forms/signals';
-import { InputComponent, InputSize, InputType, InputState } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent, CardFooterComponent, CardHeaderComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { SelectComponent, SelectOption } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { InputComponent, InputSize, InputType, InputState } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent, CardFooterComponent, CardHeaderComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { SelectComponent, SelectOption } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 /** Form data structure for Signal Forms demo */
 interface SignalFormData {

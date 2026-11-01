@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent, CardHeaderComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { TextComponent, type TextColor, type TextVariant, type TextWeight } from 'hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent, CardHeaderComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { TextComponent, type TextColor, type TextVariant, type TextWeight } from 'ngx-hr-ui';
 
 interface TypographyExample {
   variant: TextVariant;
@@ -63,7 +63,7 @@ export class TypographyPageComponent {
 </oct-text>`;
   });
 
-  readonly importCode = `import { TextComponent } from 'hr-ui';
+  readonly importCode = `import { TextComponent } from 'ngx-hr-ui';
 
 // In your component
 @Component({

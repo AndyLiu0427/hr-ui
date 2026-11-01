@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, computed, signal } from '@angular/core';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { DateTimelineComponent, DateTimelineNode } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { DateTimelineComponent, DateTimelineNode } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-date-timeline-page',

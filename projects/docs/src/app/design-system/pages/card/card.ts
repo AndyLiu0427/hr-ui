@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { TitleCasePipe, UpperCasePipe } from '@angular/common';
-import { ButtonComponent } from 'hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
 import {
   CardComponent,
   CardContentComponent,
@@ -8,10 +8,10 @@ import {
   CardHeaderComponent,
   CardPadding,
   CardStatus
-} from 'hr-ui';
-import { IconComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+} from 'ngx-hr-ui';
+import { IconComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface CardVariant {
   variant: string;

@@ -1,14 +1,14 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { UpperCasePipe, TitleCasePipe } from '@angular/common';
 import { disabled, form, required, validate } from '@angular/forms/signals';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { InputSelectComponent } from 'hr-ui';
-import { SelectOption } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
-import { FieldSize } from 'hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { InputSelectComponent } from 'ngx-hr-ui';
+import { SelectOption } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
+import { FieldSize } from 'ngx-hr-ui';
 
 /** The paired value the control edits. Both halves are strings, as the control requires. */
 interface RateFormData {

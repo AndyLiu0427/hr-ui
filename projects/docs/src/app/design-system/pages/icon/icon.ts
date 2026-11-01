@@ -1,12 +1,12 @@
 import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
-import { HR_ICON_OVERRIDES } from 'hr-ui';
+import { HR_ICON_OVERRIDES } from 'ngx-hr-ui';
 import { icons } from 'lucide-angular';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { IconComponent, IconSize, IconColor } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { SelectComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { IconComponent, IconSize, IconColor } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { SelectComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface IconConfig {
   name: keyof typeof icons;

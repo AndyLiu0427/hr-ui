@@ -8,7 +8,7 @@
     "useDefineForClassFields": false,
     "noImplicitOverride": true,
     "paths": {
-      "hr-ui": [
+      "ngx-hr-ui": [
         "./projects/hr-ui/src/public-api.ts"
       ]
     },

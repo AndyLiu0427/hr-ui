@@ -1,9 +1,9 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { BottomSheetComponent } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
-import { IconComponent } from 'hr-ui';
+import { BottomSheetComponent } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
+import { IconComponent } from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-bottom-sheet-page',

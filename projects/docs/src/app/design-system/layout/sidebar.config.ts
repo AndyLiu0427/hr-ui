@@ -1,5 +1,5 @@
-import type { SearchPanelItem } from 'hr-ui';
-import type { SidebarConfig } from 'hr-ui';
+import type { SearchPanelItem } from 'ngx-hr-ui';
+import type { SidebarConfig } from 'ngx-hr-ui';
 
 // Which design-system pages exist, and how to search them. The sections below are the only
 // place a page is registered; the sidebar, search panel and overview list all derive from them.

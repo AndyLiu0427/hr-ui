@@ -1,6 +1,6 @@
 # hr-ui
 
-Angular components for HR and payroll apps.
+Angular components for HR and payroll apps. The npm package is `ngx-hr-ui`.
 Forms, tables, dialogs, and Tailwind 4 design tokens, with light and dark themes.
 
 **Docs and live demos:** https://andyliu0427.github.io/hr-ui/
@@ -8,7 +8,7 @@ Forms, tables, dialogs, and Tailwind 4 design tokens, with light and dark themes
 ## Install
 
 ```sh
-npm install hr-ui @angular/cdk @angular/material @ngx-translate/core lucide-angular tailwindcss @tailwindcss/postcss
+npm install ngx-hr-ui @angular/cdk @angular/material @ngx-translate/core lucide-angular tailwindcss @tailwindcss/postcss
 ```
 
 Requires Angular 22 and Tailwind 4.
@@ -26,14 +26,14 @@ Requires Angular 22 and Tailwind 4.
 1. Import the tokens in your global CSS. The `@source` line lets Tailwind find the classes the components use.
 
    ```css
-   @import "hr-ui/styles/hr-ui.css";
-   @source "../node_modules/hr-ui";
+   @import "ngx-hr-ui/styles/hr-ui.css";
+   @source "../node_modules/ngx-hr-ui";
    ```
 
 2. Add the Material theme to `styles` in `angular.json`:
 
    ```json
-   "styles": ["node_modules/hr-ui/styles/material-theme.scss", "src/styles.css"]
+   "styles": ["node_modules/ngx-hr-ui/styles/material-theme.scss", "src/styles.css"]
    ```
 
 3. Provide animations and the English strings in `app.config.ts`:
@@ -43,7 +43,7 @@ Requires Angular 22 and Tailwind 4.
    import { provideAnimations } from '@angular/platform-browser/animations';
    import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
    import { of } from 'rxjs';
-   import en from 'hr-ui/i18n/en.json';
+   import en from 'ngx-hr-ui/i18n/en.json';
 
    export const appConfig = {
      providers: [
@@ -58,12 +58,12 @@ Requires Angular 22 and Tailwind 4.
    };
    ```
 
-   If your app already uses ngx-translate, merge the keys from `hr-ui/i18n/en.json` into your own files.
+   If your app already uses ngx-translate, merge the keys from `ngx-hr-ui/i18n/en.json` into your own files.
 
 ## Use
 
 ```ts
-import { ButtonComponent } from 'hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
 
 @Component({
   imports: [ButtonComponent],
@@ -80,7 +80,7 @@ Dark mode: `ThemeService` puts the `dark` class on `<html>`. Use `<oct-theme-con
 npm install
 npm start          # docs site on http://localhost:4200
 npm test           # library unit tests
-npm run build      # library package in dist/hr-ui
+npm run build      # package `ngx-hr-ui` in dist/hr-ui
 ```
 
 Releases: see [RELEASING.md](RELEASING.md).

@@ -17,7 +17,7 @@ Make a granular access token at npmjs.com/settings/~/tokens:
 
 | Field | Value |
 | --- | --- |
-| Packages and scopes | Read and write, on the `hr-ui` package |
+| Packages and scopes | Read and write, on the `ngx-hr-ui` package |
 | Bypass two-factor authentication | Enabled |
 
 A granular token can only select a package that already exists.

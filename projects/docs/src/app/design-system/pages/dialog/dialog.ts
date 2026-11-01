@@ -1,12 +1,12 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DialogComponent, DialogHeaderComponent, DialogContentComponent, DialogFooterComponent } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
-import { PopupService } from 'hr-ui';
+import { DialogComponent, DialogHeaderComponent, DialogContentComponent, DialogFooterComponent } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
+import { PopupService } from 'ngx-hr-ui';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -215,7 +215,7 @@ handleDialogClose() {
   // PopupService code examples
   popupServiceBasicExample = `// Component
 import { Component, inject } from '@angular/core';
-import { PopupService } from 'hr-ui';
+import { PopupService } from 'ngx-hr-ui';
 
 export class MyComponent {
   private readonly popupService = inject(PopupService);

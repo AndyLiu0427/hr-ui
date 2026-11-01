@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { FileInputComponent } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { FileInputComponent } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-file-input-page',

@@ -1,10 +1,10 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { UpperCasePipe, TitleCasePipe } from '@angular/common';
-import { DividerComponent, DividerOrientation, DividerVariant, DividerColor, DividerTextPosition } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { DividerComponent, DividerOrientation, DividerVariant, DividerColor, DividerTextPosition } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-divider-page',

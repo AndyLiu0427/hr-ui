@@ -1,9 +1,9 @@
 import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { BadgeComponent } from 'hr-ui';
-import { CardComponent } from 'hr-ui';
-import { IconComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { BadgeComponent } from 'ngx-hr-ui';
+import { CardComponent } from 'ngx-hr-ui';
+import { IconComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 import { designSystemPages } from '../../layout/sidebar.config';
 
 interface ComponentLink {

@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, computed, viewChild, TemplateRef } from '@angular/core';
 
-import { TableComponent } from 'hr-ui';
+import { TableComponent } from 'ngx-hr-ui';
 import {
   TableColumn,
   TablePagination,
@@ -11,11 +11,11 @@ import {
   RowActionsFn,
   TableCellEdit,
   TableEditType
-} from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { CheckboxComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+} from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { CheckboxComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface User {
   id: number;

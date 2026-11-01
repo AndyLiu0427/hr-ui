@@ -1,12 +1,12 @@
 import { Component, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { FilterComponent, FilterOption, enumToFilterOptions } from 'hr-ui';
-import { TableComponent } from 'hr-ui';
-import { TableColumn } from 'hr-ui';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { ButtonComponent } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
-import { InputComponent } from 'hr-ui';
+import { FilterComponent, FilterOption, enumToFilterOptions } from 'ngx-hr-ui';
+import { TableComponent } from 'ngx-hr-ui';
+import { TableColumn } from 'ngx-hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { ButtonComponent } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
+import { InputComponent } from 'ngx-hr-ui';
 
 // Example enum for demonstration
 enum Status {
@@ -393,7 +393,7 @@ export class MyComponent {
   [searchable]="true"
   [(selectedValues)]="departmentFilter" />`;
 
-  readonly enumConversionCode = `import { enumToFilterOptions } from 'hr-ui';
+  readonly enumConversionCode = `import { enumToFilterOptions } from 'ngx-hr-ui';
 
 enum Status {
   Active = 'Active',
@@ -403,7 +403,7 @@ enum Status {
 // Convert enum to filter options
 readonly statusOptions: FilterOption<Status>[] = enumToFilterOptions(Status);`;
 
-  readonly componentCode = `import { FilterComponent, FilterOption, enumToFilterOptions } from 'hr-ui';
+  readonly componentCode = `import { FilterComponent, FilterOption, enumToFilterOptions } from 'ngx-hr-ui';
 
 @Component({
   selector: 'oct-example',

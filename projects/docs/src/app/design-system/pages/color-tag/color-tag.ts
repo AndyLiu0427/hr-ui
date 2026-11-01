@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, TemplateRef, computed, signal, viewChild } from '@angular/core';
-import { CardComponent, CardContentComponent } from 'hr-ui';
-import { ColorTagColor, ColorTagComponent, ColorTagVariant } from 'hr-ui';
-import { IChoiceComponent, IChoiceOption } from 'hr-ui';
-import { SearchSelectComponent, SearchSelectOption } from 'hr-ui';
-import { SelectComponent, SelectOption } from 'hr-ui';
-import { TableComponent } from 'hr-ui';
-import { TableColumn } from 'hr-ui';
-import { TextComponent } from 'hr-ui';
+import { CardComponent, CardContentComponent } from 'ngx-hr-ui';
+import { ColorTagColor, ColorTagComponent, ColorTagVariant } from 'ngx-hr-ui';
+import { IChoiceComponent, IChoiceOption } from 'ngx-hr-ui';
+import { SearchSelectComponent, SearchSelectOption } from 'ngx-hr-ui';
+import { SelectComponent, SelectOption } from 'ngx-hr-ui';
+import { TableComponent } from 'ngx-hr-ui';
+import { TableColumn } from 'ngx-hr-ui';
+import { TextComponent } from 'ngx-hr-ui';
 
 interface TagRow {
   employee: string;
