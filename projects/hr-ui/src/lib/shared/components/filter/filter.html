@@ -1,17 +1,16 @@
+<!-- aria-expanded and aria-haspopup go on the inner <button> from filter.ts: oct-button has no input for them. -->
 <oct-button
+  #trigger
   [size]="size()"
   color="neutral"
   variant="outline"
   shape="square"
+  [ariaLabel]="triggerLabel()"
   (click)="toggleMenu()"
   (keydown)="handleKeydown($event)"
-  [attr.aria-expanded]="isOpen()"
-  [attr.aria-haspopup]="'menu'"
-  [attr.aria-label]="label() + ' filter'"
-  [attr.aria-pressed]="isOpen()"
   class="!cursor-pointer"
 >
-  <div class="flex gap-2">
+  <div class="flex items-center gap-2">
     @if (icon()) {
       <oct-icon [name]="icon()!" />
     }
@@ -19,12 +18,14 @@
       {{ label() }}
     </oct-text>
     @if (hasSelections()) {
+      <!-- The badge is 6px taller than the label line. It reaches into the button's padding
+           instead, so picking a value does not make the button taller. -->
       <oct-badge
         color="info"
         mode="solid"
         size="sm"
         [text]="selectionCount().toString()"
-        class="inline-flex tabular-nums"
+        class="inline-flex tabular-nums -my-[3px]"
       />
     }
   </div>
@@ -113,6 +114,7 @@
       role="menu"
       [attr.aria-label]="label() + ' filter menu'"
       (click)="$event.stopPropagation()"
+      (keydown)="handleMenuKeydown($event)"
     >
       <div class="flex items-center justify-between gap-2 pl-4 pr-2 py-1 border-b border-primary">
         <oct-text color="1" variant="sm" weight="semibold">
@@ -151,18 +153,23 @@
         role="group"
       >
         <div
+          #optionRow
           *cdkVirtualFor="let option of filteredOptions(); trackBy: trackByValue"
-          [class]="'px-4 py-2.5 transition-colors duration-300 cursor-pointer ' +
+          [class]="'px-4 py-2.5 transition-colors duration-300 cursor-pointer oct-focus-ring focus-visible:-outline-offset-2 ' +
                    (selections().has(option.value) ? 'bg-primary/20' : 'hover:bg-primary/10') +
                    (option.disabled ? ' opacity-50 cursor-not-allowed' : '')"
           role="menuitemcheckbox"
+          [attr.aria-label]="option.label"
           [attr.aria-checked]="selections().has(option.value)"
           [attr.aria-disabled]="option.disabled"
           (click)="!option.disabled && toggleOption(option.value)"
           (keydown)="!option.disabled && handleOptionKeydown($event, option.value)"
           [attr.tabindex]="option.disabled ? -1 : 0"
         >
+          <!-- Only a picture of the state: the row is the control. inert keeps its native box out
+               of the tab order, where Space would tick it without changing the selection. -->
           <oct-checkbox
+            inert
             [checked]="selections().has(option.value)"
             [disabled]="!!option.disabled"
             [label]="option.label"

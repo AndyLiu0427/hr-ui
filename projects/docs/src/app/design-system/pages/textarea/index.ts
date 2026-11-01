@@ -1,1 +1,0 @@
-export { TextareaPageComponent } from './textarea';

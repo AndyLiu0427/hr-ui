@@ -6,7 +6,9 @@ import {
   ViewContainerRef,
   TemplateRef,
   viewChild,
+  viewChildren,
   effect,
+  afterRenderEffect,
   inject,
   ElementRef,
   signal,
@@ -43,6 +45,7 @@ export function enumToFilterOptions<T>(enumObj: Record<string, T>): FilterOption
     }));
 }
 
+/** A button that opens a menu of checkboxes, to narrow a list to one or more values. On a phone the menu opens as a bottom sheet. */
 @Component({
   selector: 'oct-filter',
   templateUrl: './filter.html',
@@ -72,17 +75,25 @@ export class FilterComponent<T> {
 
   readonly isMobile = signal<boolean>(false);
 
+  /** Text on the button, and the title of the menu. */
   label = input.required<string>();
+  /** Icon shown before the label. */
   icon = input<string>();
+  /** Size of the button. */
   size = input<'sm' | 'md' | 'lg'>('md');
-  // undefined falls back to the default, so a config object can leave these out.
+  /** Width of the menu, as a CSS length or a number of px. undefined falls back to the default, so a config object can leave it out. */
   width = input<number | string, number | string | undefined>('280px', { transform: v => v ?? '280px' });
+  /** Gap between the button and the menu, in px. */
   offsetY = input<number>(8);
 
+  /** The values people can pick, each with a label. */
   options = input<FilterOption<T>[]>([]);
+  /** Adds a search box that filters the options by label. */
   searchable = input<boolean>(false);
+  /** Placeholder of the search box. undefined falls back to the default. */
   searchPlaceholder = input<string, string | undefined>('Search...', { transform: v => v ?? 'Search...' });
 
+  /** The values of the selected options. Supports two-way binding. */
   selectedValues = model<unknown[]>([]);
 
   searchQuery = signal<string>('');
@@ -92,14 +103,19 @@ export class FilterComponent<T> {
     this.searchQuery.set(target.value);
   }
 
+  /** Emits the selected values after each change. */
   readonly filterChange = output<unknown[]>();
+  /** Emits when the menu opens. */
   readonly menuOpened = output<void>();
+  /** Emits when the menu closes. */
   readonly menuClosed = output<void>();
 
   isOpen = signal<boolean>(false);
   readonly selections = signal<Set<unknown>>(new Set());
   selectionCount = computed(() => this.selections().size);
   hasSelections = computed(() => this.selections().size > 0);
+  /** The button's name. It says the count too, which the badge shows. */
+  protected readonly triggerLabel = computed(() => `${this.label()} filter${this.hasSelections() ? `, ${this.selectionCount()} selected` : ''}`);
 
   filteredOptions = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
@@ -124,6 +140,11 @@ export class FilterComponent<T> {
   });
 
   desktopMenuTemplate = viewChild<TemplateRef<unknown>>('desktopMenuTemplate');
+  private readonly trigger = viewChild.required('trigger', { read: ButtonComponent });
+  private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+  private readonly optionRows = viewChildren<ElementRef<HTMLElement>>('optionRow');
+  /** Set when the desktop menu opens, until focus has moved into it. */
+  private focusOnRender = false;
 
   constructor() {
     this.breakpointObserver
@@ -145,11 +166,20 @@ export class FilterComponent<T> {
       }
     });
 
-    effect(() => {
-      if (this.isOpen()) {
-        this.menuOpened.emit();
-      } else {
-        this.menuClosed.emit();
+    // After render, because oct-button draws its <button> in its own first pass.
+    afterRenderEffect(() => {
+      const button = this.trigger().buttonRef().nativeElement;
+      button.setAttribute('aria-expanded', String(this.isOpen()));
+      button.setAttribute('aria-haspopup', this.isMobile() ? 'dialog' : 'menu');
+    });
+
+    // The menu sits at the end of <body>, where Tab from the button never arrives. The options
+    // render a beat after the menu, once the virtual list has measured itself.
+    afterRenderEffect(() => {
+      const target = this.searchInput()?.nativeElement ?? this.optionRows().find(row => row.nativeElement.tabIndex === 0)?.nativeElement;
+      if (this.focusOnRender && target) {
+        this.focusOnRender = false;
+        target.focus();
       }
     });
   }
@@ -158,16 +188,21 @@ export class FilterComponent<T> {
     if (this.isOpen()) {
       this.closeMenu();
     } else {
+      // On a phone the bottom sheet moves focus itself.
+      this.focusOnRender = !this.isMobile();
       this.isOpen.set(true);
+      this.menuOpened.emit();
     }
   }
 
   closeMenu(): void {
     if (!this.isOpen()) return;
 
+    this.focusOnRender = false;
     this.closeOverlay();
     this.isOpen.set(false);
     this.searchQuery.set('');
+    this.menuClosed.emit();
   }
 
   toggleOption(value: unknown): void {
@@ -208,6 +243,26 @@ export class FilterComponent<T> {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.toggleOption(value);
+    }
+  }
+
+  /**
+   * Up and Down move between the search box and the options. Tab past the first or last control
+   * closes the menu, as Escape does: the menu sits at the end of <body>, so focus would leave the page.
+   */
+  handleMenuKeydown(event: KeyboardEvent): void {
+    const menu = event.currentTarget as HTMLElement;
+    const focused = document.activeElement as HTMLElement;
+    if (event.key === 'Tab') {
+      const stops = [...menu.querySelectorAll<HTMLElement>('button:not([disabled]), input[type="search"], [role="menuitemcheckbox"][tabindex="0"]')];
+      if (focused === (event.shiftKey ? stops[0] : stops[stops.length - 1])) {
+        event.preventDefault();
+        this.closeMenu();
+      }
+    } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      const stops = [...menu.querySelectorAll<HTMLElement>('input[type="search"], [role="menuitemcheckbox"][tabindex="0"]')];
+      stops[stops.indexOf(focused) + (event.key === 'ArrowDown' ? 1 : -1)]?.focus();
     }
   }
 
@@ -271,6 +326,8 @@ export class FilterComponent<T> {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if (event.key === 'Escape') {
+          // Handled here, so a side panel around the filter stays open.
+          event.preventDefault();
           this.closeMenu();
         }
       });
@@ -288,9 +345,15 @@ export class FilterComponent<T> {
   }
 
   private closeOverlay(): void {
-    if (this.overlayRef) {
-      this.overlayRef.dispose();
-      this.overlayRef = undefined;
+    if (!this.overlayRef) return;
+
+    // Focus inside the menu would be lost with it. A click on another control keeps its focus.
+    const active = document.activeElement;
+    const focusWasInMenu = !active || active === document.body || this.overlayRef.overlayElement.contains(active);
+    this.overlayRef.dispose();
+    this.overlayRef = undefined;
+    if (focusWasInMenu) {
+      this.trigger().buttonRef().nativeElement.focus();
     }
   }
 }

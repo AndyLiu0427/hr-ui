@@ -41,6 +41,7 @@ const DEFAULT_CONFIG: CareerProgressionConfig = {
   emptyMessage: 'No items to display'
 };
 
+/** An employee's work history as a tree: contracts, the clients served under each, and their assignments. */
 @Component({
   selector: 'oct-career-progression',
   templateUrl: './career-progression.html',
@@ -53,6 +54,7 @@ export class CareerProgressionComponent {
   /** Contracts, most recent first. Clients and assignments read forwards. */
   readonly contracts = input.required<CareerProgressionContract[]>();
 
+  /** Icon and message for the empty state. */
   readonly config = input<CareerProgressionConfig>({});
 
   /** Emitted when an assignment leaf is clicked. */
@@ -72,6 +74,11 @@ export class CareerProgressionComponent {
     const start = this.formatDate(startDate);
     const end = endDate ? this.formatDate(endDate) : 'Present';
     return `${start} - ${end}`;
+  }
+
+  /** Names an assignment button by what it shows, with commas where the row has dots. */
+  assignmentLabel(assignment: CareerProgressionAssignment): string {
+    return [assignment.department, assignment.jobTitle, this.formatDateRange(assignment.startDate, assignment.endDate)].filter(Boolean).join(', ');
   }
 
   /**

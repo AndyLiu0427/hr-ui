@@ -2,7 +2,8 @@
   <div class="relative">
     <div
       #tableContainer
-      class="hide-scrollbars relative border border-primary rounded-lg bg-secondary"
+      class="hide-scrollbars relative border-primary rounded-lg bg-secondary"
+      [class.border]="bordered()"
       [class.overflow-auto]="!loading() && paginatedData().length > 0"
       [class.overflow-x-auto]="!loading() && paginatedData().length === 0"
       [class.overflow-y-hidden]="!loading() && paginatedData().length === 0"
@@ -28,7 +29,8 @@
         [style.min-width.px]="tableMinWidth()"
       >
         <thead
-          class="sticky top-0 z-5 bg-secondary shadow-[inset_0_-1px_0_var(--color-hr-neutral-800)]"
+          class="top-0 z-5 bg-secondary shadow-[inset_0_-1px_0_var(--color-hr-neutral-800)]"
+          [class.sticky]="fixedHeader()"
           [class.min-h-10]="!dense()"
           [class.min-h-8]="dense()"
         >
@@ -59,10 +61,14 @@
               @if (isSelectionColumn(column)) {
               <div class="flex items-center justify-center">
                 @if (isMultipleSelection()) {
+                <!-- The label is for screen readers only. oct-checkbox draws no indeterminate state,
+                     so the dash for "some rows selected" is drawn here, on its native box. -->
                 <oct-checkbox
+                  #selectAll
+                  label="Select all rows"
                   [checked]="isAllSelected()"
                   (checkboxChange)="toggleAllSelection()"
-                  class="[&>label]:!mb-0 [&>label]:!gap-0 inline-flex"
+                  class="[&>label]:!mb-0 [&>label]:!gap-0 [&>label>span]:sr-only inline-flex [&_input:indeterminate]:bg-primary-solid [&_input:indeterminate]:border-primary-solid [&_input:indeterminate]:before:opacity-100 [&_input:indeterminate]:before:rotate-0 [&_input:indeterminate]:before:[clip-path:inset(40%_15%)]"
                 >
                 </oct-checkbox>
                 }
@@ -122,13 +128,14 @@
           @for (row of paginatedData(); track trackByRow($index, row); let
           isEven = $even; let isLast = $last; let rowIndex = $index) {
           <tr
-            class="group/row border-primary"
+            class="group/row border-primary oct-focus-ring focus-visible:-outline-offset-2"
             [class.border-b]="!isLast"
             [class.bg-hr-neutral-900]="striped() && isEven"
             [class.cursor-pointer]="clickableRows()"
             [class.cursor-default]="!clickableRows()"
+            [attr.tabindex]="clickableRows() ? 0 : null"
             (click)="clickableRows() ? onRowClick(row) : null"
-            (keydown)="clickableRows() && ($event.key === 'Enter' || $event.key === ' ') ? onRowClick(row) : null"
+            (keydown)="onRowKeydown($event, row)"
           >
             @for (column of enhancedColumns(); track trackByColumn($index, column); let isLastColumn = $last) {
             <td
@@ -171,11 +178,12 @@
               @if (isSelectionColumn(column)) {
               <div class="flex items-center justify-center">
                 <oct-checkbox
+                  [label]="'Select ' + rowName(row)"
                   [checked]="isRowSelected(row)"
                   (checkboxChange)="toggleRowSelection(row)"
                   (click)="$event.stopPropagation()"
                   (keydown)="$event.stopPropagation()"
-                  class="[&>label]:!mb-0 [&>label]:!gap-0 inline-flex"
+                  class="[&>label]:!mb-0 [&>label]:!gap-0 [&>label>span]:sr-only inline-flex"
                 >
                 </oct-checkbox>
               </div>
@@ -320,7 +328,7 @@
               <button
                 type="button"
                 (click)="startEdit(rowIndex, column, row, $event)"
-                class="group/edit flex w-full items-center gap-1 -mx-1 px-1 py-0.5 rounded-sm cursor-pointer hover:bg-hr-neutral-800/60 transition-[background-color] duration-150"
+                class="group/edit oct-focus-ring flex w-full items-center gap-1 -mx-1 px-1 py-0.5 rounded-sm cursor-pointer hover:bg-hr-neutral-800/60 transition-[background-color] duration-150"
                 [class.justify-end]="column.align === 'right'"
                 [class.justify-center]="column.align === 'center'"
                 [title]="getColumnValue(row, column)"

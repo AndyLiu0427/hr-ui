@@ -1,6 +1,5 @@
 import { TextColor } from '../text/text';
 
-export type TableSize = 'sm' | 'md' | 'lg';
 export type SortDirection = 'asc' | 'desc' | null;
 
 /** Inline-edit input modes for an editable column (see {@link TableColumn.editType}). */
@@ -84,6 +83,7 @@ export interface TablePagination {
 export interface TableSelectionConfig {
   mode: 'single' | 'multiple';
   key?: string;
+  /** false hides the checkbox column, as leaving selectionConfig out does. Default true. */
   enabled?: boolean;
 }
 
@@ -101,7 +101,6 @@ export interface TableEmitEvents<T = any> {
   pageChange: number;
   pageSizeChange: number;
   selectionChange: TableSelection<T>;
-  actionClick: { action: string; row: T };
 }
 
 export type RowActionVariant = 'ghost' | 'link';
