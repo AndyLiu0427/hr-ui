@@ -1,45 +1,48 @@
 import { Component, ChangeDetectionStrategy, computed, signal, input, effect } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { IconComponent } from '../icon/icon';
 
+/** icon is the px size of the person icon shown when there is neither a photo nor a name. */
 const AVATAR_SIZE_CLASSES = {
   xs: {
     container: 'size-4',
     text: 'text-[8px]',
-    icon: 'text-xs',
+    icon: 10,
     status: 'size-1.5',
     statusOffset: '-top-px -right-px'
   },
   sm: {
     container: 'size-6',
     text: 'text-xs',
-    icon: 'text-sm',
+    icon: 14,
     status: 'size-2',
     statusOffset: '-top-0.5 -right-0.5'
   },
   md: {
     container: 'size-8',
     text: 'text-sm',
-    icon: 'text-base',
+    icon: 18,
     status: 'size-2.5',
     statusOffset: '-top-0.5 -right-0.5'
   },
   lg: {
     container: 'size-10',
     text: 'text-base',
-    icon: 'text-lg',
+    icon: 22,
     status: 'size-3',
     statusOffset: '-top-0.5 -right-0.5'
   },
   xl: {
     container: 'size-12',
     text: 'text-lg',
-    icon: 'text-hr-xl',
+    icon: 26,
     status: 'size-3.5',
     statusOffset: '-top-1 -right-1'
   },
   '2xl': {
     container: 'size-16',
     text: 'text-hr-xl',
-    icon: 'text-hr-2xl',
+    icon: 34,
     status: 'size-4',
     statusOffset: '-top-1 -right-1'
   }
@@ -53,6 +56,7 @@ export type AvatarStatus = 'online' | 'offline' | 'busy' | 'away' | 'none';
   selector: 'oct-avatar',
   templateUrl: './avatar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgTemplateOutlet, IconComponent],
   host: {
     class: 'inline-flex leading-none',
     '[attr.data-size]': 'size()',
@@ -72,12 +76,11 @@ export class AvatarComponent {
   readonly status = input<AvatarStatus>('none');
   /** Shows the name under the avatar while the pointer rests on it. */
   readonly showTooltip = input<boolean>(false);
-  /** Adds a pointer cursor, a hover ring, role="button" and a tab stop. Enter and Space do not activate it. */
+  /** Draws the avatar as a native button, with a pointer cursor and a hover ring. Listen to (click) on oct-avatar: Enter and Space click it too. */
   readonly clickable = input<boolean>(false);
 
   protected readonly imageLoaded = signal(false);
   protected readonly imageError = signal(false);
-  protected readonly fallbackImageSrc = './assets/images/profile.jpg';
 
   constructor() {
     effect(() => {
@@ -129,23 +132,16 @@ export class AvatarComponent {
     ];
 
     const content = this.displayContent();
-    if (content === 'image' || content === 'fallback') {
+    if (content === 'image') {
       classes.push('bg-hr-neutral-200');
+    } else if (content === 'fallback') {
+      classes.push('bg-hr-neutral-800', 'text-2');
     } else {
       classes.push('bg-info-solid', 'text-white', 'font-semibold');
     }
 
     if (this.clickable()) {
-      classes.push(
-        'cursor-pointer',
-        'hover:ring-2',
-        'hover:ring-hr-blue-300',
-        'hover:ring-offset-1',
-        'focus-visible:outline-none',
-        'focus-visible:ring-2',
-        'focus-visible:ring-hr-blue-500',
-        'focus-visible:ring-offset-2'
-      );
+      classes.push('cursor-pointer', 'hover:ring-2', 'hover:ring-hr-blue-300', 'hover:ring-offset-1', 'oct-focus-ring');
     }
 
     return classes.join(' ');
@@ -176,7 +172,8 @@ export class AvatarComponent {
         busy: 'bg-rose-500',
         away: 'bg-amber-500'
       };
-      classes.push(colorMap[status] ?? 'bg-hr-neutral-400');
+      // block, or the span stays inline and its size class draws nothing.
+      classes.push('block', colorMap[status] ?? 'bg-hr-neutral-400');
     }
 
     return classes.join(' ');
