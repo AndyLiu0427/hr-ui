@@ -67,14 +67,14 @@
   & > p {
     @apply mt-4 leading-7 first:mt-0;
   }
-  & > ul,
-  & > ol {
+  & > ul:not([class]),
+  & > ol:not([class]) {
     @apply my-4 ml-6 space-y-2 leading-7;
   }
-  & > ul {
+  & > ul:not([class]) {
     @apply list-disc;
   }
-  & > ol {
+  & > ol:not([class]) {
     @apply list-decimal;
   }
   & a:not([class]) {
@@ -82,8 +82,8 @@
   }
   /* Inline code in running text only; tables and headings keep plain monospace. */
   & > p code,
-  & > ul code,
-  & > ol code {
+  & > ul:not([class]) code,
+  & > ol:not([class]) code {
     @apply rounded-md border border-docs-border bg-docs-subtle px-1.5 py-0.5 font-mono text-[0.8125rem];
   }
 }

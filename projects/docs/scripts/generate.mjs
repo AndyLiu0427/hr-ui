@@ -78,11 +78,13 @@ const pages = contentFiles.map(f => {
   const title = field(src, 'title');
   const description = field(src, 'description');
   if (!slug || !title || !description) throw new Error(`${f} needs slug, title and description string fields`);
+  const hero = src.slice(src.indexOf('examples:')).match(/name:\s*'([^']+)'/)?.[1];
+  if (!hero) throw new Error(`${f} needs at least one example`);
   if (slug !== path.basename(f, '.ts')) throw new Error(`${f}: slug "${slug}" must match the file name`);
   for (const m of src.matchAll(/name:\s*'([^']+)'/g)) {
     if (!names.has(m[1])) throw new Error(`${f} uses example "${m[1]}", which has no file under src/app/examples`);
   }
-  return { slug, title, description, file: f };
+  return { slug, title, description, hero, file: f };
 });
 write(
   docsFile,
@@ -93,6 +95,8 @@ export interface ComponentDocEntry {
   slug: string;
   title: string;
   description: string;
+  /** The first example. The components overview shows it small. */
+  hero: string;
   load: () => Promise<ComponentDoc>;
 }
 
@@ -100,7 +104,7 @@ export const COMPONENT_DOCS: ComponentDocEntry[] = [
 ${pages
   .map(
     p =>
-      `  {\n    slug: ${JSON.stringify(p.slug)},\n    title: ${JSON.stringify(p.title)},\n    description: ${JSON.stringify(p.description)},\n    load: () => import('${rel(docsFile, p.file)}').then(m => m.doc)\n  }`
+      `  {\n    slug: ${JSON.stringify(p.slug)},\n    title: ${JSON.stringify(p.title)},\n    description: ${JSON.stringify(p.description)},\n    hero: ${JSON.stringify(p.hero)},\n    load: () => import('${rel(docsFile, p.file)}').then(m => m.doc)\n  }`
   )
   .join(',\n')}
 ];

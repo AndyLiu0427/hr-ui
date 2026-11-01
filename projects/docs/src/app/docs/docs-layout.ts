@@ -117,7 +117,7 @@ const SEARCH_ITEMS: SearchItem[] = NAV.flatMap(s => s.items.map(i => ({ id: i.hr
       </main>
     } @else {
       <div class="mx-auto flex max-w-screen-2xl gap-10 px-4 sm:px-6">
-        <aside class="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-56 shrink-0 overflow-y-auto overscroll-contain py-8 pr-2 lg:block">
+        <aside aria-label="Sidebar" class="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-56 shrink-0 overflow-y-auto overscroll-contain py-8 pr-2 lg:block">
           <docs-nav />
         </aside>
         <main id="main" tabindex="-1" class="min-h-[calc(100dvh-3.5rem)] min-w-0 flex-1 pb-20 pt-8 outline-none lg:pt-10">
@@ -125,7 +125,7 @@ const SEARCH_ITEMS: SearchItem[] = NAV.flatMap(s => s.items.map(i => ({ id: i.hr
             <div class="mx-auto w-full min-w-0 max-w-3xl">
               <router-outlet />
             </div>
-            <aside class="sticky top-24 hidden h-fit w-52 shrink-0 xl:block">
+            <aside aria-label="On this page" class="sticky top-24 hidden h-fit w-52 shrink-0 xl:block">
               <docs-toc />
             </aside>
           </div>
