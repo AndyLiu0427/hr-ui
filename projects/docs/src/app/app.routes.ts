@@ -9,6 +9,7 @@ export const routes: Routes = [
       { path: 'avatar', loadComponent: () => import('./design-system/pages/avatar/avatar').then(m => m.AvatarPageComponent) },
       { path: 'badge', loadComponent: () => import('./design-system/pages/badge/badge').then(m => m.BadgePageComponent) },
       { path: 'bottom-sheet', loadComponent: () => import('./design-system/pages/bottom-sheet/bottom-sheet').then(m => m.BottomSheetPageComponent) },
+      { path: 'chip', loadComponent: () => import('./design-system/pages/chip/chip').then(m => m.ChipPageComponent) },
       { path: 'color-tag', loadComponent: () => import('./design-system/pages/color-tag/color-tag').then(m => m.ColorTagPageComponent) },
       { path: 'button', loadComponent: () => import('./design-system/pages/button/button').then(m => m.ButtonPageComponent) },
       { path: 'card', loadComponent: () => import('./design-system/pages/card/card').then(m => m.CardPageComponent) },

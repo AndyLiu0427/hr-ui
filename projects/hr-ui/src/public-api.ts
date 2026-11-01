@@ -10,6 +10,7 @@ export * from './lib/shared/components/card/card';
 export * from './lib/shared/components/career-progression/career-contracts';
 export * from './lib/shared/components/career-progression/career-progression';
 export * from './lib/shared/components/checkbox/checkbox';
+export * from './lib/shared/components/chip/chip';
 export * from './lib/shared/components/code-copy/code-copy';
 export * from './lib/shared/components/color-tag/color-tag';
 export * from './lib/shared/components/date-timeline/date-timeline';

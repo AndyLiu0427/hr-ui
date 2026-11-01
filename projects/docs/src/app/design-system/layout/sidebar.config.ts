@@ -233,6 +233,15 @@ export const designSystemSidebarConfig: SidebarConfig = {
           }
         },
         {
+          label: 'Chip',
+          route: '/chip',
+          icon: 'Tags',
+          preview: {
+            title: 'Chip Component',
+            description: 'A removable value the user added, such as a keyword or a filter'
+          }
+        },
+        {
           label: 'Color Tag',
           route: '/color-tag',
           icon: 'Bookmark',
