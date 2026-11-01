@@ -36,15 +36,23 @@ export class DropdownMenuComponent {
   private overlayRef?: OverlayRef;
 
   // Inputs
+  /** Whether the menu is shown. Set it back to false when closed emits. */
   isOpen = input<boolean>(false);
+  /** Which edge of the trigger the menu lines up with. */
   alignment = input<MenuAlignment>(MenuAlign.RIGHT);
+  /** The items, in sections with a divider between them. */
   menuSections = input<MenuSection[]>([]);
+  /** The gap between the trigger and the menu, in pixels. */
   offsetY = input<number>(8);
+  /** The width of the menu, in pixels or as a CSS length. */
   width = input<number | string>('280px');
+  /** Closes the menu after an item is chosen. */
   closeOnItemClick = input<boolean>(true);
 
   // Outputs
+  /** Emits when the menu asks to close: an item was chosen, or the user clicked outside or pressed Escape. */
   readonly closed = output<void>();
+  /** Emits the item the user chose. Disabled items never emit. */
   readonly itemClick = output<MenuItem>();
 
   // Template references

@@ -68,15 +68,8 @@ const prefersReducedMotion = (): boolean =>
   typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /**
- * Hover/focus tooltip. Two modes:
- *
- * - **Text** (`[octTooltip]="'...'"`): a small centred bubble with an arrow pointing at
- *   the trigger, a scale-pop enter, and a drop-shadow over the body+arrow silhouette.
- * - **Rich** (`[octTooltipContent]="tpl"` where `tpl` is an `<ng-template>`): floats a panel
- *   with arbitrary projected content beside the trigger (no arrow). The rich path is skipped
- *   on touch pointers (no hover), so provide an inline fallback there if the content matters.
- *
- * Both render to `document.body`, share the scale-pop enter, and clamp into the viewport.
+ * Shows a short text label, or a template, next to its host on hover and when the host element itself is focused.
+ * A template is never shown on touch screens, so keep anything essential on the page as well.
  */
 @Directive({
   selector: '[octTooltip], [octTooltipContent]',
@@ -88,11 +81,17 @@ const prefersReducedMotion = (): boolean =>
   }
 })
 export class TooltipDirective implements OnDestroy {
+  /** The text to show. An empty string shows nothing. */
   readonly octTooltip = input<string>('');
+  /** A template to show instead of text, for more than one line. It is skipped on touch screens. */
   readonly octTooltipContent = input<TemplateRef<unknown> | null>(null);
+  /** The side of the host it appears on. Near the edge of the screen it moves back inside. */
   readonly octTooltipPosition = input<TooltipPosition>('top');
+  /** The colour of a text tooltip. */
   readonly octTooltipColor = input<TooltipColor>('primary');
+  /** How long the pointer must rest on the host before the tooltip shows, in milliseconds. */
   readonly octTooltipShowDelay = input<number>(200);
+  /** Stops the tooltip from showing. */
   readonly octTooltipDisabled = input<boolean>(false);
 
   private readonly el = inject(ElementRef);
