@@ -3,12 +3,9 @@ import { IconComponent } from '../icon/icon';
 import { TextComponent, type TextColor, type TextWeight } from '../text/text';
 
 /**
- * Settings Group Component
+ * A rounded panel that groups settings rows.
  *
- * Card container for grouping settings items and related content.
- * Provides consistent rounded card styling with overflow clipping.
- *
- * Usage:
+ * @example
  * ```html
  * <oct-settings-group>
  *   <oct-settings-item icon="Moon" label="Dark Mode" (itemClick)="toggle()" />
@@ -27,12 +24,9 @@ export class SettingsGroupComponent {}
 export type SettingsItemColor = 'neutral' | 'error';
 
 /**
- * Settings Item Component
+ * A settings row: a button with an icon, a label and an optional chevron.
  *
- * A list-item style button for settings pages.
- * Renders a leading icon in a styled container, a label, and an optional trailing chevron.
- *
- * Usage:
+ * @example
  * ```html
  * <oct-settings-item icon="Moon" label="Dark Mode" (itemClick)="toggle()" />
  * <oct-settings-item icon="LogOut" label="Log Out" color="error" [showChevron]="false" (itemClick)="logout()" />
@@ -56,11 +50,16 @@ export type SettingsItemColor = 'neutral' | 'error';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsItemComponent {
+  /** The icon name, shown in a rounded square before the label. */
   readonly icon = input.required<string>();
+  /** The row text, which is also its accessible name. */
   readonly label = input.required<string>();
+  /** 'error' colours the row red, for an action that deletes data. */
   readonly color = input<SettingsItemColor>('neutral');
+  /** Shows a chevron at the end, for a row that opens another screen. */
   readonly showChevron = input(true);
 
+  /** Emits the click event when the user presses the row. */
   readonly itemClick = output<Event>();
 
   readonly buttonClasses = computed(() => {

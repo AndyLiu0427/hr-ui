@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 
+/** Shows a calculation as a fraction, such as how an hourly overtime rate is worked out. */
 @Component({
   selector: 'oct-formula',
   standalone: true,
@@ -30,6 +31,8 @@ import { Component, ChangeDetectionStrategy, input } from '@angular/core';
   ]
 })
 export class FormulaComponent {
+  /** The text above the line. Line breaks in it are kept. */
   readonly numerator = input.required<string>();
+  /** The text below the line. Line breaks in it are kept. */
   readonly denominator = input.required<string>();
 }

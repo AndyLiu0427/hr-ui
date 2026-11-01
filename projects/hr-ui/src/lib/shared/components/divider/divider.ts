@@ -15,6 +15,7 @@ export interface DividerProps {
   spacing?: 'sm' | 'md' | 'lg';
 }
 
+/** A line that separates content, with an optional short label in a horizontal line. */
 @Component({
   selector: 'oct-divider',
   imports: [TextComponent],
@@ -39,11 +40,17 @@ export interface DividerProps {
   `
 })
 export class DividerComponent {
+  /** 'vertical' draws a line between inline items, as tall as its container. */
   readonly orientation = input<DividerOrientation>('horizontal');
+  /** The line style. */
   readonly variant = input<DividerVariant>('solid');
+  /** The line colour. */
   readonly color = input<DividerColor>('neutral');
+  /** A short label in the line, such as "or". Horizontal dividers only. */
   readonly text = input<string>('');
+  /** Where the label sits along the line. */
   readonly textPosition = input<DividerTextPosition>('center');
+  /** Space above and below the line, or on both sides of a vertical line. */
   readonly spacing = input<'sm' | 'md' | 'lg'>('md');
 
   readonly hostClasses = computed(() => {

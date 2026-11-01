@@ -40,6 +40,7 @@ export interface TabItem {
   href?: string;
 }
 
+/** A strip of tabs that switches between views of one record. It renders the strip only; you render the active view. */
 @Component({
   selector: 'oct-tabs',
   templateUrl: './tabs.html',
@@ -50,13 +51,17 @@ export interface TabItem {
   }
 })
 export class TabsComponent {
+  /** The tabs, in order. A tab with href renders as a link; a description shows under the strip while its tab is active. */
   readonly tabs = input.required<TabItem[]>();
+  /** The id of the active tab. When empty, the first tab becomes active. */
   readonly activeTab = model<string>('');
+  /** Emits the id of the tab the user picks, by click or by keyboard. */
   readonly tabChange = output<string>();
 
   /**
    * False makes the whole strip inert: no click, no keyboard, and anchors DROP their href.
    *
+   * @remarks
    * Dropping the href matters — `preventDefault` alone would leave middle-click and the context
    * menu navigating, which is exactly what a caller disabling the strip is trying to prevent
    * (e.g. an open edit dialog whose draft would be silently replaced by the sibling's values).
