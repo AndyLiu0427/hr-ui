@@ -11,6 +11,7 @@ import { SearchSelectOption } from './search-select';
   template: `
     <div
       [class]="optionClasses()"
+      [attr.id]="optionId()"
       [attr.aria-selected]="selected()"
       [attr.aria-disabled]="option().disabled"
       role="option"
@@ -57,6 +58,8 @@ export class SearchSelectOptionComponent {
   readonly highlighted = input<boolean>(false);
   readonly showCheckIcon = input<boolean>(true);
   readonly showIcon = input<boolean>(true);
+  /** Id of the element with role="option", which the search box's aria-activedescendant names. */
+  readonly optionId = input<string>();
 
   readonly optionClick = output<SearchSelectOption>();
   readonly optionHover = output<SearchSelectOption>();

@@ -21,7 +21,7 @@ import { ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 import { ColorTagColor, ColorTagComponent } from '../color-tag/color-tag';
 import { IconComponent } from '../icon/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { debounceTime, distinctUntilChanged, Subject, switchMap, of, catchError } from 'rxjs';
+import { debounce, distinctUntilChanged, Subject, switchMap, of, catchError, timer } from 'rxjs';
 import { CdkOverlayOrigin } from '@angular/cdk/overlay';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { A11yModule } from '@angular/cdk/a11y';
@@ -108,6 +108,10 @@ export class SearchSelectComponent implements AfterViewInit {
   private searchSubject = new Subject<string>();
 
   readonly searchSelectId = signal(`oct-search-select-${Math.random().toString(36).substring(2, 11)}`);
+  /** The option list. The trigger and the search box point at it. */
+  readonly listboxId = computed(() => `${this.searchSelectId()}-listbox`);
+  /** The highlighted option, for aria-activedescendant on the search box, which has focus while the list is open. */
+  readonly activeOptionId = computed(() => (this.isOpen() && this.activeIndex() >= 0 ? `${this.searchSelectId()}-option-${this.activeIndex()}` : null));
 
   /** Options to search in the browser. Ignored when searchConfig is set. */
   readonly options = input<SearchSelectOption[]>([]);
@@ -328,11 +332,6 @@ export class SearchSelectComponent implements AfterViewInit {
     const query = this.searchQuery();
 
     if (this.hasSearchConfig()) {
-      if (!this.hasPreloadConfig()) {
-        console.error('SearchSelect: searchConfig requires preloadConfig to be provided');
-        return [];
-      }
-
       // minSearchLength 0: '' gives 0 < 0 false, so treat empty query as preload.
       const minLen = this.minSearchLength();
       const qlen = query.length;
@@ -351,13 +350,6 @@ export class SearchSelectComponent implements AfterViewInit {
     return this.options().filter(
       opt => !opt.disabled && (opt.label.toLowerCase().includes(queryLower) || (opt.description?.toLowerCase().includes(queryLower) ?? false))
     );
-  });
-
-  readonly canShowOptions = computed(() => {
-    if (!this.hasSearchConfig()) return true;
-    if (!this.hasPreloadConfig()) return false;
-    const query = this.searchQuery();
-    return this.isPreloaded() || (query.length >= this.minSearchLength() && this.searchOptions().length > 0);
   });
 
   readonly triggerClasses = computed(() => {
@@ -542,7 +534,8 @@ export class SearchSelectComponent implements AfterViewInit {
   private setupDebouncedSearch(): void {
     this.searchSubject
       .pipe(
-        debounceTime(this.debounceMs()),
+        // Read on each query: inputs are not set yet when the constructor builds this pipe.
+        debounce(() => timer(this.debounceMs())),
         distinctUntilChanged(),
         switchMap(query => this.executeSearch(query)),
         catchError(error => {
@@ -698,6 +691,11 @@ export class SearchSelectComponent implements AfterViewInit {
   }
 
   closeDropdown(): void {
+    if (!this.isOpen()) return;
+    // The search box leaves with the panel, and a click on an option takes focus off it.
+    // Either way focus would fall to <body>; a click on another control keeps its focus.
+    const active = document.activeElement;
+    const focusWasInPanel = !active || active === document.body || !!this.overlayService.getOverlayElement()?.contains(active);
     this.overlayService.close(() => {
       this.searchQuery.set('');
       this.nav.setOptions([]);
@@ -711,6 +709,9 @@ export class SearchSelectComponent implements AfterViewInit {
       this.markTouched();
       this.cdr.markForCheck();
     });
+    if (focusWasInPanel) {
+      this.searchSelectTrigger().nativeElement.focus();
+    }
   }
 
   selectOption(option: SearchSelectOption): void {
