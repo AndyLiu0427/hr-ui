@@ -108,7 +108,9 @@ export class TextareaComponent implements FormValueControl<string> {
     const classes = [
       'w-full',
       'text-1',
-      'text-sm',
+      // 16px on phones: iOS Safari zooms the page into any focused field under 16px.
+      'text-base',
+      'sm:text-sm',
       'px-3',
       'py-2.5',
       'rounded-lg',

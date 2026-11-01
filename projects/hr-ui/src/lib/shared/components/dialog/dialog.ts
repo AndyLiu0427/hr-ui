@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnDestroy, effect, input, output, computed, signal, viewChild, ElementRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, DestroyRef, OnDestroy, effect, inject, input, output, computed, signal, viewChild, ElementRef } from '@angular/core';
 import { ButtonComponent } from '../button/button';
 
 /** RWD-optimized size classes: mobile-first with progressive enhancement */
@@ -34,6 +34,8 @@ const SIZE_CLASSES: Record<string, string> = {
           #container
           role="dialog"
           aria-modal="true"
+          [attr.aria-label]="ariaLabel() || null"
+          [attr.aria-labelledby]="ariaLabel() ? null : titleId()"
           tabindex="-1"
           (keydown.tab)="holdFocus($event)"
           (keydown.shift.tab)="holdFocus($event)"
@@ -140,6 +142,10 @@ export class DialogComponent implements OnDestroy {
   persistent = input<boolean>(false);
   /** What the close control announces. Overridable, because a dialog may end in more than closing. */
   closeLabel = input<string>('Close dialog');
+  /** The dialog's name for screen readers, when it has no oct-dialog-header to take it from. */
+  ariaLabel = input<string>();
+  /** Set by oct-dialog-header, so a dialog with a visible title is named by it. */
+  readonly titleId = signal<string | null>(null);
 
   openChange = output<boolean>();
   dialogClose = output<void>();
@@ -270,13 +276,27 @@ export class DialogComponent implements OnDestroy {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex items-start justify-between relative pt-4 px-4 sm:pt-4 sm:px-6">
-      <div class="text-1 text-lg sm:text-lg font-semibold flex-1 pr-8">
+      <div [id]="titleId" class="text-1 text-lg sm:text-lg font-semibold flex-1 pr-8">
         <ng-content></ng-content>
       </div>
     </div>
   `
 })
-export class DialogHeaderComponent {}
+export class DialogHeaderComponent {
+  private static nextId = 0;
+  protected readonly titleId = `oct-dialog-title-${DialogHeaderComponent.nextId++}`;
+
+  constructor() {
+    // Through DI, so a header inside the caller's own component still names its dialog.
+    const dialog = inject(DialogComponent, { optional: true });
+    dialog?.titleId.set(this.titleId);
+    inject(DestroyRef).onDestroy(() => {
+      if (dialog?.titleId() === this.titleId) {
+        dialog.titleId.set(null);
+      }
+    });
+  }
+}
 
 export type DialogContentPadding = 'none' | 'md';
 

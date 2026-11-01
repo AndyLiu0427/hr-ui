@@ -194,3 +194,51 @@ describe('TableComponent tableMinWidth', () => {
     expect(table.tableMinWidth()).toBe(200);
   });
 });
+
+describe('TableComponent header sort', () => {
+  function render() {
+    TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot(), TableComponent],
+      providers: [provideNoopAnimations()]
+    });
+    const fixture = TestBed.createComponent(TableComponent);
+    fixture.componentRef.setInput('columns', [
+      { key: 'name', label: 'Name', sortable: true },
+      { key: 'dept', label: 'Department' }
+    ]);
+    fixture.componentRef.setInput('data', [
+      { name: 'Bea', dept: 'HR' },
+      { name: 'Al', dept: 'IT' },
+      { name: 'Cy', dept: 'Ops' }
+    ]);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    const [name, dept] = [...element.querySelectorAll('th')];
+    const names = () => [...element.querySelectorAll('tbody tr')].map(row => row.querySelector('td')!.textContent!.trim());
+    const clickName = () => {
+      name.querySelector('button')!.click();
+      fixture.detectChanges();
+    };
+    return { name, dept, names, clickName };
+  }
+
+  it('sorts when the header label is pressed, and says which way with aria-sort', () => {
+    const { name, names, clickName } = render();
+    expect(name.getAttribute('aria-sort')).toBe('none');
+
+    clickName();
+    expect(name.getAttribute('aria-sort')).toBe('ascending');
+    expect(names()).toEqual(['Al', 'Bea', 'Cy']);
+
+    clickName();
+    expect(name.getAttribute('aria-sort')).toBe('descending');
+    expect(names()).toEqual(['Cy', 'Bea', 'Al']);
+  });
+
+  it('gives a column that does not sort neither a button nor aria-sort', () => {
+    const { dept } = render();
+
+    expect(dept.querySelector('button')).toBeNull();
+    expect(dept.hasAttribute('aria-sort')).toBe(false);
+  });
+});

@@ -59,6 +59,8 @@ export class TabsComponent {
    * (e.g. an open edit dialog whose draft would be silently replaced by the sibling's values).
    */
   readonly interactive = input<boolean>(true);
+  /** Names the tab strip for screen readers. Pass a translated, specific name where the page has more than one. */
+  readonly ariaLabel = input<string>('Tabs');
 
   protected readonly indicatorPlaced = signal(false);
   private readonly focusedTabIndex = signal(0);

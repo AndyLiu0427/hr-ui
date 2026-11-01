@@ -201,7 +201,9 @@ export class InputComponent implements FormValueControl<string> {
       'min-w-0',
       padding,
       'text-1',
-      'text-sm',
+      // 16px on phones: iOS Safari zooms the page into any focused field under 16px.
+      'text-base',
+      'sm:text-sm',
       'bg-transparent',
       'rounded-[calc(theme(borderRadius.lg)-1px)]', // 8px outer border radius, 1px inner border radius = 7px
       'border-none',

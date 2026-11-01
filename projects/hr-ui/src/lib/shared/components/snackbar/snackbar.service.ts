@@ -80,7 +80,7 @@ export class SnackbarService {
       message,
       type: 'success',
       position: 'top-center',
-      duration: 3000,
+      duration: this.defaultDuration(options, 3000),
       dismissible: true,
       ...options
     });
@@ -123,7 +123,7 @@ export class SnackbarService {
       message,
       type: 'info',
       position: 'top-center',
-      duration: 5000,
+      duration: this.defaultDuration(options, 5000),
       dismissible: true,
       ...options
     });
@@ -171,6 +171,14 @@ export class SnackbarService {
     return this.snackbars().has(id);
   }
 
+  /**
+   * The duration when the caller set none. A snackbar with an action stays until the user acts on it
+   * or closes it: a timer would take the action away before a slow reader reaches it.
+   */
+  private defaultDuration(config: Partial<SnackbarConfig> | undefined, duration: number): number {
+    return config?.action ? 0 : duration;
+  }
+
   private generateId(): string {
     return `snackbar-${++this.idCounter}-${Date.now()}`;
   }
@@ -182,7 +190,7 @@ export class SnackbarService {
       type: config.type ?? 'neutral',
       position: config.position ?? 'bottom-center',
       size: config.size ?? 'md',
-      duration: config.duration ?? 5000,
+      duration: config.duration ?? this.defaultDuration(config, 5000),
       dismissible: config.dismissible ?? true,
       action: config.action ?? undefined,
       icon: config.icon ?? undefined,

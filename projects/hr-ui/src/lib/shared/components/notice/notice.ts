@@ -11,7 +11,7 @@ export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
   selector: 'oct-notice',
   template: `
     @if (!isDismissed()) {
-      <div [class]="combinedClasses()" [@noticeAnimation]="animationState()" role="alert" [attr.aria-live]="ariaLive()">
+      <div [class]="combinedClasses()" [@noticeAnimation]="animationState()" [attr.role]="variant() === 'error' ? 'alert' : 'status'">
         <!-- Icon (if provided or default based on variant) -->
         @if (iconName(); as name) {
           <oct-icon [name]="name" [class]="iconColorClass() + ' mt-[2px]'" />
@@ -162,11 +162,6 @@ export class NoticeComponent {
     return null;
   });
 
-
-  readonly ariaLive = computed(() => {
-    const variant = this.variant();
-    return variant === 'error' || variant === 'warning' ? 'assertive' : 'polite';
-  });
 
   onActionClick(): void {
     this.actionClick.emit();

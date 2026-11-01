@@ -8,8 +8,13 @@ import {
   viewChild,
   effect,
   inject,
-  ElementRef
+  ElementRef,
+  Injector,
+  afterNextRender,
+  afterRenderEffect,
+  signal
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 
 import { Overlay, OverlayRef, OverlayModule, ConnectedPosition } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
@@ -18,11 +23,14 @@ import { IconComponent } from '../icon/icon';
 import { MenuItem, MenuSection, MenuAlignment, MenuAlign } from './dropdown-menu.interface';
 import { AvatarComponent } from '../avatar/avatar';
 
+/** The trigger is projected content, so it is found as the first thing in the host that takes focus. */
+const TRIGGER = 'button, a[href], [tabindex]:not([tabindex="-1"])';
+
 @Component({
   selector: 'oct-dropdown-menu',
   templateUrl: './dropdown-menu.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [OverlayModule, CdkMenu, CdkMenuItem, IconComponent, AvatarComponent],
+  imports: [NgTemplateOutlet, OverlayModule, CdkMenu, CdkMenuItem, IconComponent, AvatarComponent],
   host: {
     '[class.dropdown-menu-open]': 'isOpen()'
   }
@@ -32,8 +40,11 @@ export class DropdownMenuComponent {
 
   private readonly overlay = inject(Overlay);
   private readonly viewContainerRef = inject(ViewContainerRef);
-  private readonly elementRef = inject(ElementRef);
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly injector = inject(Injector);
   private overlayRef?: OverlayRef;
+  /** Projected [dropdownContent] replaces the menu, so the panel is the caller's and not a menu. */
+  private readonly hasCustomContent = signal(false);
 
   // Inputs
   isOpen = input<boolean>(false);
@@ -50,6 +61,7 @@ export class DropdownMenuComponent {
   // Template references
   menuTemplate = viewChild<TemplateRef<unknown>>('menuTemplate');
   customContent = viewChild<TemplateRef<unknown>>('customContent');
+  private readonly menu = viewChild(CdkMenu);
 
   constructor() {
     // Effect to manage overlay when menu opens/closes
@@ -57,38 +69,56 @@ export class DropdownMenuComponent {
       const open = this.isOpen();
       const customTemplate = this.customContent();
       const defaultTemplate = this.menuTemplate();
+      const hasCustomContent = this.projectsCustomContent(customTemplate);
+      this.hasCustomContent.set(hasCustomContent);
 
       if (open) {
-        // Strategy: Create a temporary embedded view to check if custom content has actual nodes
-        // This is necessary because ng-content projection doesn't show up in querySelector
-        let hasCustomContent = false;
-
-        if (customTemplate) {
-          const tempView = this.viewContainerRef.createEmbeddedView(customTemplate);
-          const hasNodes = tempView.rootNodes.some(node => {
-            // Check if it's an element node (not just text/comment)
-            return node.nodeType === Node.ELEMENT_NODE && (node as Element).hasAttribute('dropdownContent');
-          });
-          hasCustomContent = hasNodes;
-          // Clean up the temporary view immediately
-          const viewIndex = this.viewContainerRef.indexOf(tempView);
-          if (viewIndex !== -1) {
-            this.viewContainerRef.remove(viewIndex);
-          }
-        }
-
         // Use custom content if it has actual projected content, otherwise use default menu template
         const template = hasCustomContent ? customTemplate : defaultTemplate;
         if (template) {
-          this.openOverlay(template);
+          this.openOverlay(template, hasCustomContent);
         }
       } else {
         this.closeOverlay();
       }
     });
+
+    // After render, because a projected oct-button draws its <button> in its own first pass.
+    afterRenderEffect(() => {
+      const trigger = this.trigger();
+      trigger?.setAttribute('aria-expanded', String(this.isOpen()));
+      if (!this.hasCustomContent()) {
+        trigger?.setAttribute('aria-haspopup', 'menu');
+      }
+    });
   }
 
-  private openOverlay(template: TemplateRef<unknown>): void {
+  /**
+   * Creates a temporary embedded view to check if custom content has actual nodes.
+   * This is necessary because ng-content projection doesn't show up in querySelector.
+   */
+  private projectsCustomContent(customTemplate: TemplateRef<unknown> | undefined): boolean {
+    if (!customTemplate) {
+      return false;
+    }
+    const tempView = this.viewContainerRef.createEmbeddedView(customTemplate);
+    const hasNodes = tempView.rootNodes.some(node => {
+      // Check if it's an element node (not just text/comment)
+      return node.nodeType === Node.ELEMENT_NODE && (node as Element).hasAttribute('dropdownContent');
+    });
+    // Clean up the temporary view immediately
+    const viewIndex = this.viewContainerRef.indexOf(tempView);
+    if (viewIndex !== -1) {
+      this.viewContainerRef.remove(viewIndex);
+    }
+    return hasNodes;
+  }
+
+  private trigger(): HTMLElement | null {
+    return this.elementRef.nativeElement.querySelector<HTMLElement>(TRIGGER);
+  }
+
+  private openOverlay(template: TemplateRef<unknown>, isCustomContentMode: boolean): void {
     if (this.overlayRef) {
       return; // Already open
     }
@@ -130,22 +160,6 @@ export class DropdownMenuComponent {
       .withViewportMargin(8)
       .withFlexibleDimensions(true);
 
-    // Detect custom content mode by checking for dropdownContent attribute
-    let isCustomContentMode = false;
-    const customTemplate = this.customContent();
-
-    if (customTemplate) {
-      const tempView = this.viewContainerRef.createEmbeddedView(customTemplate);
-      const hasNodes = tempView.rootNodes.some(node => {
-        return node.nodeType === Node.ELEMENT_NODE && (node as Element).hasAttribute('dropdownContent');
-      });
-      isCustomContentMode = hasNodes;
-      const viewIndex = this.viewContainerRef.indexOf(tempView);
-      if (viewIndex !== -1) {
-        this.viewContainerRef.remove(viewIndex);
-      }
-    }
-
     this.overlayRef = this.overlay.create({
       positionStrategy,
       scrollStrategy: isCustomContentMode ? this.overlay.scrollStrategies.noop() : this.overlay.scrollStrategies.reposition(),
@@ -165,6 +179,8 @@ export class DropdownMenuComponent {
       this.overlayRef.backdropClick().subscribe(() => {
         this.handleClose();
       });
+      // The overlay sits at the end of <body>, where Tab from the trigger never arrives.
+      afterNextRender(() => this.menu()?.focusFirstItem(), { injector: this.injector });
     }
 
     this.overlayRef.keydownEvents().subscribe(event => {
@@ -202,10 +218,23 @@ export class DropdownMenuComponent {
   }
 
   private closeOverlay(): void {
-    if (this.overlayRef) {
-      this.overlayRef.dispose();
-      this.overlayRef = undefined;
+    if (!this.overlayRef) {
+      return;
     }
+    // Focus inside the panel would be lost with it. A click on another control keeps its focus.
+    const active = document.activeElement;
+    const focusWasInPanel = !active || active === document.body || this.overlayRef.overlayElement.contains(active);
+    this.overlayRef.dispose();
+    this.overlayRef = undefined;
+    if (focusWasInPanel) {
+      this.trigger()?.focus();
+    }
+  }
+
+  /** Tab leaves the menu the way Escape does: closed, with focus back on the trigger. */
+  onMenuTab(event: Event): void {
+    event.preventDefault();
+    this.handleClose();
   }
 
   handleItemClick(item: MenuItem, sectionIndex?: number, itemIndex?: number): void {

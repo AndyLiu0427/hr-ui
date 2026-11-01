@@ -2,7 +2,7 @@
   <div
     class="relative flex flex-wrap sm:flex-nowrap items-center bg-hr-neutral-900 px-1 py-1 rounded-lg gap-0.5 sm:gap-0"
     role="tablist"
-    aria-label="Tabs navigation">
+    [attr.aria-label]="ariaLabel()">
 
     <!-- Sliding Background Indicator (works on both mobile and desktop) -->
     <div
@@ -39,7 +39,7 @@
           [attr.tabindex]="!interactive() ? -1 : (isActive(tab.id) ? 0 : -1)"
           (click)="onTabClick(tab.id, i, $event)"
           (keydown)="onKeyDown($event, i)">
-          <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+          <span class="whitespace-nowrap overflow-hidden text-ellipsis" [title]="tab.label">
             {{ tab.label }}
           </span>
         </a>
@@ -58,7 +58,7 @@
           [attr.tabindex]="isActive(tab.id) ? 0 : -1"
           (click)="onTabClick(tab.id, i, $event)"
           (keydown)="onKeyDown($event, i)">
-          <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+          <span class="whitespace-nowrap overflow-hidden text-ellipsis" [title]="tab.label">
             {{ tab.label }}
           </span>
         </button>

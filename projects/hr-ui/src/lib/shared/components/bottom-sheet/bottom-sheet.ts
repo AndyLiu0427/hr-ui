@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { Overlay, OverlayModule, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -29,7 +30,7 @@ const SWIPE_CLOSE_THRESHOLD_PX = 100;
   selector: 'oct-bottom-sheet',
   templateUrl: './bottom-sheet.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgTemplateOutlet, OverlayModule, ButtonComponent, TextComponent]
+  imports: [NgTemplateOutlet, OverlayModule, CdkTrapFocus, ButtonComponent, TextComponent]
 })
 export class BottomSheetComponent {
   private readonly overlay = inject(Overlay);

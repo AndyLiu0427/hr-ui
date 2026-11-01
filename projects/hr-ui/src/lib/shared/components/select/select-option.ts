@@ -28,10 +28,10 @@ import { SelectOption } from './select';
           @if (option().colorTag) {
             <oct-color-tag variant="inline" [color]="option().colorTag!" />
           }
-          <oct-text [color]="option().disabled ? 'disabled' : '1'" variant="sm" class="truncate min-w-0">{{ option().label }}</oct-text>
+          <oct-text [color]="option().disabled ? 'disabled' : '1'" variant="sm" class="truncate min-w-0" [title]="option().label">{{ option().label }}</oct-text>
         </div>
         @if (option().description) {
-          <oct-text [color]="option().disabled ? 'disabled' : '3'" variant="xs" class="truncate">{{ option().description }}</oct-text>
+          <oct-text [color]="option().disabled ? 'disabled' : '3'" variant="xs" class="truncate" [title]="option().description">{{ option().description }}</oct-text>
         }
       </div>
 

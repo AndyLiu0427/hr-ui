@@ -91,16 +91,22 @@ export class ChipComponent {
   ];
 
   /** Padding differs when the X is present: the pill hugs the button on the right. */
-  private static readonly SIZE: Record<ChipSize, { base: string[]; plain: string[]; removable: string[] }> = {
+  /**
+   * `remove` pads the X out to a 24px hit area; the negative margin gives that space back,
+   * so the chip keeps the size it had with the old 20px (sm) and 22px (md) button.
+   */
+  private static readonly SIZE: Record<ChipSize, { base: string[]; plain: string[]; removable: string[]; remove: string[] }> = {
     sm: {
       base: ['gap-1', 'py-1', 'text-xs', 'leading-4'],
       plain: ['px-2.5'],
-      removable: ['pl-3', 'pr-1']
+      removable: ['pl-3', 'pr-1'],
+      remove: ['p-1.5', '-m-0.5']
     },
     md: {
       base: ['gap-1.5', 'py-1.5', 'text-sm', 'leading-5'],
       plain: ['px-3'],
-      removable: ['pl-3.5', 'pr-1.5']
+      removable: ['pl-3.5', 'pr-1.5'],
+      remove: ['p-[5px]', '-m-px']
     }
   };
 
@@ -155,7 +161,6 @@ export class ChipComponent {
     'justify-center',
     'shrink-0',
     'rounded-full',
-    'p-1',
     'opacity-70',
     'transition',
     'cursor-pointer',
@@ -178,7 +183,7 @@ export class ChipComponent {
   });
 
   readonly removeClasses = computed(() =>
-    [...ChipComponent.REMOVE_BASE, ...ChipComponent.REMOVE_HOVER[this.variant()]].join(' ')
+    [...ChipComponent.REMOVE_BASE, ...ChipComponent.SIZE[this.size()].remove, ...ChipComponent.REMOVE_HOVER[this.variant()]].join(' ')
   );
 
   /** Chips often sit inside clickable rows — never let the X trigger the row. */

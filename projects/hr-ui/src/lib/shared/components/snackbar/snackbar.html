@@ -1,13 +1,17 @@
 @if (isVisible()) {
   <div
+    #box
     [class]="snackbarClasses()"
     [style]="snackbarStyle()"
     [@slideIn]="{ value: animationState(), params: { slideDirection: slideDirection() } }"
     (@slideIn.done)="onAnimationDone($event)"
     (click)="onSnackbarClick()"
+    (mouseenter)="setHovered(true)"
+    (mouseleave)="setHovered(false)"
+    (focusin)="setFocusWithin(true)"
+    (focusout)="onFocusOut($event)"
     title="Click to copy"
-    role="alert"
-    [attr.aria-live]="type() === 'error' ? 'assertive' : 'polite'"
+    [attr.role]="type() === 'error' ? 'alert' : 'status'"
     aria-atomic="true">
 
     <div class="flex items-center gap-3 flex-1 min-w-0">
