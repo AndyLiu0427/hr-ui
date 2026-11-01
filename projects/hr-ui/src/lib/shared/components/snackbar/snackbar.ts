@@ -98,7 +98,7 @@ export class SnackbarComponent implements OnInit, OnDestroy {
       'items-center',
       'justify-between',
       'rounded-xl',
-      'shadow-sm',
+      'shadow-hr-sm',
       'backdrop-blur-sm',
       'border',
       'transition-all',

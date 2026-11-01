@@ -44,7 +44,7 @@ export class CardComponent {
       'gap-6',
       'rounded-xl',
       'bg-secondary',
-      'shadow-sm',
+      'shadow-hr-sm',
       'transition-all',
       'duration-300',
       'h-full',

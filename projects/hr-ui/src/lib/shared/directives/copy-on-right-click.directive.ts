@@ -1,7 +1,7 @@
 import { Directive, inject, input, OnDestroy, Renderer2 } from '@angular/core';
 
 const TOOLTIP_BASE =
-  'fixed z-[10000] pointer-events-none px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap bg-hr-green-500 text-white shadow-lg transition-all duration-150 ease-out';
+  'fixed z-[10000] pointer-events-none px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap bg-hr-green-500 text-white shadow-hr-lg transition-all duration-150 ease-out';
 const TOOLTIP_ENTER = 'opacity-0 translate-y-1';
 const TOOLTIP_VISIBLE = 'opacity-100 translate-y-0';
 const TOOLTIP_EXIT = 'opacity-0 -translate-y-1';

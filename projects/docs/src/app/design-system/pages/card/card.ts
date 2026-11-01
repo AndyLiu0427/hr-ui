@@ -93,7 +93,7 @@ export class CardPageComponent {
       props: { variant: 'with-header' },
       code: `<oct-card>
   <oct-card-header>
-    <h3 class="text-1 text-xl font-semibold">Card Title</h3>
+    <h3 class="text-1 text-hr-xl font-semibold">Card Title</h3>
     <p class="text-3 text-sm">Card description text</p>
   </oct-card-header>
   <oct-card-content>
@@ -107,7 +107,7 @@ export class CardPageComponent {
       props: { variant: 'complete' },
       code: `<oct-card>
   <oct-card-header>
-    <h3 class="text-1 text-xl font-semibold">Card Title</h3>
+    <h3 class="text-1 text-hr-xl font-semibold">Card Title</h3>
     <p class="text-3 text-sm">Card description text</p>
   </oct-card-header>
   <oct-card-content>

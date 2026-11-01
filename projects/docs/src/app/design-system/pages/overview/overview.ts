@@ -30,10 +30,10 @@ export class OverviewPageComponent {
     { name: 'Small', class: 'text-sm', size: '0.875rem', lineHeight: '1.25rem' },
     { name: 'Base', class: 'text-base', size: '1rem', lineHeight: '1.5rem' },
     { name: 'Large', class: 'text-lg', size: '1.125rem', lineHeight: '1.75rem' },
-    { name: 'Extra Large', class: 'text-xl', size: '1.5rem', lineHeight: '2rem' },
-    { name: '2X Large', class: 'text-2xl', size: '1.875rem', lineHeight: '2.25rem' },
-    { name: '3X Large', class: 'text-3xl', size: '2.25rem', lineHeight: '2.5rem' },
-    { name: '4X Large', class: 'text-4xl', size: '3rem', lineHeight: '1.1' }
+    { name: 'Extra Large', class: 'text-hr-xl', size: '1.5rem', lineHeight: '2rem' },
+    { name: '2X Large', class: 'text-hr-2xl', size: '1.875rem', lineHeight: '2.25rem' },
+    { name: '3X Large', class: 'text-hr-3xl', size: '2.25rem', lineHeight: '2.5rem' },
+    { name: '4X Large', class: 'text-hr-4xl', size: '3rem', lineHeight: '1.1' }
   ]);
 
   // Minus the Overview page, which is not a component to browse.
@@ -119,14 +119,14 @@ export class OverviewPageComponent {
       'text-sm': 'sm',
       'text-base': 'md',
       'text-lg': 'lg',
-      'text-xl': 'xl',
-      'text-2xl': '2xl',
-      'text-3xl': '3xl',
-      'text-4xl': '4xl',
-      'text-5xl': '5xl',
-      'text-6xl': '6xl',
-      'text-7xl': '7xl',
-      'text-8xl': '8xl'
+      'text-hr-xl': 'xl',
+      'text-hr-2xl': '2xl',
+      'text-hr-3xl': '3xl',
+      'text-hr-4xl': '4xl',
+      'text-hr-5xl': '5xl',
+      'text-hr-6xl': '6xl',
+      'text-hr-7xl': '7xl',
+      'text-hr-8xl': '8xl'
     };
     return mapping[className] || 'md';
   }

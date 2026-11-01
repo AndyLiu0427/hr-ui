@@ -15,7 +15,7 @@
       <!-- Anchored to #tableContainer (visible box), not <table> (full column width),
            so the spinner stays centred on screen even when the table scrolls horizontally. -->
       <div
-        class="absolute inset-x-0 bottom-0 bg-secondary/90 backdrop-blur-sm flex items-center justify-center z-10 animate-fade-in py-3"
+        class="absolute inset-x-0 bottom-0 bg-secondary/90 backdrop-blur-sm flex items-center justify-center z-10 animate-hr-fade-in py-3"
         [class.top-10]="!dense()"
         [class.top-8]="dense()"
       >
@@ -491,7 +491,7 @@
               {{ action.label | translate }}
             </span>
             @if (action.loading) {
-              <oct-icon name="LoaderCircle" class="animate-spin text-3" />
+              <oct-icon name="LoaderCircle" class="animate-hr-spin text-3" />
             }
           </button>
         }

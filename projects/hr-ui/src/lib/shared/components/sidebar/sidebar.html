@@ -246,7 +246,7 @@
                         <ng-container [ngTemplateOutlet]="pinButton" [ngTemplateOutletContext]="{ $implicit: item, inPinnedBlock: false }" />
                       }
                       @if (showPreview() && !collapsed() && componentPreview() === item && item.preview) {
-                        <div class="pointer-events-none absolute top-0 left-full z-40 ml-2 w-64 rounded-lg border bg-popover p-4 shadow-lg">
+                        <div class="pointer-events-none absolute top-0 left-full z-40 ml-2 w-64 rounded-lg border bg-popover p-4 shadow-hr-lg">
                           <div class="space-y-2">
                             <oct-text color="popover-foreground" variant="sm" weight="medium">{{ item.preview.title }}</oct-text>
                             <oct-text color="muted-foreground" variant="xs" weight="regular">{{ item.preview.description }}</oct-text>
@@ -282,7 +282,7 @@
     <div
       role="tooltip"
       animate.leave="flyout-leave"
-      class="pointer-events-none fixed z-[60] mt-0.5 whitespace-nowrap rounded-lg bg-primary-100 px-3 py-1.5 text-sm text-white shadow-lg"
+      class="pointer-events-none fixed z-[60] mt-0.5 whitespace-nowrap rounded-lg bg-primary-100 px-3 py-1.5 text-sm text-white shadow-hr-lg"
       [style.top.px]="fly.top"
       [style.left.px]="fly.left">
       {{ flyoutLabel }}
@@ -291,7 +291,7 @@
     <div
       #flyoutPanel
       animate.leave="flyout-leave"
-      class="fixed z-[60] max-w-72 min-w-48 rounded-xl border border-primary bg-secondary p-1 shadow-lg antialiased"
+      class="fixed z-[60] max-w-72 min-w-48 rounded-xl border border-primary bg-secondary p-1 shadow-hr-lg antialiased"
       [style.top.px]="fly.top"
       [style.left.px]="fly.left"
       (mouseenter)="cancelFlyoutClose()"

@@ -76,7 +76,16 @@ To change one shade only, set its variable, for example `--color-primary-600`.
 
 hr-ui's other colour scales use an `hr-` prefix, for example `bg-hr-red-900`.
 They are reversed so dark mode can flip them: `hr-red-900` is light, `hr-red-100` is dark.
-Tailwind's own `red`, `green`, and so on are not changed.
+
+hr-ui does not change any Tailwind default. Its own text sizes, shadows, and animations
+also use the `hr-` prefix (`text-hr-xl`, `shadow-hr-md`, `animate-hr-spin`).
+The font is your app's choice. The docs site uses Inter:
+
+```css
+@theme {
+  --font-sans: Inter, sans-serif;
+}
+```
 
 ## Use
 

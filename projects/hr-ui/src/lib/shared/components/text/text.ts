@@ -85,14 +85,14 @@ export class TextComponent implements TextInputs {
       sm: 'text-sm', // 14px
       md: 'text-base', // 16px
       lg: 'text-lg', // 18px
-      xl: 'text-xl', // 24px
-      '2xl': 'text-2xl', // 30px
-      '3xl': 'text-3xl', // 36px
-      '4xl': 'text-4xl', // 48px
-      '5xl': 'text-5xl', // 60px
-      '6xl': 'text-6xl', // 72px
-      '7xl': 'text-7xl', // 96px
-      '8xl': 'text-8xl' // 128px
+      xl: 'text-hr-xl', // 24px
+      '2xl': 'text-hr-2xl', // 30px
+      '3xl': 'text-hr-3xl', // 36px
+      '4xl': 'text-hr-4xl', // 48px
+      '5xl': 'text-hr-5xl', // 60px
+      '6xl': 'text-hr-6xl', // 72px
+      '7xl': 'text-hr-7xl', // 96px
+      '8xl': 'text-hr-8xl' // 128px
     } as const;
 
     const weightClasses = {

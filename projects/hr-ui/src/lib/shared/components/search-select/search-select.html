@@ -60,7 +60,7 @@
         }
 
         @if (isLoading()) {
-          <oct-icon name="RefreshCw" class="!text-3 ml-1.5 animate-spin" />
+          <oct-icon name="RefreshCw" class="!text-3 ml-1.5 animate-hr-spin" />
         } @else {
           <oct-icon
             name="ChevronDown"
@@ -129,12 +129,12 @@
 
         @if (isSearching()) {
           <div class="flex items-center justify-center py-4">
-            <oct-icon name="RefreshCw" class="animate-spin text-2 mr-2" />
+            <oct-icon name="RefreshCw" class="animate-hr-spin text-2 mr-2" />
             <oct-text color="2" variant="sm">Searching...</oct-text>
           </div>
         } @else if (isPreloading()) {
           <div class="flex items-center justify-center py-4">
-            <oct-icon name="RefreshCw" class="animate-spin text-2 mr-2" />
+            <oct-icon name="RefreshCw" class="animate-hr-spin text-2 mr-2" />
             <oct-text color="2" variant="sm">Loading options...</oct-text>
           </div>
         } @else if (searchError()) {

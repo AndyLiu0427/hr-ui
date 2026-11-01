@@ -1,0 +1,42 @@
+{
+  "COMMON": {
+    "SELECT_ALL": "全選"
+  },
+  "FILTER_COMPONENT": {
+    "CLEAR": "清除",
+    "CLEAR_ALL_FILTERS": "清除所有篩選",
+    "DONE": "完成",
+    "NO_OPTIONS": "沒有可用的選項",
+    "NO_RESULTS": "找不到結果"
+  },
+  "GENERAL": {
+    "LOADING": "載入中...",
+    "NODATAFOUND": "找不到資料",
+    "NO_OPTIONS_FOUND": "找不到選項",
+    "RETRY": "重試",
+    "SELECTED_COUNT": "已選 {{count}} 項"
+  },
+  "MULTIUSED_POPUP": {
+    "CANCEL": "取消",
+    "CONFIRM": "確認",
+    "CONFIRMDELETEDATA": "刪除後無法復原。",
+    "CONTINUE": "繼續",
+    "DELETE": "刪除",
+    "ERROR": "錯誤",
+    "INFO": "資訊",
+    "OK": "好的",
+    "SUCCESS": "成功",
+    "WARNING": "警告"
+  },
+  "SIDEBAR": {
+    "PINNED_ANNOUNCE": "已將 {{page}} 釘選至頂端",
+    "PIN_PAGE": "釘選 {{page}}",
+    "PIN_TO_TOP": "釘選至頂端",
+    "UNPIN": "取消釘選",
+    "UNPINNED_ANNOUNCE": "已取消釘選 {{page}}"
+  },
+  "TABLE_COMPONENT": {
+    "ACTIONS": "操作",
+    "NO_ACTIONS": "沒有可用的操作"
+  }
+}

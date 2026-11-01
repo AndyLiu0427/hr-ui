@@ -1,2 +1,6 @@
 @import "tailwindcss";
 @import "../../hr-ui/styles/hr-ui.css";
+
+@theme {
+  --font-sans: Inter, sans-serif;
+}

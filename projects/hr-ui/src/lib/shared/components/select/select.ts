@@ -596,7 +596,7 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
       : 'group-focus:outline group-focus:outline-2 group-focus:outline-primary group-focus:-outline-offset-2';
   });
 
-  readonly menuClasses = 'bg-secondary border border-primary rounded-xl shadow-lg overflow-hidden w-full box-border';
+  readonly menuClasses = 'bg-secondary border border-primary rounded-xl shadow-hr-lg overflow-hidden w-full box-border';
 
   private markTouched(): void {
     this.isTouched.set(true);

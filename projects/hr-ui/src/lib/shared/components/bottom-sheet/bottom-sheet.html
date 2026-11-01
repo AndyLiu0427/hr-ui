@@ -1,6 +1,6 @@
 <ng-template #sheetTemplate>
   <div
-    class="bg-secondary rounded-t-2xl shadow-2xl overflow-hidden flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+    class="bg-secondary rounded-t-2xl shadow-hr-2xl overflow-hidden flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
     [style.transform]="
       isDragging() ? 'translateY(' + translateY() + 'px)' : isAnimating() ? 'translateY(0)' : 'translateY(100%)'
     "

@@ -163,7 +163,7 @@ export class SwitchComponent implements FormCheckboxControl {
       'size-[20px]',
       'rounded-full',
       'bg-white',
-      'shadow-sm',
+      'shadow-hr-sm',
       'transition-transform',
       'duration-300',
       'ease-in-out',

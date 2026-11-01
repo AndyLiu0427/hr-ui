@@ -155,7 +155,7 @@ export class IconPageComponent {
         this.config.update(c => ({
           ...c,
           name: 'Loader',
-          className: 'animate-spin'
+          className: 'animate-hr-spin'
         }));
         break;
     }

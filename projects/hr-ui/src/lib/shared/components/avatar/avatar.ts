@@ -32,14 +32,14 @@ const AVATAR_SIZE_CLASSES = {
   xl: {
     container: 'size-12',
     text: 'text-lg',
-    icon: 'text-xl',
+    icon: 'text-hr-xl',
     status: 'size-3.5',
     statusOffset: '-top-1 -right-1'
   },
   '2xl': {
     container: 'size-16',
-    text: 'text-xl',
-    icon: 'text-2xl',
+    text: 'text-hr-xl',
+    icon: 'text-hr-2xl',
     status: 'size-4',
     statusOffset: '-top-1 -right-1'
   }

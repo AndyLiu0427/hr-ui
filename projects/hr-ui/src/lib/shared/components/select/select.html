@@ -90,7 +90,7 @@
           />
         }
         @if (loading()) {
-          <oct-icon name="RefreshCw" class="animate-spin text-2 shrink-0" />
+          <oct-icon name="RefreshCw" class="animate-hr-spin text-2 shrink-0" />
         }
         <oct-icon
           name="ChevronDown"
@@ -120,7 +120,7 @@
 
     @if (loading()) {
       <div class="p-1 flex items-center justify-center py-4">
-        <oct-icon name="RefreshCw" class="animate-spin text-2" />
+        <oct-icon name="RefreshCw" class="animate-hr-spin text-2" />
       </div>
     } @else if (filteredOptions().length === 0) {
       <div class="p-1 px-2 py-3 text-center text-3 text-sm">

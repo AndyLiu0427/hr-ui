@@ -6,54 +6,44 @@
     Theme Configuration
    ============================================ */
 @theme {
-  /* Font Configuration */
-  --font-sans: Inter, sans-serif;
 
   /* ----------------------------------------
       Typography System
      ---------------------------------------- */
 
   /* Font Sizes */
-  --text-xs:   0.75rem;
-  --text-sm:   0.875rem;
-  --text-base: 1rem;
-  --text-lg:   1.125rem;
-  --text-xl:   1.5rem;
-  --text-2xl:  1.875rem;
-  --text-3xl:  2.25rem;
-  --text-4xl:  3rem;
-  --text-5xl:  3.75rem;
-  --text-6xl:  4.5rem;
-  --text-7xl:  6rem;
-  --text-8xl:  8rem;
+  --text-hr-xl:   1.5rem;
+  --text-hr-2xl:  1.875rem;
+  --text-hr-3xl:  2.25rem;
+  --text-hr-4xl:  3rem;
+  --text-hr-5xl:  3.75rem;
+  --text-hr-6xl:  4.5rem;
+  --text-hr-7xl:  6rem;
+  --text-hr-8xl:  8rem;
 
   /* Line Heights */
-  --text-xs--line-height:   1rem;
-  --text-sm--line-height:   1.25rem;
-  --text-base--line-height: 1.5rem;
-  --text-lg--line-height:   1.75rem;
-  --text-xl--line-height:   2rem;
-  --text-2xl--line-height:  2.25rem;
-  --text-3xl--line-height:  2.5rem;
-  --text-4xl--line-height:  1.1;
-  --text-5xl--line-height:  1.1;
-  --text-6xl--line-height:  1.1;
-  --text-7xl--line-height:  1.1;
-  --text-8xl--line-height:  1.1;
+  --text-hr-xl--line-height:   2rem;
+  --text-hr-2xl--line-height:  2.25rem;
+  --text-hr-3xl--line-height:  2.5rem;
+  --text-hr-4xl--line-height:  1.1;
+  --text-hr-5xl--line-height:  1.1;
+  --text-hr-6xl--line-height:  1.1;
+  --text-hr-7xl--line-height:  1.1;
+  --text-hr-8xl--line-height:  1.1;
 
   /* ----------------------------------------
       Shadow System
      ---------------------------------------- */
-  --shadow-xs:    0 0 0 1px #0000000d;
-  --shadow-sm:    0 1px 2px 0 #0000000d;
-  --shadow-md:    0 1px 3px 0 #0000001a, 0 1px 2px 0 #0000000f;
-  --shadow-lg:    0 4px 6px -1px #0000001a, 0 2px 4px -1px #0000000f;
-  --shadow-xl:    0 10px 15px -3px #0000001a, 0 4px 6px -2px #0000000d;
-  --shadow-2xl:   0 20px 25px -5px #0000001a, 0 10px 10px -5px #0000000a;
-  --shadow-3xl:   0 25px 50px -12px #00000040;
+  --shadow-hr-xs:    0 0 0 1px #0000000d;
+  --shadow-hr-sm:    0 1px 2px 0 #0000000d;
+  --shadow-hr-md:    0 1px 3px 0 #0000001a, 0 1px 2px 0 #0000000f;
+  --shadow-hr-lg:    0 4px 6px -1px #0000001a, 0 2px 4px -1px #0000000f;
+  --shadow-hr-xl:    0 10px 15px -3px #0000001a, 0 4px 6px -2px #0000000d;
+  --shadow-hr-2xl:   0 20px 25px -5px #0000001a, 0 10px 10px -5px #0000000a;
+  --shadow-hr-3xl:   0 25px 50px -12px #00000040;
   --inset-shadow: 0 2px 4px 0 #0000000f inset;
   /* Casts upward, for a sticky action bar pinned to the bottom of a scrolling page. */
-  --shadow-bar-top: 0 -2px 8px -2px #0000001f;
+  --shadow-hr-bar-top: 0 -2px 8px -2px #0000001f;
 
   /* ----------------------------------------
      Brand Colors - Light Theme
@@ -970,11 +960,11 @@
 
 /* Override Tailwind's default animate-spin to be slower (2 seconds per rotation) */
 @theme {
-  --animate-spin: spin 2s linear infinite;
-  --animate-fade-in: fadeIn 0.5s ease-out forwards;
-  --animate-slide-up: slideUp 0.6s ease-out forwards;
+  --animate-hr-spin: hr-spin 2s linear infinite;
+  --animate-hr-fade-in: hr-fade-in 0.5s ease-out forwards;
+  --animate-hr-slide-up: hr-slide-up 0.6s ease-out forwards;
 
-  @keyframes spin {
+  @keyframes hr-spin {
     from {
       transform: rotate(0deg);
     }
@@ -983,7 +973,7 @@
     }
   }
 
-  @keyframes fadeIn {
+  @keyframes hr-fade-in {
     from {
       opacity: 0;
     }
@@ -992,7 +982,7 @@
     }
   }
 
-  @keyframes slideUp {
+  @keyframes hr-slide-up {
     from {
       opacity: 0;
       transform: translateY(20px);

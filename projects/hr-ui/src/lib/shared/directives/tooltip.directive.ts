@@ -34,7 +34,7 @@ const WRAPPER_BASE =
 // Rich-content panel surface — matches the card surface (bg-secondary +
 // border-primary); same scale-pop enter.
 const RICH_WRAPPER_BASE =
-  'fixed z-[10000] pointer-events-none max-w-xs rounded-lg border border-primary bg-secondary p-3 shadow-lg transition-[opacity,scale] duration-200 ease-[cubic-bezier(0.2,0,0,1)]';
+  'fixed z-[10000] pointer-events-none max-w-xs rounded-lg border border-primary bg-secondary p-3 shadow-hr-lg transition-[opacity,scale] duration-200 ease-[cubic-bezier(0.2,0,0,1)]';
 
 // transform-origin tracks placement so the panel pops out of the trigger edge.
 const ORIGIN_CLASSES: Record<TooltipPosition, string> = {
