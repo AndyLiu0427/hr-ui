@@ -45,7 +45,7 @@ interface ApiEntry {
       }
 
       @if (entry.inputs.length) {
-        <div class="mt-4 overflow-x-auto rounded-xl border border-docs-border">
+        <div class="oct-focus-ring mt-4 overflow-x-auto rounded-xl border border-docs-border" tabindex="0" role="region" [attr.aria-label]="entry.name + ' inputs'">
           <table class="w-full min-w-[36rem] border-collapse text-left text-sm">
             <caption class="sr-only">{{ entry.name }} inputs</caption>
             <thead class="bg-docs-subtle text-docs-muted">
@@ -79,7 +79,7 @@ interface ApiEntry {
       }
 
       @if (entry.outputs.length) {
-        <div class="mt-4 overflow-x-auto rounded-xl border border-docs-border">
+        <div class="oct-focus-ring mt-4 overflow-x-auto rounded-xl border border-docs-border" tabindex="0" role="region" [attr.aria-label]="entry.name + ' outputs'">
           <table class="w-full min-w-[36rem] border-collapse text-left text-sm">
             <caption class="sr-only">{{ entry.name }} outputs</caption>
             <thead class="bg-docs-subtle text-docs-muted">
@@ -106,7 +106,7 @@ interface ApiEntry {
       }
 
       @if (entry.methods.length) {
-        <div class="mt-4 overflow-x-auto rounded-xl border border-docs-border">
+        <div class="oct-focus-ring mt-4 overflow-x-auto rounded-xl border border-docs-border" tabindex="0" role="region" [attr.aria-label]="entry.name + ' methods'">
           <table class="w-full min-w-[36rem] border-collapse text-left text-sm">
             <caption class="sr-only">{{ entry.name }} methods</caption>
             <thead class="bg-docs-subtle text-docs-muted">

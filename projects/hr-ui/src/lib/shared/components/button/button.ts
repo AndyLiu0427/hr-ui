@@ -141,6 +141,7 @@ export class ButtonComponent implements OnDestroy, AfterViewInit {
       ? [
           'inline-flex',
           'items-center',
+          'min-h-6',
           ...(iconOnly ? [] : ['gap-1']),
           'text-sm',
           'font-medium',

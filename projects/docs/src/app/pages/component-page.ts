@@ -42,7 +42,7 @@ import { NotFoundPage } from './not-found';
 
         @if (d.keyboard?.length) {
           <h2 docsHeading>Keyboard</h2>
-          <div class="mt-4 overflow-x-auto rounded-xl border border-docs-border">
+          <div class="oct-focus-ring mt-4 overflow-x-auto rounded-xl border border-docs-border" tabindex="0" role="region" aria-label="Keyboard">
             <table class="w-full border-collapse text-left text-sm">
               <thead class="bg-docs-subtle text-docs-muted">
                 <tr>

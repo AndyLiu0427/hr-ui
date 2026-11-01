@@ -373,7 +373,7 @@
   --2: #525252; /* Secondary text color */
   --3: #6e6e6e; /* Tertiary text color: 4.6:1 on the canvas, 5.1:1 on white */
   --success: var(--color-success-300);
-  --error: var(--color-error-400);
+  --error: var(--color-error-300);
   --warning: var(--color-warning-300);
   --info: var(--color-info-300);
   --disabled: var(--color-hr-neutral-600);

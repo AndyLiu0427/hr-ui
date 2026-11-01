@@ -10,7 +10,11 @@ let highlighter: Promise<HighlighterCore> | undefined;
 function load(): Promise<HighlighterCore> {
   return Promise.all([import('shiki/core'), import('shiki/engine/javascript')]).then(([core, engine]) =>
     core.createHighlighterCore({
-      themes: [import('@shikijs/themes/github-light-default'), import('@shikijs/themes/github-dark-default')],
+      themes: [
+        // GitHub's light comment gray (#6e7781) is 4.35:1 on the code background. #656d76 is 5:1.
+        import('@shikijs/themes/github-light-default').then(m => JSON.parse(JSON.stringify(m.default).replaceAll('#6e7781', '#656d76'))),
+        import('@shikijs/themes/github-dark-default')
+      ],
       langs: [
         import('@shikijs/langs/angular-ts'),
         import('@shikijs/langs/angular-html'),

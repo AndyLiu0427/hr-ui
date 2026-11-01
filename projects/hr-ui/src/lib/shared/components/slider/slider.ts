@@ -58,7 +58,7 @@ export interface SliderInputs {
 
       <div
         #sliderContainer
-        class="relative h-5 w-full cursor-pointer"
+        class="relative h-6 w-full cursor-pointer"
         role="slider"
         [attr.aria-valuenow]="displayLeftPercent()"
         [attr.aria-valuemin]="0"
@@ -72,7 +72,7 @@ export interface SliderInputs {
         <!-- The bars and knob glide for a click or arrow key, and follow the pointer exactly while dragged. -->
         <!-- Left progress bar -->
         <div
-          class="absolute top-1.5 left-0 h-2 rounded-full transition-[width] duration-150 ease-[var(--ease-smooth-out)] motion-reduce:transition-none"
+          class="absolute top-2 left-0 h-2 rounded-full transition-[width] duration-150 ease-[var(--ease-smooth-out)] motion-reduce:transition-none"
           [class.bg-primary-solid]="leftColor() === 'primary'"
           [class.bg-hr-neutral-800]="leftColor() === 'neutral'"
           [style.width.%]="displayLeftPercent()"
@@ -81,7 +81,7 @@ export interface SliderInputs {
 
         <!-- Right progress bar -->
         <div
-          class="absolute top-1.5 right-0 h-2 rounded-full transition-[width] duration-150 ease-[var(--ease-smooth-out)] motion-reduce:transition-none"
+          class="absolute top-2 right-0 h-2 rounded-full transition-[width] duration-150 ease-[var(--ease-smooth-out)] motion-reduce:transition-none"
           [class.bg-primary-solid]="rightColor() === 'primary'"
           [class.bg-hr-neutral-800]="rightColor() === 'neutral'"
           [style.width.%]="displayRightPercent()"
@@ -91,7 +91,7 @@ export interface SliderInputs {
         <!-- Draggable knob -->
         <div
           #knob
-          class="absolute top-0 h-5 w-5 rounded-full transition-[left] duration-150 ease-[var(--ease-smooth-out)] motion-reduce:transition-none"
+          class="absolute top-0.5 h-5 w-5 rounded-full transition-[left] duration-150 ease-[var(--ease-smooth-out)] motion-reduce:transition-none"
           [style.transition]="isDragging() ? 'none' : null"
           [class.cursor-grab]="!isDragging()"
           [class.cursor-grabbing]="isDragging()"

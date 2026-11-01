@@ -39,7 +39,8 @@ let nextId = 0;
       [id]="id + '-preview-panel'"
       [attr.aria-labelledby]="id + '-preview'"
       [hidden]="view() !== 'preview'"
-      class="mt-4 overflow-x-auto rounded-xl border border-docs-border bg-docs-bg"
+      tabindex="0"
+      class="oct-focus-ring mt-4 overflow-x-auto rounded-xl border border-docs-border bg-docs-bg"
     >
       <div
         class="flex w-full p-6 sm:p-10"
