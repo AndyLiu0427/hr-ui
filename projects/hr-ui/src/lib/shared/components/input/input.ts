@@ -35,7 +35,7 @@ const BARE_PADDING_BY_SIZE = {
 export type InputSize = 'sm' | 'md' | 'lg';
 export type InputState = 'default' | 'error' | 'disabled';
 
-/** Text field. Bind it with `[formField]` or `[(value)]`. */
+/** A single-line text field with a label, helper text and an error message. Bind it with [formField] or [(value)]. */
 @Component({
   selector: 'oct-input',
   templateUrl: './input.html',
@@ -50,27 +50,47 @@ export type InputState = 'default' | 'error' | 'disabled';
 export class InputComponent implements FormValueControl<string> {
   readonly inputElement = viewChild.required<ElementRef<HTMLInputElement>>('inputElement');
 
+  /** Id of the native input. One is generated when you do not set it. */
   readonly id = input<string>();
+  /** Name of the native input. It falls back to the id. */
   readonly name = input<string>('');
+  /** Text of the label above the field. */
   readonly label = input<string>();
+  /** Hint that shows while the field is empty. */
   readonly placeholder = input<string>('');
+  /** Text under the field. An error message replaces it. */
   readonly helperText = input<string>();
+  /** Type of the native input. */
   readonly type = input<InputType>('text');
+  /** Padding of the icon and text slots, and the height of a bare input. */
   readonly size = input<InputSize>('md');
+  /** Shows the error or disabled state without a form field. */
   readonly state = input<InputState>('default');
+  /** Lets the user select and copy the value, but not change it. */
   readonly readonly = input<boolean>(false);
+  /** Accessible name for a field without a visible label. */
   readonly ariaLabel = input<string>();
+  /** Id for the text under the field. The input points at it, so screen readers read that text. */
   readonly ariaDescribedBy = input<string>();
+  /** Removes the row under the field that holds the helper and error text. */
   readonly hideHelper = input<boolean>(false);
+  /** Error message under the field. Setting it shows the error state. */
   readonly errorText = input<string>();
+  /** Shows a spinner and makes the field read-only. */
   readonly loading = input<boolean>(false);
+  /** Name of an icon at the start of the field. */
   readonly leftIcon = input<string>();
+  /** Name of an icon at the end of the field. Check shows in green and CircleAlert in red. */
   readonly rightIcon = input<string>();
+  /** Short text at the start of the field, such as a currency. */
   readonly leftText = input<string>();
+  /** Short text at the end of the field, such as a unit. */
   readonly rightText = input<string>();
+  /** With type password, adds a button that shows and hides the password. */
   readonly showPasswordToggle = input<boolean>(false);
   /** Shows an X that empties the field. */
   readonly clearable = input<boolean>(false);
+  /** Shows typed text in capitals. The value keeps the case that the user typed. */
   readonly uppercase = input<boolean>(false);
   /** Number step. Unset means 1, which rejects decimals: pass '0.01' for money, 'any' for no check. */
   readonly step = input<string>();
@@ -81,16 +101,22 @@ export class InputComponent implements FormValueControl<string> {
   /** Drops the shell, label and helper row so the control sits inside a shared shell. */
   readonly bare = input<boolean>(false);
 
+  /** Text in the field. Spaces at the start and end are removed. */
   readonly value: ModelSignal<string> = model<string>('');
 
+  /** Validation errors from the form field. The first message shows after the field is touched. */
   readonly errors = input<readonly WithOptionalFieldTree<ValidationError>[]>([]);
 
+  /** Disables the field. */
   readonly disabled = input<boolean>(false);
 
+  /** Adds an asterisk to the label and sets aria-required. */
   readonly required = input<boolean>(false);
 
+  /** Invalid state from the form field. The error state shows after the field is touched. */
   readonly invalid = input<boolean>(false);
 
+  /** Touched state from the form field. */
   readonly touched = input<boolean>(false);
 
   /** Tells the bound form field that the user has left this control. */
@@ -99,10 +125,14 @@ export class InputComponent implements FormValueControl<string> {
   /** Local copy of `touched`, so the control still tracks its own blur when no form field is bound. */
   readonly isTouched = linkedSignal(this.touched);
 
+  /** Turns the error state on or off. It overrides errorText and the form field. */
   readonly error = input<boolean>();
 
+  /** Emits the value when the user types in or clears the field. */
   readonly inputChange = output<string>();
+  /** Emits when the field gets focus. */
   readonly inputFocus = output<FocusEvent>();
+  /** Emits when the field loses focus. */
   readonly inputBlur = output<FocusEvent>();
 
   readonly passwordVisible = signal<boolean>(false);
