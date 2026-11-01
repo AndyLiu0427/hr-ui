@@ -9,7 +9,7 @@ const SKILLS = ['Payroll', 'CPF submissions', 'Xero', 'Employment Act'];
   template: `
     <div class="flex flex-wrap items-center gap-2">
       @for (skill of skills(); track skill) {
-        <oct-chip [label]="skill" removable [removeAriaLabel]="'Remove ' + skill" (remove)="remove(skill)" />
+        <oct-chip [label]="skill" removable (remove)="remove(skill)" />
       } @empty {
         <span class="text-sm text-3">No skills left.</span>
         <oct-button variant="link" size="sm" (buttonClick)="skills.set(all)">Reset</oct-button>

@@ -72,16 +72,9 @@ export class TextareaComponent implements FormValueControl<string> {
   /** Removes the row under the field that holds the helper and error text. */
   readonly hideHelper = input<boolean>(false);
 
-  // Legacy Inputs
-  /**
-   * Turns the error state on or off. Deprecated: use validation with [formField].
-   * @deprecated Use Signal Forms validation with [formField] directive
-   */
+  /** Turns the error state on or off. It overrides errorText and the form field. */
   readonly error = input<boolean>();
-  /**
-   * Error message under the field. Deprecated: use validation with [formField].
-   * @deprecated Use Signal Forms validation with [formField] directive
-   */
+  /** Error message under the field. Setting it shows the error state. */
   readonly errorText = input<string>();
 
   // Outputs
@@ -106,18 +99,15 @@ export class TextareaComponent implements FormValueControl<string> {
   readonly textareaId = computed(() => this.id() || this.uniqueId);
 
   readonly hasError = computed(() => {
-    // Check legacy error prop first (explicit override)
     const manualError = this.error();
     if (manualError !== undefined) return manualError;
-    // Check Signal Forms inputs (set by Field directive or manually)
+    if (this.errorText()) return true;
     return this.invalid() && this.isTouched();
   });
 
   readonly errorMessage = computed(() => {
-    // Check legacy errorText prop first (explicit override)
     const manualErrorText = this.errorText();
     if (manualErrorText) return manualErrorText;
-    // Check Signal Forms errors (set by Field directive or manually)
     const errs = this.errors();
     return errs.length > 0 ? errs[0].message : '';
   });

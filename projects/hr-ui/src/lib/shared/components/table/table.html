@@ -397,7 +397,7 @@
             </div>
           }
           <oct-text color="3" variant="sm" fontWeight="medium" [class.mb-2]="!hideEmptyIcon()"
-            >{{ emptyMessage() }}</oct-text
+            >{{ emptyMessage() ?? ('GENERAL.NODATAFOUND' | translate) }}</oct-text
           >
         </div>
       </div>

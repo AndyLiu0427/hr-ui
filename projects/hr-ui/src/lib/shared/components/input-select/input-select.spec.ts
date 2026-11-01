@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { TranslateService } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { disabled, form, required } from '@angular/forms/signals';
 import { InputSelectComponent } from './input-select';
 
@@ -39,7 +39,7 @@ describe('InputSelectComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HostComponent],
-      providers: [{ provide: TranslateService, useValue: { instant: (k: string) => k } }]
+      providers: [provideTranslateService()]
     }).compileComponents();
     fixture = TestBed.createComponent(HostComponent);
     host = fixture.componentInstance;

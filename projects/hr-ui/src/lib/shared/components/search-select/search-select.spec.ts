@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Component, ComponentRef, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { form, FormField } from '@angular/forms/signals';
-import { TranslateService } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { SearchSelectComponent, SearchSelectOption, SearchSelectValue } from './search-select';
 
 /**
@@ -24,7 +24,7 @@ describe('SearchSelectComponent — keyboard navigation', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SearchSelectComponent],
-      providers: [{ provide: TranslateService, useValue: { instant: (k: string) => k } }]
+      providers: [provideTranslateService()]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(SearchSelectComponent);
@@ -192,7 +192,7 @@ describe('SearchSelectComponent — large list is fully searchable (no 1000 cap)
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SearchSelectComponent],
-      providers: [{ provide: TranslateService, useValue: { instant: (k: string) => k } }]
+      providers: [provideTranslateService()]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(SearchSelectComponent);
@@ -246,7 +246,7 @@ describe('SearchSelectComponent — preloadKey re-runs preload', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SearchSelectComponent],
-      providers: [{ provide: TranslateService, useValue: { instant: (k: string) => k } }]
+      providers: [provideTranslateService()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchSelectComponent);
@@ -308,7 +308,7 @@ describe('SearchSelectComponent — external value change resets the selection',
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SearchSelectComponent],
-      providers: [{ provide: TranslateService, useValue: { instant: (k: string) => k } }]
+      providers: [provideTranslateService()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchSelectComponent);
@@ -373,7 +373,7 @@ describe('SearchSelectComponent - label search matches any part of the label', (
   it('finds every 2024 month when the user types "24"', async () => {
     await TestBed.configureTestingModule({
       imports: [SearchSelectComponent],
-      providers: [{ provide: TranslateService, useValue: { instant: (k: string) => k } }]
+      providers: [provideTranslateService()]
     }).compileComponents();
     const fixture = TestBed.createComponent(SearchSelectComponent);
     const months = ['2026-01', '2025-12', '2024-12', '2024-11', '2024-01'];
@@ -405,7 +405,7 @@ describe('SearchSelectComponent — search timing, focus and active option', () 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SearchSelectComponent],
-      providers: [{ provide: TranslateService, useValue: { instant: (k: string) => k } }]
+      providers: [provideTranslateService()]
     }).compileComponents();
     fixture = TestBed.createComponent(SearchSelectComponent);
     component = fixture.componentInstance;

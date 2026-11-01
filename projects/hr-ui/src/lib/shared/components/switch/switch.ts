@@ -74,10 +74,9 @@ export class SwitchComponent implements FormCheckboxControl {
   /** Emits when the switch loses focus. */
   readonly switchBlur = output<FocusEvent>();
 
-  // Legacy Inputs (prefer [formField] directive for Signal Forms)
-  /** Turns the error state on or off. It overrides the form field. */
+  /** Turns the error state on or off. It overrides errorText and the form field. */
   readonly error = input<boolean>();
-  /** Error message under the switch. It shows only in the error state. */
+  /** Error message under the switch. Setting it shows the error state. */
   readonly errorText = input<string>();
 
   // Internal
@@ -94,6 +93,7 @@ export class SwitchComponent implements FormCheckboxControl {
   readonly hasError = computed(() => {
     const manualError = this.error();
     if (manualError !== undefined) return manualError;
+    if (this.errorText()) return true;
     return this.invalid() && this.isTouched();
   });
 

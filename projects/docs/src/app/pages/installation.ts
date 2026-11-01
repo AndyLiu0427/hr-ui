@@ -29,7 +29,7 @@ import { DocsHeadingDirective } from '../docs/toc';
 
       <h2 docsHeading>3. Provide animations and translations</h2>
       <p>
-        Components show a few built-in strings, such as "Clear" in a filter. They come from
+        Components show a few built-in strings, such as "Clear" in a filter or "Select…" in an empty select. They come from
         <code>&#64;ngx-translate/core</code>. hr-ui ships English and Traditional Chinese files that you
         can use as they are or merge into your own.
       </p>

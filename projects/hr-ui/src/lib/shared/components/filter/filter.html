@@ -45,7 +45,7 @@
           <input
             type="search"
             class="flex-1 min-w-0 p-3 text-1 text-base bg-transparent border-none outline-none placeholder:text-3"
-            [placeholder]="searchPlaceholder()"
+            [placeholder]="searchPlaceholder() ?? ('COMMON.SEARCH' | translate)"
             [value]="searchQuery()"
             (input)="onSearchInput($event)"
           />
@@ -76,7 +76,7 @@
       @if (filteredOptions().length === 0) {
         <div class="flex items-center justify-center py-12 px-4">
           <oct-text [color]="'3'" [variant]="'sm'">
-            {{ searchable() && searchQuery() ? ('FILTER_COMPONENT.NO_RESULTS' | translate) : ('FILTER_COMPONENT.NO_OPTIONS' | translate) }}
+            {{ searchable() && searchQuery() ? ('FILTER_COMPONENT.NO_RESULTS' | translate: { query: searchQuery() }) : ('FILTER_COMPONENT.NO_OPTIONS' | translate) }}
           </oct-text>
         </div>
       }
@@ -138,7 +138,7 @@
               #searchInput
               type="search"
               class="flex-1 min-w-0 p-2 text-1 text-base sm:text-sm bg-transparent border-none outline-none placeholder:text-3"
-              [placeholder]="searchPlaceholder()"
+              [placeholder]="searchPlaceholder() ?? ('COMMON.SEARCH' | translate)"
               [value]="searchQuery()"
               (input)="onSearchInput($event)"
             />
@@ -181,7 +181,7 @@
       @if (filteredOptions().length === 0) {
         <div class="flex items-center justify-center py-8 px-4">
           <oct-text [color]="'3'" [variant]="'sm'">
-            {{ searchable() && searchQuery() ? ('FILTER_COMPONENT.NO_RESULTS' | translate) : ('FILTER_COMPONENT.NO_OPTIONS' | translate) }}
+            {{ searchable() && searchQuery() ? ('FILTER_COMPONENT.NO_RESULTS' | translate: { query: searchQuery() }) : ('FILTER_COMPONENT.NO_OPTIONS' | translate) }}
           </oct-text>
         </div>
       }

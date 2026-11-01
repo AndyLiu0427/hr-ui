@@ -19,7 +19,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormValueControl, ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { IconComponent } from '../icon/icon';
 import { CdkOverlayOrigin } from '@angular/cdk/overlay';
@@ -55,7 +55,7 @@ export interface SelectOption {
   selector: 'oct-select',
   templateUrl: './select.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslateModule, 
     NgTemplateOutlet,
     IconComponent,
     TextComponent,
@@ -78,7 +78,6 @@ export interface SelectOption {
 })
 export class SelectComponent<T extends SelectChangeValue = SelectChangeValue> implements FormValueControl<T>, OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly translateService = inject(TranslateService);
   private readonly viewportRuler = inject(ViewportRuler);
   private readonly overlayService = inject(BaseOverlayService);
   private readonly destroyRef = inject(DestroyRef);
@@ -95,8 +94,8 @@ export class SelectComponent<T extends SelectChangeValue = SelectChangeValue> im
 
   /** Options in the list. */
   readonly options = input<SelectOption[]>([]);
-  /** Text on the trigger while nothing is selected. */
-  readonly placeholder = input<string>('Select an option');
+  /** Text on the trigger while nothing is selected. The default is "Select…" from the i18n files. */
+  readonly placeholder = input<string>();
   /** Text of the label above the select. */
   readonly label = input<string>();
   /** Text under the select. An error message replaces it. */
@@ -124,7 +123,7 @@ export class SelectComponent<T extends SelectChangeValue = SelectChangeValue> im
   readonly bare = input<boolean>(false);
   /** Floor for the dropdown width. A bare trigger is narrow; its option labels are not. */
   readonly overlayMinWidth = input<number>(0);
-  /** Accessible name when a parent owns the visible label, so this is not announced as "Select an option". */
+  /** Accessible name when a parent owns the visible label, so this is not announced as the placeholder. */
   readonly ariaLabel = input<string>();
   /** Removes the row under the select that holds the helper and error text. */
   readonly hideHelper = input<boolean>(false);
@@ -159,10 +158,7 @@ export class SelectComponent<T extends SelectChangeValue = SelectChangeValue> im
   /** Async validation state from the form field. The select does not show it. */
   readonly pending = input<boolean>(false);
 
-  /**
-   * Turns the error state on or off. Deprecated: use errorText or validation with [formField].
-   * @deprecated Use errors array or errorText instead
-   */
+  /** Turns the error state on or off. It overrides errorText and the form field. */
   readonly error = input<boolean>();
 
   /** Emits the new value when the user changes the selection. */
@@ -254,7 +250,7 @@ export class SelectComponent<T extends SelectChangeValue = SelectChangeValue> im
   readonly isDisabled = computed(() => this.loading() || this.disabled());
 
   /** Names the trigger and the list it opens. */
-  readonly accessibleName = computed(() => this.ariaLabel() || this.label() || this.placeholder() || 'Select an option');
+  readonly accessibleName = computed(() => this.ariaLabel() || this.label() || this.placeholder());
 
   /** Determines if component should show error state. Priority: explicit > errorText > Signal Forms */
   readonly hasError = computed(() => {
@@ -321,7 +317,6 @@ export class SelectComponent<T extends SelectChangeValue = SelectChangeValue> im
     return available.length > 0 && available.every(opt => selected.includes(opt.value));
   });
 
-  readonly selectAllLabel = computed(() => this.translateService.instant('COMMON.SELECT_ALL'));
   readonly selectAllHighlighted = signal(false);
 
   toggleDropdown(): void {

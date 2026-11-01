@@ -128,8 +128,8 @@ export class SearchSelectComponent implements AfterViewInit {
   readonly label = input<string>('');
   /** Disables the field. */
   readonly disabled = input<boolean>(false);
-  /** Shows the error state when true. */
-  readonly error = input<boolean>(false);
+  /** Turns the error state on or off. It overrides errorText and the form field. */
+  readonly error = input<boolean>();
   /** Error message under the field. Setting it shows the error state. */
   readonly errorText = input<string>();
   /** Height of the field. */
@@ -183,7 +183,7 @@ export class SearchSelectComponent implements AfterViewInit {
   readonly debounceTime = input<number | undefined>(undefined);
   /** No options text - shorthand for searchConfig.emptyText */
   readonly noOptionsTextInput = input<string | undefined>(undefined, { alias: 'noOptionsText' });
-  /** Search placeholder - shorthand for searchConfig.placeholder */
+  /** Placeholder of the search box, short for searchConfig.placeholder. The default is "Search…" from the i18n files. */
   readonly searchPlaceholderInput = input<string | undefined>(undefined, { alias: 'searchPlaceholder' });
   /* eslint-enable @angular-eslint/no-input-rename */
   /** Legacy: Whether API search is enabled */
@@ -262,7 +262,7 @@ export class SearchSelectComponent implements AfterViewInit {
 
   readonly noOptionsText = computed(() => this.searchConfig()?.emptyText ?? this.noOptionsTextInput() ?? '');
 
-  readonly searchPlaceholder = computed(() => this.searchConfig()?.placeholder ?? this.searchPlaceholderInput() ?? 'Search...');
+  readonly searchPlaceholder = computed(() => this.searchConfig()?.placeholder ?? this.searchPlaceholderInput());
 
   readonly itemSize = computed(() => this.virtualScrollConfig()?.itemSize ?? 40);
 
@@ -272,7 +272,8 @@ export class SearchSelectComponent implements AfterViewInit {
 
   /** Determines if component should show error state. Priority: explicit > errorText > Signal Forms */
   readonly hasError = computed(() => {
-    if (this.error()) return true;
+    const manualError = this.error();
+    if (manualError !== undefined) return manualError;
 
     if (this.errorText()) return true;
 

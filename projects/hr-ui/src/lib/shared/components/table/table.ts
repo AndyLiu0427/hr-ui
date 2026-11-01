@@ -162,8 +162,8 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
   readonly sortable = input(true);
   /** Paging state. With totalNumPages 0 the table pages data itself; above 0, data is already one page. */
   readonly pagination = input<TablePagination | undefined>();
-  /** Text shown when there are no rows. */
-  readonly emptyMessage = input('No data available');
+  /** Text shown when there are no rows. The default is "No data found" from the i18n files. */
+  readonly emptyMessage = input<string>();
   /** Hides the icon in the empty state, which makes the empty table shorter. */
   readonly hideEmptyIcon = input(false);
   /** Makes rows clickable and focusable. A click, or Enter or Space on a focused row, emits rowClick. */

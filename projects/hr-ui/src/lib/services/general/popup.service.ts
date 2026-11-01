@@ -472,11 +472,14 @@ export class PopupService {
     });
   }
 
-  /** Asks to confirm an action that cannot be undone, with a red button. Resolves to true only when confirmed. */
-  async confirmDanger(title: string, message: string, confirmText?: string, cancelText?: string): Promise<boolean> {
+  /**
+   * Asks to confirm an action that cannot be undone, with a red button. Resolves to true only when confirmed.
+   * confirmText names the action, such as "Delete employee", because a red "Confirm" does not say what happens.
+   */
+  async confirmDanger(title: string, message: string, confirmText: string, cancelText?: string): Promise<boolean> {
     const translatedTitle = this.translateService.instant(title);
     const translatedMessage = this.translateService.instant(message);
-    const translatedConfirmText = confirmText ? this.translateService.instant(confirmText) : this.translateService.instant('MULTIUSED_POPUP.CONFIRM');
+    const translatedConfirmText = this.translateService.instant(confirmText);
     const translatedCancelText = cancelText ? this.translateService.instant(cancelText) : this.translateService.instant('MULTIUSED_POPUP.CANCEL');
 
     const result = await this.createDialog({
@@ -571,135 +574,5 @@ export class PopupService {
     buttonLayout?: ButtonLayout;
   }): Promise<boolean | void> {
     return await this.createDialog(config);
-  }
-
-  /**
-   * Deprecated: use confirm().
-   * @deprecated Use confirm() instead
-   */
-  async setPopCounting(initialSeconds: number, countdownSeconds: number): Promise<boolean | null> {
-    const title = this.translateService.instant('MULTIUSED_POPUP.SESSION_TIMEOUT');
-    const message = this.translateService.instant('MULTIUSED_POPUP.SESSION_TIMEOUT_MESSAGE').replace('{countdown}', countdownSeconds.toString());
-
-    const result = await this.createDialog({
-      title,
-      message,
-      type: PopupType.WARNING,
-      buttons: [
-        {
-          text: this.translateService.instant('MULTIUSED_POPUP.CANCEL'),
-          action: () => false,
-          variant: 'ghost',
-          color: 'neutral'
-        },
-        {
-          text: this.translateService.instant('MULTIUSED_POPUP.CONTINUE'),
-          action: () => true,
-          variant: 'solid',
-          color: 'primary'
-        }
-      ]
-    });
-
-    if (result === true) return true;
-    if (result === false) return false;
-    return null;
-  }
-
-  /**
-   * Deprecated: use custom().
-   * @deprecated Use custom() instead
-   */
-  async setPopUp(param: {
-    header?: string;
-    body?: string;
-    okText?: string;
-    cancelText?: string;
-    showOk?: boolean;
-    showCancel?: boolean;
-    isCloseShow?: boolean;
-    width?: string;
-    disableClose?: boolean;
-    okClass?: string;
-  }): Promise<boolean> {
-    const buttons: PopupButton[] = [];
-
-    if (param.showCancel !== false) {
-      buttons.push({
-        text: param.cancelText || 'Cancel',
-        action: () => false,
-        variant: 'ghost',
-        color: 'neutral'
-      });
-    }
-
-    if (param.showOk !== false) {
-      buttons.push({
-        text: param.okText || 'OK',
-        action: () => true,
-        variant: 'solid',
-        color: 'primary'
-      });
-    }
-
-    const result = await this.createDialog({
-      title: param.header ? this.stripHtmlTags(param.header) : undefined,
-      message: param.body ? this.stripHtmlTags(param.body) : '',
-      buttons
-    });
-
-    return result === true;
-  }
-
-  /**
-   * Deprecated: use error().
-   * @deprecated Use error() instead
-   */
-  async errorData(message: string): Promise<boolean> {
-    await this.error(message);
-    return false;
-  }
-
-  /**
-   * Deprecated: use errorWithRetry().
-   * @deprecated Use errorWithRetry() instead
-   */
-  async errorDataWithRetry(message: string): Promise<boolean> {
-    return await this.errorWithRetry(message);
-  }
-
-  /**
-   * Deprecated: use success().
-   * @deprecated Use success() instead
-   */
-  async successData(message: string): Promise<void> {
-    await this.success(message);
-  }
-
-  /**
-   * Deprecated: use confirmDanger().
-   * @deprecated Use confirmDanger() instead
-   */
-  async deleteData(): Promise<boolean> {
-    const title = this.translateService.instant('MULTIUSED_POPUP.DELETE');
-    const message = this.translateService.instant('MULTIUSED_POPUP.CONFIRMDELETEDATA');
-    const confirmText = this.translateService.instant('MULTIUSED_POPUP.DELETE');
-    return await this.confirmDanger(title, message, confirmText);
-  }
-
-  /**
-   * Deprecated: use confirmDanger().
-   * @deprecated Use confirmDanger() instead
-   */
-  async confirmDelete(_itemName: string, customTitle?: string): Promise<boolean> {
-    const title = customTitle ? this.translateService.instant(customTitle) : this.translateService.instant('MULTIUSED_POPUP.DELETE');
-    const message = this.translateService.instant('MULTIUSED_POPUP.CONFIRMDELETEDATA');
-    const confirmText = this.translateService.instant('MULTIUSED_POPUP.DELETE');
-    return await this.confirmDanger(title, message, confirmText);
-  }
-
-  private stripHtmlTags(html: string): string {
-    // An inert document: markup in the text is never loaded or run.
-    return new DOMParser().parseFromString(html, 'text/html').body.textContent ?? '';
   }
 }

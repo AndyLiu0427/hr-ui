@@ -8,7 +8,6 @@ export const doc: ComponentDoc = {
   usage: `<oct-chip
   label="Payroll"
   removable
-  removeAriaLabel="Remove Payroll"
   (remove)="removeSkill('Payroll')"
 />`,
   examples: [
@@ -24,7 +23,7 @@ export const doc: ComponentDoc = {
     { keys: ['Space'], action: 'Same as Enter.' }
   ],
   accessibility: [
-    'With removable, the chip adds a native <button> named by removeAriaLabel, which is "Remove" by default. Pass a name that includes the value, such as "Remove Xero", so screen reader users can tell the buttons apart.',
+    'With removable, the chip adds a native <button> named "Remove" and the label, such as "Remove Payroll", so screen reader users can tell the buttons apart. The text comes from the i18n files. Set removeAriaLabel to replace it.',
     'The remove button stops its click from reaching parent elements, so a chip inside a clickable row does not also open the row.'
   ],
   api: ['ChipComponent']

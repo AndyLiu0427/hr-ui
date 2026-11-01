@@ -1,16 +1,19 @@
 {
   "COMMON": {
-    "SELECT_ALL": "Select all"
+    "SELECT_ALL": "Select all",
+    "SELECT_PLACEHOLDER": "Select…",
+    "SEARCH": "Search…",
+    "REMOVE_LABEL": "Remove {{label}}"
   },
   "FILTER_COMPONENT": {
     "CLEAR": "Clear",
     "CLEAR_ALL_FILTERS": "Clear all filters",
     "DONE": "Done",
     "NO_OPTIONS": "No options available",
-    "NO_RESULTS": "No results found"
+    "NO_RESULTS": "No results for “{{query}}”"
   },
   "GENERAL": {
-    "LOADING": "Loading...",
+    "LOADING": "Loading…",
     "NODATAFOUND": "No data found",
     "NO_OPTIONS_FOUND": "No options found",
     "RETRY": "Retry",
@@ -19,9 +22,6 @@
   "MULTIUSED_POPUP": {
     "CANCEL": "Cancel",
     "CONFIRM": "Confirm",
-    "CONFIRMDELETEDATA": "Once it's deleted, it cannot be undone.",
-    "CONTINUE": "Continue",
-    "DELETE": "Delete",
     "ERROR": "Error",
     "INFO": "Information",
     "OK": "OK",

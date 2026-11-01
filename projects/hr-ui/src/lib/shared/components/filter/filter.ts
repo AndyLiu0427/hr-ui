@@ -90,8 +90,8 @@ export class FilterComponent<T> {
   options = input<FilterOption<T>[]>([]);
   /** Adds a search box that filters the options by label. */
   searchable = input<boolean>(false);
-  /** Placeholder of the search box. undefined falls back to the default. */
-  searchPlaceholder = input<string, string | undefined>('Search...', { transform: v => v ?? 'Search...' });
+  /** Placeholder of the search box. The default is "Search…" from the i18n files. */
+  searchPlaceholder = input<string>();
 
   /** The values of the selected options. Supports two-way binding. */
   selectedValues = model<unknown[]>([]);

@@ -6,6 +6,7 @@ import {
   output,
   computed
 } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { IconComponent, IconSize, OctIconName } from '../icon/icon';
 
 export type ChipVariant = 'soft' | 'outline' | 'solid';
@@ -34,7 +35,7 @@ export type ChipSize = 'sm' | 'md';
 @Component({
   selector: 'oct-chip',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IconComponent],
+  imports: [IconComponent, TranslateModule],
   template: `
     <span [class]="chipClasses()">
       @if (icon()) {
@@ -49,7 +50,7 @@ export type ChipSize = 'sm' | 'md';
         <button
           type="button"
           [class]="removeClasses()"
-          [attr.aria-label]="removeAriaLabel()"
+          [attr.aria-label]="removeAriaLabel() ?? ('COMMON.REMOVE_LABEL' | translate: { label: label() ?? '' })"
           (click)="onRemove($event)">
           <oct-icon name="X" [size]="iconSize()" />
         </button>
@@ -78,8 +79,8 @@ export class ChipComponent {
   readonly size = input<ChipSize>('sm');
   /** Show the trailing X that emits `(remove)`. Bare attribute works: `removable`. */
   readonly removable = input(false, { transform: booleanAttribute });
-  /** Accessible name for the remove button — pass a translated string. */
-  readonly removeAriaLabel = input<string>('Remove');
+  /** Accessible name for the remove button. The default is "Remove" and the label, from the i18n files. */
+  readonly removeAriaLabel = input<string>();
 
   /** Emitted when the remove button is clicked (propagation is stopped). */
   readonly remove = output<void>();

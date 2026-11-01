@@ -16,7 +16,7 @@
       [attr.aria-expanded]="isOpen()"
       aria-haspopup="listbox"
       [attr.aria-disabled]="isDisabled()"
-      [attr.aria-label]="label() || placeholder() || 'Select an option'"
+      [attr.aria-label]="label() || placeholder() || ('COMMON.SELECT_PLACEHOLDER' | translate)"
       [attr.aria-required]="required() ? 'true' : null"
       [attr.aria-invalid]="hasError() ? 'true' : null"
       [attr.aria-controls]="isOpen() ? listboxId() : null"
@@ -89,7 +89,7 @@
         #searchInput
         type="text"
         class="w-full px-2 py-1.5 text-base sm:text-sm bg-transparent text-1 outline-none placeholder:text-3"
-        [placeholder]="searchPlaceholder()"
+        [placeholder]="searchPlaceholder() ?? ('COMMON.SEARCH' | translate)"
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         (keydown)="handleSearchKeyDown($event)"

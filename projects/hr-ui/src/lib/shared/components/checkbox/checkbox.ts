@@ -68,10 +68,9 @@ export class CheckboxComponent implements FormCheckboxControl {
   /** Emits the new checked state when the user toggles the checkbox. */
   readonly checkboxChange = output<boolean>();
 
-  // Legacy/Simple Inputs (prefer [formField] directive for Signal Forms)
-  /** Manual error state - prefer [formField] directive for Signal Forms */
+  /** Turns the error state on or off. It overrides errorText and the form field. */
   readonly error = input<boolean>();
-  /** Manual error message - prefer [formField] directive for Signal Forms */
+  /** Error message under the field. Setting it shows the error state. */
   readonly errorText = input<string>();
 
   // Internal
@@ -82,18 +81,15 @@ export class CheckboxComponent implements FormCheckboxControl {
   readonly computedId = computed(() => this.id() || this.uniqueId);
 
   readonly hasError = computed(() => {
-    // Check legacy error prop first (explicit override)
     const manualError = this.error();
     if (manualError !== undefined) return manualError;
-    // Check Signal Forms inputs (set by Field directive or manually)
+    if (this.errorText()) return true;
     return this.invalid() && this.isTouched();
   });
 
   readonly errorMessage = computed(() => {
-    // Check legacy errorText prop first (explicit override)
     const manualErrorText = this.errorText();
     if (manualErrorText) return manualErrorText;
-    // Check Signal Forms errors (set by Field directive or manually)
     const errs = this.errors();
     return errs.length > 0 ? errs[0].message : '';
   });

@@ -15,6 +15,7 @@ import {
   viewChild,
   viewChildren
 } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { DialogComponent } from '../dialog/dialog';
 import { IconComponent } from '../icon/icon';
@@ -44,7 +45,7 @@ const ROW_SELECTED = `${ROW_BASE} bg-primary/15`;
   selector: 'oct-search-panel',
   templateUrl: './search-panel.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgTemplateOutlet, DialogComponent, IconComponent, KbdComponent, TextComponent],
+  imports: [NgTemplateOutlet, TranslateModule, DialogComponent, IconComponent, KbdComponent, TextComponent],
   host: {
     '(document:keydown)': 'handleKeydown($event)'
   }
@@ -56,8 +57,8 @@ export class SearchPanelComponent<T extends SearchPanelItem> {
   readonly items = input.required<readonly T[]>();
   /** Shows a spinner instead of the results while a search runs. */
   readonly loading = input<boolean>(false);
-  /** Placeholder text in the query box. */
-  readonly placeholder = input<string>('Search...');
+  /** Placeholder text in the query box. The default is "Search…" from the i18n files. */
+  readonly placeholder = input<string>();
   /** Names the dialog, the query box and the result list for screen readers. */
   readonly ariaLabel = input.required<string>();
   /** Renders the ↑↓ / Enter legend under the results. */

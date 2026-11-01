@@ -19,7 +19,7 @@
       [attr.aria-expanded]="isOpen()"
       [attr.aria-haspopup]="'listbox'"
       [attr.aria-disabled]="isDisabled()"
-      [attr.aria-label]="accessibleName()"
+      [attr.aria-label]="accessibleName() || ('COMMON.SELECT_PLACEHOLDER' | translate)"
       [attr.aria-required]="required() ? 'true' : null"
       [attr.aria-invalid]="hasError() ? 'true' : null"
       [attr.aria-controls]="isOpen() ? listboxId() : null"
@@ -55,7 +55,7 @@
                 />
               }
             } @else {
-              <oct-text color="3" variant="sm" [truncate]="!bare()" [nowrap]="bare()">{{ placeholder() || 'Select options' }}</oct-text>
+              <oct-text color="3" variant="sm" [truncate]="!bare()" [nowrap]="bare()">{{ placeholder() || ('COMMON.SELECT_PLACEHOLDER' | translate) }}</oct-text>
             }
           } @else {
             @if (selectedOption()) {
@@ -71,7 +71,7 @@
                 >{{ selectedOption()!.label }}</oct-text
               >
             } @else {
-              <oct-text color="3" variant="sm" [truncate]="!bare()" [nowrap]="bare()">{{ placeholder() || 'Select an option' }}</oct-text>
+              <oct-text color="3" variant="sm" [truncate]="!bare()" [nowrap]="bare()">{{ placeholder() || ('COMMON.SELECT_PLACEHOLDER' | translate) }}</oct-text>
             }
           }
         </div>
@@ -117,7 +117,7 @@
     [class]="menuClasses"
     role="listbox"
     [id]="listboxId()"
-    [attr.aria-label]="accessibleName()"
+    [attr.aria-label]="accessibleName() || ('COMMON.SELECT_PLACEHOLDER' | translate)"
     [attr.aria-multiselectable]="multiple() || null">
 
     @if (loading()) {
@@ -191,7 +191,7 @@
         } @else {
           <div class="w-4 mr-2"></div>
         }
-        <oct-text color="1" variant="sm" class="flex-1">{{ selectAllLabel() }}</oct-text>
+        <oct-text color="1" variant="sm" class="flex-1">{{ 'COMMON.SELECT_ALL' | translate }}</oct-text>
       </div>
       <div class="border-b border-hr-neutral-700 my-1"></div>
     </ng-template>
