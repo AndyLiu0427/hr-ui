@@ -1,0 +1,174 @@
+<div class="relative grid gap-1.5" data-slot="form-item">
+  @if (label()) {
+    <label [for]="searchSelectId()" [class]="'inline-flex text-sm font-medium transition-colors duration-300 ' + (hasError() ? 'text-error' : 'text-1')">
+      {{ label() }}
+      @if (required()) {
+        <oct-text color="error" variant="sm" class="ml-0.5">*</oct-text>
+      }
+    </label>
+  }
+
+  <div class="relative min-w-0" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+    <div
+      #searchSelectTrigger
+      [attr.id]="searchSelectId()"
+      (click)="toggleDropdown()"
+      [attr.aria-expanded]="isOpen()"
+      aria-haspopup="listbox"
+      [attr.aria-disabled]="isDisabled()"
+      [attr.aria-label]="label() || placeholder() || 'Select an option'"
+      [attr.aria-required]="required() ? 'true' : null"
+      [attr.aria-invalid]="hasError() ? 'true' : null"
+      [attr.aria-owns]="isOpen() ? searchSelectId() + '-listbox' : null"
+      [attr.aria-activedescendant]="isOpen() && activeIndex() >= 0 ? searchSelectId() + '-option-' + activeIndex() : null"
+      role="combobox"
+      tabindex="0"
+      (keydown)="handleKeyDown($event)"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)">
+
+      <div [class]="triggerClasses()">
+        <oct-icon name="Search" class="!text-3 mr-1.5" />
+
+        <div class="flex-1 truncate" [class.flex]="showsTriggerTag()" [class.items-center]="showsTriggerTag()" [class.gap-2]="showsTriggerTag()">
+          @if (hasSelection()) {
+            @if (showsTriggerTag()) {
+              <oct-color-tag variant="inline" [color]="selectedOption()!.colorTag!" />
+            }
+            <oct-text
+              [color]="isDisabled() ? 'text-neutral-600' : '1'"
+              variant="sm"
+              class="min-w-0"
+              [class.tabular-nums]="multiple()"
+              >{{ multiple() ? ('GENERAL.SELECTED_COUNT' | translate: { count: selectedValues().length }) : triggerText() }}</oct-text
+            >
+          } @else {
+            <oct-text color="3" variant="sm">{{ placeholder() || 'Search and select...' }}</oct-text>
+          }
+        </div>
+
+        @if (clearable() && hasSelection() && !isDisabled()) {
+          <oct-icon
+            name="X"
+            [class]="'ml-1 cursor-pointer hover:!text-1 transition-colors duration-300' + (isDisabled() ? ' !text-neutral-600' : ' !text-3')"
+            [color]="isDisabled() ? 'rgb(64 64 64)' : 'currentColor'"
+            (click)="clearSelection($event)"
+            aria-label="Clear selection"
+            role="button"
+            tabindex="-1"
+          />
+        }
+
+        @if (isLoading()) {
+          <oct-icon name="RefreshCw" class="!text-3 ml-1.5 animate-spin" />
+        } @else {
+          <oct-icon
+            name="ChevronDown"
+            [class]="'transition-all duration-300 origin-center' + (isDisabled() ? ' !text-neutral-600' : ' !text-3')"
+            [class.rotate-180]="isOpen()"
+          />
+        }
+      </div>
+    </div>
+  </div>
+
+  @if (!hideHelper()) {
+    <div class="h-5">
+      @if (hasError() && effectiveErrorMessage()) {
+        <oct-text color="error" variant="sm">{{ effectiveErrorMessage() }}</oct-text>
+      } @else if (description()) {
+        <oct-text color="2" variant="sm">{{ description() }}</oct-text>
+      }
+    </div>
+  }
+</div>
+
+<ng-template #overlayTemplate>
+  <div
+    [class]="menuClasses()"
+    [attr.id]="searchSelectId() + '-listbox'"
+    role="listbox"
+    [attr.aria-label]="label() || 'Search Options'"
+    [attr.aria-multiselectable]="multiple()">
+
+    <div class="p-1 border-b border-primary">
+      <input
+        #searchInput
+        type="text"
+        class="w-full px-2 py-1.5 text-sm bg-transparent text-1 outline-none placeholder:text-3"
+        [placeholder]="searchPlaceholder()"
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+        (keydown)="handleSearchKeyDown($event)"
+        aria-label="Search options"
+        role="searchbox"
+        aria-autocomplete="list"
+        [attr.aria-controls]="searchSelectId() + '-listbox'">
+    </div>
+
+    @if (hasVirtualScroll()) {
+      <cdk-virtual-scroll-viewport
+        #virtualViewport
+        [itemSize]="itemSize()"
+        [style.height.px]="getVirtualScrollHeight()"
+        class="search-select-options overflow-y-auto p-1">
+        <oct-search-select-option
+          *cdkVirtualFor="let option of displayOptions(); let i = index; trackBy: trackByValue"
+          [option]="option"
+          [selected]="isSelected(option)"
+          [highlighted]="i === activeIndex()"
+          [showCheckIcon]="true"
+          [showIcon]="showIcon()"
+          [attr.id]="searchSelectId() + '-option-' + i"
+          (optionClick)="selectOption($event)"
+          (optionHover)="onOptionHover($event)" />
+      </cdk-virtual-scroll-viewport>
+    } @else {
+      <div class="search-select-options relative overflow-y-auto p-1" [style.maxHeight]="maxHeight()" cdkScrollable>
+
+
+        @if (isSearching()) {
+          <div class="flex items-center justify-center py-4">
+            <oct-icon name="RefreshCw" class="animate-spin text-2 mr-2" />
+            <oct-text color="2" variant="sm">Searching...</oct-text>
+          </div>
+        } @else if (isPreloading()) {
+          <div class="flex items-center justify-center py-4">
+            <oct-icon name="RefreshCw" class="animate-spin text-2 mr-2" />
+            <oct-text color="2" variant="sm">Loading options...</oct-text>
+          </div>
+        } @else if (searchError()) {
+          <div class="flex items-center justify-center py-4">
+            <oct-icon name="CircleAlert" class="text-red-500 mr-2" />
+            <oct-text color="3" variant="sm">{{ searchError() }}</oct-text>
+          </div>
+        } @else if (preloadError()) {
+          <div class="flex items-center justify-center py-4">
+            <oct-icon name="CircleAlert" class="text-red-500 mr-2" />
+            <oct-text color="3" variant="sm">{{ preloadError() }}</oct-text>
+          </div>
+        } @else if (hasSearchConfig() && searchQuery().length > 0 && searchQuery().length < minSearchLength()) {
+          <div class="px-2 py-3 text-center">
+            <oct-text color="3" variant="sm">Type at least {{ minSearchLength() }} characters to search</oct-text>
+          </div>
+        } @else if (displayOptions().length === 0) {
+          <div class="px-2 py-3 text-center">
+            <oct-text color="3" variant="sm">{{ noOptionsText() || ('GENERAL.NO_OPTIONS_FOUND' | translate) }}</oct-text>
+          </div>
+        } @else {
+          @for (option of displayOptions(); track option.value; let i = $index) {
+            <oct-search-select-option
+              [option]="option"
+              [selected]="isSelected(option)"
+              [highlighted]="i === activeIndex()"
+              [showCheckIcon]="true"
+              [showIcon]="showIcon()"
+              [attr.id]="searchSelectId() + '-option-' + i"
+              (optionClick)="selectOption($event)"
+              (optionHover)="onOptionHover($event)" />
+          }
+        }
+      </div>
+    }
+  </div>
+</ng-template>

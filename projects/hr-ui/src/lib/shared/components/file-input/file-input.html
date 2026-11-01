@@ -1,0 +1,90 @@
+@if (mode() === 'preview') {
+  <div class="flex flex-col gap-4">
+    @if (displayPreview()) {
+      <div class="relative h-32 border border-primary rounded-lg overflow-hidden">
+        <img
+          [src]="displayPreview()"
+          [alt]="buttonText()"
+          class="w-full h-full object-contain p-2" />
+        <oct-button
+          color="error"
+          size="sm"
+          icon="X"
+          [attr.aria-label]="removeButtonAriaLabel()"
+          class="!absolute !top-0.5 !right-0.5"
+          (buttonClick)="onRemoveClick()" />
+      </div>
+    } @else {
+      <div
+        class="h-32 border-[2px] border-dashed border-primary rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+        [class.opacity-50]="disabled() || loading()"
+        [class.cursor-not-allowed]="disabled() || loading()"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="buttonText()"
+        (click)="onPlaceholderClick()"
+        (keydown.enter)="onPlaceholderClick()"
+        (keydown.space)="onPlaceholderClick()">
+        <div class="text-center">
+          <oct-icon [name]="placeholderIcon()" [size]="32" class="text-gray-400" />
+          <oct-text variant="xs" color="muted" class="mt-1">
+            {{ placeholderText() }}
+          </oct-text>
+        </div>
+      </div>
+    }
+
+    <div class="flex flex-col justify-center gap-2">
+      <input
+        #fileInput
+        type="file"
+        [accept]="accept()"
+        [multiple]="multiple()"
+        [disabled]="disabled() || loading()"
+        class="hidden"
+        aria-hidden="true"
+        (change)="onFileSelected($event)" />
+      <oct-button
+        type="button"
+        variant="outline"
+        icon="Upload"
+        [disabled]="disabled() || loading()"
+        (buttonClick)="onButtonClick()">
+        {{ buttonText() }}
+      </oct-button>
+      <oct-text variant="xs" color="muted">
+        {{ helpText() }}
+      </oct-text>
+      @if (displayError()) {
+        <oct-text variant="xs" color="error" role="alert">
+          {{ displayError() }}
+        </oct-text>
+      }
+    </div>
+  </div>
+} @else {
+  <oct-button
+    type="button"
+    [color]="color()"
+    [variant]="variant()"
+    [size]="size()"
+    [icon]="icon()"
+    [iconPosition]="iconPosition()"
+    [iconOnly]="iconOnly()"
+    [loading]="loading()"
+    [disabled]="disabled()"
+    [fullWidth]="fullWidth()"
+    [ariaLabel]="ariaLabel()"
+    (buttonClick)="onButtonClick()">
+    <ng-content />
+  </oct-button>
+  <input
+    #fileInput
+    type="file"
+    [accept]="accept()"
+    [multiple]="multiple()"
+    [disabled]="disabled() || loading()"
+    hidden
+    aria-hidden="true"
+    (change)="onFileSelected($event)" />
+}

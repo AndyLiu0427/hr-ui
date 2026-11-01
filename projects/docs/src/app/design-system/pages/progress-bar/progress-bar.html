@@ -1,0 +1,254 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Progress Bar</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Display progress indicators with customizable labels and percentage display
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Interactive Playground Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <!-- Quick Presets -->
+    <div class="mb-6 flex flex-wrap gap-2">
+      <oct-text color="2" variant="sm" weight="medium" class="mr-4 self-center">Quick presets:</oct-text>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('empty')">
+        0%
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('quarter')">
+        25%
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('half')">
+        50%
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('three-quarters')">
+        75%
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('complete')">
+        100%
+      </oct-button>
+      <oct-button
+        variant="solid"
+        [color]="isSimulating() ? 'error' : 'primary'"
+        size="sm"
+        shape="square"
+        (buttonClick)="isSimulating() ? stopSimulation() : startSimulation()">
+        {{ isSimulating() ? 'Stop' : 'Simulate' }}
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="resetProgress()">
+        Reset
+      </oct-button>
+    </div>
+
+    <!-- Playground Section -->
+    <div class="mb-12">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+        <!-- Live Preview Area (Left - 2 cols) -->
+        <div class="lg:col-span-2">
+          <oct-card customClass="h-full">
+            <oct-card-content class="w-full">
+              <oct-progress-bar
+                [progress]="config().progress"
+                [label]="config().label"
+                [showPercentage]="config().showPercentage"
+              />
+            </oct-card-content>
+          </oct-card>
+        </div>
+
+        <!-- Controls Panel (Right - 3 cols) -->
+        <div class="lg:col-span-3">
+          <oct-card>
+            <oct-card-content class="flex flex-col gap-4">
+              <!-- Progress Input -->
+              <div>
+                <oct-input
+                  label="Progress Value (0-100)"
+                  placeholder="Enter progress value"
+                  [value]="config().progress.toString()"
+                  (inputChange)="updateProgress(+$event)"
+                  type="number"
+                  size="md"
+                  hideHelper="true"
+                />
+              </div>
+
+              <!-- Label Input -->
+              <div>
+                <oct-input
+                  label="Label Text"
+                  placeholder="Enter label text"
+                  [value]="config().label"
+                  (inputChange)="updateLabel($event)"
+                  type="text"
+                  size="md"
+                  hideHelper="true"
+                />
+              </div>
+
+              <!-- Show Percentage Toggle -->
+              <div class="flex items-center gap-4">
+                <oct-checkbox
+                  [checked]="config().showPercentage"
+                  (checkboxChange)="togglePercentage()"
+                  label="Show Percentage">
+                </oct-checkbox>
+              </div>
+
+              <!-- Current Progress Display -->
+              <div class="mt-4 p-4 bg-secondary rounded-lg">
+                <oct-text color="1" variant="sm" weight="semibold" class="mb-2">Current Progress</oct-text>
+                <oct-text color="2" variant="sm" weight="regular">{{ config().progress }}%</oct-text>
+              </div>
+            </oct-card-content>
+          </oct-card>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Examples Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+
+    <oct-text color="1" variant="2xl" weight="semibold">Examples</oct-text>
+
+    <!-- Progress Examples -->
+    <oct-card>
+      <oct-card-content>
+        <div class="flex flex-col gap-6">
+          @for (example of progressExamples; track example.title) {
+            <div class="flex flex-col gap-2">
+              <oct-text color="1" variant="sm" weight="semibold">{{ example.title }}</oct-text>
+              <oct-text color="2" variant="xs" weight="regular" class="mb-2">{{ example.description }}</oct-text>
+              <oct-progress-bar
+                [progress]="example.props.progress"
+                [label]="example.props.label"
+                [showPercentage]="example.props.showPercentage"
+              />
+            </div>
+          }
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Progress States -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-4">Progress States</oct-text>
+        <div class="space-y-6">
+          <div class="flex flex-col gap-2">
+            <oct-text color="2" variant="sm" weight="medium">Starting (0%)</oct-text>
+            <oct-progress-bar [progress]="0" label="Initializing..." />
+          </div>
+          <div class="flex flex-col gap-2">
+            <oct-text color="2" variant="sm" weight="medium">In Progress (45%)</oct-text>
+            <oct-progress-bar [progress]="45" label="Processing..." />
+          </div>
+          <div class="flex flex-col gap-2">
+            <oct-text color="2" variant="sm" weight="medium">Almost Done (85%)</oct-text>
+            <oct-progress-bar [progress]="85" label="Finalizing..." />
+          </div>
+          <div class="flex flex-col gap-2">
+            <oct-text color="2" variant="sm" weight="medium">Complete (100%)</oct-text>
+            <oct-progress-bar [progress]="100" label="Completed!" />
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- With/Without Percentage -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-4">Display Options</oct-text>
+        <div class="space-y-6">
+          <div class="flex flex-col gap-2">
+            <oct-text color="2" variant="sm" weight="medium">With Percentage Display</oct-text>
+            <oct-progress-bar [progress]="67" label="Downloading..." [showPercentage]="true" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <oct-text color="2" variant="sm" weight="medium">Without Percentage Display</oct-text>
+            <oct-progress-bar [progress]="67" label="Downloading..." [showPercentage]="false" />
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+  </div>
+
+  <!-- Props Table -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Component Props</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary transition-all duration-300">
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">progress</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">number</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">required</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Progress value from 0 to 100</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">label</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'Processing...'</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Label text to display above the progress bar</oct-text></td>
+          </tr>
+          <tr>
+            <td class="p-4"><code class="text-1 font-mono text-sm">showPercentage</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">true</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Whether to display the percentage value</oct-text></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,187 @@
+<oct-button
+  [size]="size()"
+  color="neutral"
+  variant="outline"
+  shape="square"
+  (click)="toggleMenu()"
+  (keydown)="handleKeydown($event)"
+  [attr.aria-expanded]="isOpen()"
+  [attr.aria-haspopup]="'menu'"
+  [attr.aria-label]="label() + ' filter'"
+  [attr.aria-pressed]="isOpen()"
+  class="!cursor-pointer"
+>
+  <div class="flex gap-2">
+    @if (icon()) {
+      <oct-icon [name]="icon()!" />
+    }
+    <oct-text color="inherit" variant="sm">
+      {{ label() }}
+    </oct-text>
+    @if (hasSelections()) {
+      <oct-badge
+        color="info"
+        mode="solid"
+        size="sm"
+        [text]="selectionCount().toString()"
+        class="inline-flex tabular-nums"
+      />
+    }
+  </div>
+</oct-button>
+
+@if (isMobile()) {
+  <oct-bottom-sheet
+    [isOpen]="isOpen()"
+    [title]="label()"
+    [ariaLabel]="label() + ' filter'"
+    (closed)="closeMenu()"
+  >
+    @if (searchable()) {
+      <div class="px-4 pt-3">
+        <div class="flex items-center rounded-lg border border-primary transition-all duration-100 hover:border-primary-600 focus-within:!outline focus-within:!outline-2 focus-within:!outline-primary outline-transparent bg-secondary">
+          <oct-icon name="Search" class="ml-3 text-3" />
+          <input
+            type="search"
+            class="flex-1 min-w-0 p-3 text-1 text-base bg-transparent border-none outline-none placeholder:text-3"
+            [placeholder]="searchPlaceholder()"
+            [value]="searchQuery()"
+            (input)="onSearchInput($event)"
+          />
+        </div>
+      </div>
+    }
+
+    <div class="overscroll-contain" style="max-height: 50vh;">
+      @for (option of filteredOptions(); track option.value) {
+        <div
+          [class]="'px-4 py-3.5 transition-colors duration-300 cursor-pointer active:bg-primary/20 ' +
+                   (selections().has(option.value) ? 'bg-primary/10' : '') +
+                   (option.disabled ? ' opacity-50 cursor-not-allowed' : '')"
+          role="menuitemcheckbox"
+          [attr.aria-checked]="selections().has(option.value)"
+          [attr.aria-disabled]="option.disabled"
+          (click)="!option.disabled && toggleOption(option.value)"
+        >
+          <oct-checkbox
+            [checked]="selections().has(option.value)"
+            [disabled]="option.disabled"
+            [label]="option.label"
+            class="[&_label]:pointer-events-none [&_label]:text-base"
+          />
+        </div>
+      }
+
+      @if (filteredOptions().length === 0) {
+        <div class="flex items-center justify-center py-12 px-4">
+          <oct-text [color]="'3'" [variant]="'sm'">
+            {{ searchable() && searchQuery() ? ('FILTER_COMPONENT.NO_RESULTS' | translate) : ('FILTER_COMPONENT.NO_OPTIONS' | translate) }}
+          </oct-text>
+        </div>
+      }
+    </div>
+
+    <ng-template #footer>
+      <div class="flex items-center gap-3 p-4">
+        <oct-button
+          variant="outline"
+          color="neutral"
+          size="lg"
+          fullWidth="true"
+          class="w-[50%]"
+          (buttonClick)="clearSelections()"
+        >
+          {{ 'FILTER_COMPONENT.CLEAR' | translate }}
+        </oct-button>
+        <oct-button
+          variant="solid"
+          color="primary"
+          size="lg"
+          fullWidth="true"
+          class="w-[50%]"
+          (buttonClick)="closeMenu()"
+        >
+          {{ 'FILTER_COMPONENT.DONE' | translate }}
+        </oct-button>
+      </div>
+    </ng-template>
+  </oct-bottom-sheet>
+} @else {
+  <ng-template #desktopMenuTemplate>
+    <div
+      class="bg-secondary rounded-lg shadow-lg border border-primary overflow-hidden transition-all duration-200 ease-out"
+      [class.opacity-0]="!isAnimating()"
+      [class.opacity-100]="isAnimating()"
+      [class.-translate-y-2]="!isAnimating()"
+      [class.translate-y-0]="isAnimating()"
+      role="menu"
+      [attr.aria-label]="label() + ' filter menu'"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between gap-2 pl-4 pr-2 py-1 border-b border-primary">
+        <oct-text color="1" variant="sm" weight="semibold">
+          {{ label() }}
+        </oct-text>
+        <oct-button
+          variant="ghost"
+          color="primary"
+          size="sm"
+          (buttonClick)="clearSelections()"
+          [ariaLabel]="'FILTER_COMPONENT.CLEAR' | translate"
+        >
+          {{ 'FILTER_COMPONENT.CLEAR' | translate }}
+        </oct-button>
+      </div>
+
+      @if (searchable()) {
+        <div class="px-2 pt-2">
+          <div class="flex items-center rounded-lg border border-primary transition-all duration-100 hover:border-primary-600 focus-within:!outline focus-within:!outline-2 focus-within:!outline-primary outline-transparent bg-secondary">
+            <input
+              #searchInput
+              type="search"
+              class="flex-1 min-w-0 p-2 text-1 text-sm bg-transparent border-none outline-none placeholder:text-3"
+              [placeholder]="searchPlaceholder()"
+              [value]="searchQuery()"
+              (input)="onSearchInput($event)"
+            />
+          </div>
+        </div>
+      }
+
+      <cdk-virtual-scroll-viewport
+        [itemSize]="44"
+        class="overflow-y-auto"
+        [style.height]="viewportHeight() + 'px'"
+        role="group"
+      >
+        <div
+          *cdkVirtualFor="let option of filteredOptions(); trackBy: trackByValue"
+          [class]="'px-4 py-2.5 transition-colors duration-300 cursor-pointer ' +
+                   (selections().has(option.value) ? 'bg-primary/20' : 'hover:bg-primary/10') +
+                   (option.disabled ? ' opacity-50 cursor-not-allowed' : '')"
+          role="menuitemcheckbox"
+          [attr.aria-checked]="selections().has(option.value)"
+          [attr.aria-disabled]="option.disabled"
+          (click)="!option.disabled && toggleOption(option.value)"
+          (keydown)="!option.disabled && handleOptionKeydown($event, option.value)"
+          [attr.tabindex]="option.disabled ? -1 : 0"
+        >
+          <oct-checkbox
+            [checked]="selections().has(option.value)"
+            [disabled]="option.disabled"
+            [label]="option.label"
+            class="[&_label]:pointer-events-none"
+          />
+        </div>
+      </cdk-virtual-scroll-viewport>
+
+      @if (filteredOptions().length === 0) {
+        <div class="flex items-center justify-center py-8 px-4">
+          <oct-text [color]="'3'" [variant]="'sm'">
+            {{ searchable() && searchQuery() ? ('FILTER_COMPONENT.NO_RESULTS' | translate) : ('FILTER_COMPONENT.NO_OPTIONS' | translate) }}
+          </oct-text>
+        </div>
+      }
+    </div>
+  </ng-template>
+}

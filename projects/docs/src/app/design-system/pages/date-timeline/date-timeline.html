@@ -1,0 +1,131 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Date Timeline</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Minimal horizontal date timeline: proportionally placed dots with their dates, year-boundary markers, and an accent-colored stretch after the emphasized node
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Interactive Playground Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <!-- Live Preview Area (Left - 2 cols) -->
+      <div class="lg:col-span-2">
+        <oct-card customClass="h-full">
+          <oct-card-content class="w-full">
+            <oct-date-timeline [nodes]="playgroundNodes()" />
+            @if (!hasStart() && !hasEffective() && !hasEnd()) {
+              <oct-text color="3" variant="sm">Nothing renders when no node has a date.</oct-text>
+            }
+          </oct-card-content>
+        </oct-card>
+      </div>
+
+      <!-- Controls Panel (Right - 3 cols) -->
+      <div class="lg:col-span-3">
+        <oct-card>
+          <oct-card-content class="flex flex-col gap-4">
+            <oct-checkbox [checked]="hasStart()" (checkboxChange)="hasStart.set(!hasStart())" label="Start date set" />
+            <oct-checkbox
+              [checked]="hasEffective()"
+              (checkboxChange)="hasEffective.set(!hasEffective())"
+              label="Effective date set (accent dot, accent track to the end)"
+            />
+            <oct-checkbox [checked]="hasEnd()" (checkboxChange)="hasEnd.set(!hasEnd())" label="End date set" />
+
+            <div class="mt-4 p-4 bg-secondary rounded-lg">
+              <oct-text color="1" variant="sm" weight="semibold" class="mb-2 block">Usage</oct-text>
+              <pre class="text-2 font-mono text-xs whitespace-pre-wrap">{{ getDisplayCode() }}</pre>
+            </div>
+          </oct-card-content>
+        </oct-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Examples Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Examples</oct-text>
+
+    <oct-card>
+      <oct-card-content>
+        <div class="flex flex-col gap-8">
+          @for (example of examples; track example.title) {
+            <div class="flex flex-col gap-2">
+              <oct-text color="1" variant="sm" weight="semibold">{{ example.title }}</oct-text>
+              <oct-text color="2" variant="xs" weight="regular" class="mb-2">{{ example.description }}</oct-text>
+              <oct-date-timeline [nodes]="example.nodes" />
+            </div>
+          }
+        </div>
+      </oct-card-content>
+    </oct-card>
+  </div>
+
+  <!-- Props Table -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Component Props</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary transition-all duration-300">
+            <th class="text-left p-4"><oct-text color="1" variant="sm" weight="semibold">Prop</oct-text></th>
+            <th class="text-left p-4"><oct-text color="1" variant="sm" weight="semibold">Type</oct-text></th>
+            <th class="text-left p-4"><oct-text color="1" variant="sm" weight="semibold">Default</oct-text></th>
+            <th class="text-left p-4"><oct-text color="1" variant="sm" weight="semibold">Description</oct-text></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="p-4"><code class="text-1 font-mono text-sm">nodes</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">DateTimelineNode[]</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">required</code></td>
+            <td class="p-4">
+              <oct-text color="2" variant="sm" weight="regular">
+                Milestones to render, positioned proportionally to their date distances. Nodes without a date are omitted; the strip renders nothing when every node is dateless. Dates of near-coincident nodes alternate above and below the track.
+              </oct-text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DateTimelineNode Interface -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">DateTimelineNode Interface</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary transition-all duration-300">
+            <th class="text-left p-4"><oct-text color="1" variant="sm" weight="semibold">Property</oct-text></th>
+            <th class="text-left p-4"><oct-text color="1" variant="sm" weight="semibold">Type</oct-text></th>
+            <th class="text-left p-4"><oct-text color="1" variant="sm" weight="semibold">Required</oct-text></th>
+            <th class="text-left p-4"><oct-text color="1" variant="sm" weight="semibold">Description</oct-text></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">date</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string | Date | null</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">Yes</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Rendered as dd MMM (years live on the year-boundary ticks); a falsy value drops the node</oct-text></td>
+          </tr>
+          <tr>
+            <td class="p-4"><code class="text-1 font-mono text-sm">emphasis</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">No</code></td>
+            <td class="p-4">
+              <oct-text color="2" variant="sm" weight="regular">
+                Accent-colored dot and date; the track from this node to the end of the span is drawn in the accent color as well
+              </oct-text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

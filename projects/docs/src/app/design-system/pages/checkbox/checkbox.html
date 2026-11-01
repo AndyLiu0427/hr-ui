@@ -1,0 +1,377 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Checkbox</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Interactive checkbox components with various states, sizes, and form integration
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Interactive Playground Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <!-- Quick Presets -->
+    <div class="mb-6 flex flex-wrap gap-2">
+      <oct-text color="2" variant="sm" weight="medium" class="mr-4 self-center">Quick presets:</oct-text>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('default')">
+        Default
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('checked')">
+        Checked
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('disabled')">
+        Disabled
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('withLabel')">
+        With Label
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="info"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('signalForm')">
+        Signal Form
+      </oct-button>
+    </div>
+
+    <!-- Split Layout: Playground + Code -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+      <!-- Left Side: Live Preview (40% for interactive, full width for signalForm) -->
+      <div [class]="playgroundMode() === 'signalForm' ? 'lg:col-span-5' : 'lg:col-span-2'">
+        @switch (playgroundMode()) {
+          @case ('interactive') {
+            <oct-card customClass="h-full">
+              <oct-card-content class="w-full flex items-center justify-center">
+                <div class="max-w-sm">
+                  <oct-checkbox
+                    [label]="config().label"
+                    [disabled]="config().disabled"
+                    [checked]="config().checked"
+                    [required]="config().required"
+                    [error]="config().error"
+                    [errorText]="config().errorMessage"
+                    (checkboxChange)="onPlaygroundChange($event)">
+                  </oct-checkbox>
+                </div>
+              </oct-card-content>
+            </oct-card>
+          }
+
+          @case ('signalForm') {
+            <!-- Signal Form Example -->
+            <oct-card>
+              <oct-card-header>
+                <oct-text color="1" variant="xl" weight="semibold">Signal Form with Checkboxes</oct-text>
+              </oct-card-header>
+              <oct-card-content>
+                <form (ngSubmit)="onSubmitSignalForm()" class="space-y-4">
+                  <div class="space-y-4">
+                    <oct-text color="1" variant="lg" weight="medium">User Preferences</oct-text>
+
+                    <div class="flex flex-col gap-6">
+                      <oct-checkbox
+                        [formField]="signalForm.terms"
+                        label="I agree to the Terms of Service">
+                      </oct-checkbox>
+
+                      <oct-checkbox
+                        [formField]="signalForm.privacy"
+                        label="I acknowledge the Privacy Policy">
+                      </oct-checkbox>
+
+                      <oct-checkbox
+                        [formField]="signalForm.newsletter"
+                        label="Subscribe to our newsletter">
+                      </oct-checkbox>
+
+                      <oct-checkbox
+                        [formField]="signalForm.notifications"
+                        label="Enable push notifications">
+                      </oct-checkbox>
+
+                      <oct-checkbox
+                        [formField]="signalForm.marketing"
+                        label="Receive marketing communications">
+                      </oct-checkbox>
+                    </div>
+                  </div>
+
+                  @if (formSubmitted() && formData()) {
+                    <oct-card class="mt-4">
+                      <oct-card-content>
+                        <oct-text color="1" variant="sm" weight="semibold" class="mb-2 block">Form Data Submitted:</oct-text>
+                        <pre class="text-xs font-mono text-3 p-3 bg-secondary rounded-lg border border-primary">{{ formData() | json }}</pre>
+                      </oct-card-content>
+                    </oct-card>
+                  }
+                </form>
+              </oct-card-content>
+              <oct-card-footer>
+                <oct-button
+                  variant="outline"
+                  color="neutral"
+                  size="md"
+                  type="button"
+                  (buttonClick)="onResetSignalForm()">
+                  Reset
+                </oct-button>
+                <oct-button
+                  variant="solid"
+                  color="primary"
+                  size="md"
+                  type="submit"
+                  (buttonClick)="onSubmitSignalForm()">
+                  Submit
+                </oct-button>
+              </oct-card-footer>
+            </oct-card>
+          }
+        }
+      </div>
+
+      <!-- Right Side: Controls Panel (60%) -->
+      @if (playgroundMode() === 'interactive') {
+        <div class="lg:col-span-3">
+          <oct-card>
+            <oct-card-content class="flex flex-col gap-6">
+
+          <!-- Label Input -->
+          <div>
+            <oct-input
+              label="Checkbox Label"
+              placeholder="Enter checkbox label"
+              [value]="config().label"
+              (inputChange)="updateConfig('label', $event)"
+              type="text"
+              size="md"
+              [hideHelper]="true">
+            </oct-input>
+          </div>
+
+          <!-- Boolean Options -->
+          <div class="flex flex-wrap gap-6">
+            <oct-checkbox
+              [checked]="config().disabled"
+              (checkboxChange)="updateConfig('disabled', $event)"
+              label="Disabled">
+            </oct-checkbox>
+            <oct-checkbox
+              [checked]="config().required"
+              (checkboxChange)="updateConfig('required', $event)"
+              label="Required">
+            </oct-checkbox>
+            <oct-checkbox
+              [checked]="config().checked"
+              (checkboxChange)="updateConfig('checked', $event)"
+              label="Checked">
+            </oct-checkbox>
+            <oct-checkbox
+              [checked]="config().error"
+              (checkboxChange)="updateConfig('error', $event)"
+              label="Error State">
+            </oct-checkbox>
+          </div>
+
+          <!-- Error Message Input -->
+          <div>
+            <oct-input
+              label="Error Message"
+              placeholder="Enter error message"
+              [value]="config().errorMessage"
+              (inputChange)="updateConfig('errorMessage', $event)"
+              type="text"
+              size="md"
+              [hideHelper]="true">
+            </oct-input>
+            </div>
+            </oct-card-content>
+          </oct-card>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Examples Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+
+    <oct-text color="1" variant="2xl" weight="semibold">Examples</oct-text>
+
+    <!-- States -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-4">States</oct-text>
+          <div class="flex flex-wrap justify-center gap-4">
+            @for (item of checkboxStateExamples; track item.state) {
+              <oct-checkbox
+                [state]="item.state"
+                [label]="item.label"
+                (checkboxChange)="onCheckboxChange($event, item.state)">
+              </oct-checkbox>
+            }
+          </div>
+        </oct-card-content>
+      </oct-card>
+
+    <!-- With Labels -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-4">With Labels</oct-text>
+        <div class="flex flex-wrap justify-center gap-6">
+          <div class="flex flex-col gap-4">
+            <oct-checkbox
+              label="I agree to the terms and conditions"
+              [required]="true">
+            </oct-checkbox>
+            <oct-checkbox
+              label="Subscribe to newsletter updates">
+            </oct-checkbox>
+            <oct-checkbox
+              label="Enable push notifications">
+            </oct-checkbox>
+          </div>
+          <div class="flex flex-col gap-4">
+            <oct-checkbox
+              label="Marketing emails"
+              [checked]="formValues().marketing"
+              (checkboxChange)="onFormValueChange('marketing', $event)">
+            </oct-checkbox>
+            <oct-checkbox
+              label="Product updates"
+              [checked]="formValues().newsletter"
+              (checkboxChange)="onFormValueChange('newsletter', $event)">
+            </oct-checkbox>
+            <oct-checkbox
+              label="Security alerts"
+              [checked]="formValues().notifications"
+              (checkboxChange)="onFormValueChange('notifications', $event)">
+            </oct-checkbox>
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- With Descriptions -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-1 block">With Descriptions</oct-text>
+        <oct-text color="3" variant="sm" weight="regular" class="mb-4 block">
+          Pass <code class="font-mono">description</code> to explain a complex toggle. It renders below the label in a fainter colour and wraps for long text.
+        </oct-text>
+        <div class="flex flex-col gap-4 max-w-xl">
+          <oct-checkbox
+            label="Enable timesheet import"
+            description="When on, this company imports timesheets from a file each pay period. When off, timesheets are entered by hand here.">
+          </oct-checkbox>
+          <oct-checkbox
+            label="Enable split name (First / Last)"
+            [checked]="true"
+            description="When on, employee names are stored as separate First and Last name fields. When off, a single full Name field is stored.">
+          </oct-checkbox>
+          <oct-checkbox
+            label="Disabled with description"
+            [disabled]="true"
+            description="The description dims along with the label when the checkbox is disabled.">
+          </oct-checkbox>
+        </div>
+      </oct-card-content>
+    </oct-card>
+  </div>
+
+  <!-- Props Table -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Component Props</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary transition-all duration-300">
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">field</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">FormCheckboxControl</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Signal Forms field binding (recommended)</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">label</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Label text</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">description</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Optional helper text shown below the label in a fainter colour; wraps for long copy</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">checked</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Checkbox checked state (two-way bindable)</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">disabled</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Disable checkbox interaction</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">required</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Mark as required field</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">invalid</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Validation invalid state</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">errors</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">ValidationError[]</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">[]</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Validation errors from Signal Forms</oct-text></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

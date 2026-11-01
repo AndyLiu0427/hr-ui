@@ -1,0 +1,341 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Typography</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Interactive playground for the text component with live code generation and link click examples
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Interactive Playground Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <!-- Quick Presets -->
+    <div class="mb-6 flex flex-wrap gap-2">
+      <oct-text color="2" variant="sm" weight="medium" class="mr-4 self-center">Quick presets:</oct-text>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('heading')">
+        Heading
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('body')">
+        Body Text
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('caption')">
+        Caption
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('link')">
+        Link
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('error')">
+        Error
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('warning')">
+        Warning
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('disabled')">
+        Disabled
+      </oct-button>
+    </div>
+
+    <!-- Playground Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+      <!-- Live Preview Area (Left - 2 cols) -->
+      <div class="lg:col-span-2">
+        <oct-card customClass="h-full">
+          <oct-card-content class="w-full flex items-center justify-center">
+            <oct-text
+              [color]="selectedColor()"
+              [variant]="selectedVariant()"
+              [weight]="selectedWeight()"
+              [link]="selectedLink()"
+              (linkClick)="onLinkClick()">
+              {{ customText() }}
+            </oct-text>
+          </oct-card-content>
+        </oct-card>
+      </div>
+
+      <!-- Controls Panel (Right - 3 cols) -->
+      <div class="lg:col-span-3">
+        <oct-card>
+          <oct-card-content class="flex flex-col gap-4">
+
+            <!-- Text Input -->
+            <oct-input
+              label="Custom Text"
+              placeholder="Enter your text here"
+              [value]="customText()"
+              (inputChange)="onTextInputChange($event)"
+              type="text"
+              size="md"
+              hideHelper="true"
+            />
+
+            <!-- Color Selection -->
+            <div>
+              <oct-text color="1" variant="sm" weight="semibold" class="mb-1.5">Color</oct-text>
+              <div class="flex gap-2">
+                @for (color of colors; track color.value) {
+                  <oct-button
+                    [variant]="selectedColor() === color.value ? 'solid' : 'outline'"
+                    [color]="selectedColor() === color.value ? 'primary' : 'neutral'"
+                    size="md"
+                    shape="square"
+                    (buttonClick)="updateColor(color.value)">
+                    <div class="text-center">
+                      {{ color.label }}
+                    </div>
+                  </oct-button>
+                }
+              </div>
+            </div>
+
+            <!-- Size/Variant Selection -->
+            <div>
+              <oct-text color="1" variant="sm" weight="semibold" class="mb-1.5">Size (Variant)</oct-text>
+              <div class="flex flex-wrap gap-2">
+                @for (variant of variants; track variant.variant) {
+                  <oct-button
+                    [variant]="selectedVariant() === variant.variant ? 'solid' : 'outline'"
+                    [color]="selectedVariant() === variant.variant ? 'primary' : 'neutral'"
+                    size="sm"
+                    shape="square"
+                    (buttonClick)="updateVariant(variant.variant)"
+                  >
+                    {{ variant.label }}
+                  </oct-button>
+                }
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+              <!-- Weight Selection -->
+              <div>
+                <oct-text color="1" variant="sm" weight="semibold" class="mb-1.5">Weight</oct-text>
+                <div class="flex gap-2">
+                  @for (weight of weights; track weight.weight) {
+                    <oct-button
+                      [variant]="selectedWeight() === weight.weight ? 'solid' : 'outline'"
+                      [color]="selectedWeight() === weight.weight ? 'primary' : 'neutral'"
+                      size="sm"
+                      shape="square"
+                      (buttonClick)="updateWeight(weight.weight)"
+                    >
+                      {{ weight.label }}
+                    </oct-button>
+                  }
+                </div>
+              </div>
+
+              <!-- Link Selection -->
+              <div>
+                <oct-text color="1" variant="sm" weight="semibold" class="mb-1.5">Link Style</oct-text>
+                <div class="flex gap-2">
+                  @for (linkOption of linkOptions; track linkOption.enabled) {
+                    <oct-button
+                      [variant]="selectedLink() === linkOption.enabled ? 'solid' : 'outline'"
+                      [color]="selectedLink() === linkOption.enabled ? 'primary' : 'neutral'"
+                      size="sm"
+                      shape="square"
+                      fullWidth="true"
+                      (buttonClick)="updateLink(linkOption.enabled)"
+                    >
+                      {{ linkOption.label }}
+                    </oct-button>
+                  }
+                </div>
+                <oct-text color="2" variant="xs" weight="regular" class="mt-2 block">
+                  @if (selectedLink()) {
+                    Interactive link with click events and underline styling
+                  } @else {
+                    Standard text without link behavior
+                  }
+                </oct-text>
+              </div>
+            </div>
+          </oct-card-content>
+        </oct-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Examples Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Examples</oct-text>
+    <!-- Size Scale -->
+    <oct-card>
+      <oct-card-header>
+        <oct-text color="1" variant="2xl" weight="semibold">Size Scale</oct-text>
+      </oct-card-header>
+      <oct-card-content class="flex flex-col gap-6">
+        @for (variant of variants; track variant.variant) {
+          <oct-text color="1" [variant]="variant.variant" weight="medium">
+            {{ variant.label }} {{ variant.description }}
+          </oct-text>
+        }
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Color Examples -->
+    <oct-card>
+      <oct-card-header>
+        <oct-text color="1" variant="2xl" weight="semibold">Color Hierarchy</oct-text>
+      </oct-card-header>
+      <oct-card-content class="flex flex-wrap justify-center gap-6">
+        @for (color of colors; track color.value) {
+          <oct-text [color]="color.value" variant="2xl" weight="semibold" class="mb-2 block">
+            {{ color.label }}
+          </oct-text>
+        }
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Weight Examples -->
+    <oct-card>
+      <oct-card-header>
+        <oct-text color="1" variant="2xl" weight="semibold">Font Weights</oct-text>
+      </oct-card-header>
+      <oct-card-content class="flex flex-wrap justify-center gap-6">
+        @for (weight of weights; track weight.weight) {
+          <oct-text color="1" variant="2xl" [weight]="weight.weight" class="mb-2 block">
+            {{ weight.label }}
+          </oct-text>
+        }
+      </oct-card-content>
+    </oct-card>
+  </div>
+
+  <!-- Component Props -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Component Props</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary">
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Required</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-primary">
+            <td class="p-4">
+              <code class="text-1 font-mono text-sm">color</code>
+            </td>
+            <td class="p-4">
+              <code class="text-2 font-mono text-sm">'1' | '2' | '3' | 'error' | 'warning' | 'disabled'</code>
+            </td>
+            <td class="p-4">
+              <oct-text color="1" variant="sm" weight="medium">Yes</oct-text>
+            </td>
+            <td class="p-4">
+              <oct-text color="3" variant="sm" weight="regular">-</oct-text>
+            </td>
+            <td class="p-4">
+              <oct-text color="2" variant="sm" weight="regular">Text color hierarchy</oct-text>
+            </td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4">
+              <code class="text-1 font-mono text-sm">variant</code>
+            </td>
+            <td class="p-4">
+              <code class="text-2 font-mono text-sm">TextVariant</code>
+            </td>
+            <td class="p-4">
+              <oct-text color="1" variant="sm" weight="medium">Yes</oct-text>
+            </td>
+            <td class="p-4">
+              <oct-text color="3" variant="sm" weight="regular">-</oct-text>
+            </td>
+            <td class="p-4">
+              <oct-text color="2" variant="sm" weight="regular">Size scale (xs to 8xl)</oct-text>
+            </td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4">
+              <code class="text-1 font-mono text-sm">weight</code>
+            </td>
+            <td class="p-4">
+              <code class="text-2 font-mono text-sm">TextWeight</code>
+            </td>
+            <td class="p-4">
+              <oct-text color="1" variant="sm" weight="medium">No</oct-text>
+            </td>
+            <td class="p-4">
+              <code class="text-2 font-mono text-sm">'regular'</code>
+            </td>
+            <td class="p-4">
+              <oct-text color="2" variant="sm" weight="regular">Font weight (regular, medium, semibold, bold)</oct-text>
+            </td>
+          </tr>
+          <tr>
+            <td class="p-4">
+              <code class="text-1 font-mono text-sm">link</code>
+            </td>
+            <td class="p-4">
+              <code class="text-2 font-mono text-sm">boolean</code>
+            </td>
+            <td class="p-4">
+              <oct-text color="1" variant="sm" weight="medium">No</oct-text>
+            </td>
+            <td class="p-4">
+              <code class="text-2 font-mono text-sm">false</code>
+            </td>
+            <td class="p-4">
+              <oct-text color="2" variant="sm" weight="regular">Apply link styling (underline, cursor pointer)</oct-text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

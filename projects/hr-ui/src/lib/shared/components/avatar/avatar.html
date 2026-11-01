@@ -1,0 +1,77 @@
+<div class="group relative inline-flex">
+  <!-- Main avatar container -->
+  <div
+    [class]="containerClasses()"
+    [attr.role]="clickable() ? 'button' : 'img'"
+    [attr.tabindex]="clickable() ? 0 : null"
+    [attr.aria-label]="ariaLabel()">
+
+    <!-- Image content -->
+    @if (displayContent() === 'image') {
+      <img
+        [src]="src()"
+        [alt]="alt() || name()"
+        (error)="onImageError()"
+        (load)="onImageLoad()"
+        class="size-full object-cover transition-opacity duration-200"
+        [class.opacity-100]="imageLoaded()"
+        [class.opacity-0]="!imageLoaded()"
+        loading="lazy"
+        decoding="async" />
+    }
+
+    <!-- Initials content -->
+    @if (displayContent() === 'initials') {
+      <span
+        [class]="'font-medium leading-none ' + textClasses()"
+        aria-hidden="true">
+        {{ initials() }}
+      </span>
+    }
+
+    <!-- Fallback image -->
+    @if (displayContent() === 'fallback') {
+      <img
+        [src]="fallbackImageSrc"
+        alt=""
+        class="size-full object-cover"
+        loading="lazy"
+        decoding="async" />
+    }
+  </div>
+
+  <!-- Status indicator -->
+  @if (status() !== 'none') {
+    <span
+      [class]="statusWrapperClasses()"
+      role="status"
+      [attr.aria-label]="'Status: ' + status()">
+
+      @if (status() === 'online') {
+        <!-- Online: with ping animation -->
+        <span [class]="statusClasses()">
+          <span
+            class="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75"
+            aria-hidden="true">
+          </span>
+          <span [class]="statusInnerClasses()" aria-hidden="true"></span>
+        </span>
+      } @else {
+        <!-- Other statuses: solid dot -->
+        <span [class]="statusClasses()" aria-hidden="true"></span>
+      }
+    </span>
+  }
+
+  <!-- Tooltip -->
+  @if (showTooltip() && tooltipText()) {
+    <span
+      class="pointer-events-none absolute -bottom-8 left-1/2 z-20 -translate-x-1/2
+             whitespace-nowrap rounded bg-neutral-800 px-2 py-1 text-xs text-neutral-50
+             opacity-0 transition-opacity duration-200
+             group-hover:opacity-100"
+      role="tooltip">
+      {{ tooltipText() }}
+    </span>
+  }
+</div>

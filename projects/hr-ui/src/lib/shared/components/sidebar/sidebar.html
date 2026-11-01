@@ -1,0 +1,347 @@
+<!-- Pin toggle, shared by tree rows, Pinned rows and panel rows. A sibling of the row's link, never inside it. -->
+<ng-template #pinButton let-item let-inPinnedBlock="inPinnedBlock">
+  @let pageLabel = useTranslation() ? (item.label | translate) : item.label;
+  <button
+    type="button"
+    class="sidebar-pin absolute top-1 right-1 flex size-7 items-center justify-center rounded
+           focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-200 hover:bg-primary/10"
+    [class]="item.pinned ? 'is-pinned text-primary hover:text-primary-200' : 'text-3 hover:text-1'"
+    [class.in-tree]="!inPinnedBlock"
+    [class.icon-swap-trigger]="item.pinned && justToggled() !== item.route"
+    [attr.aria-pressed]="!!item.pinned"
+    [attr.aria-label]="'SIDEBAR.PIN_PAGE' | translate: { page: pageLabel }"
+    [title]="(item.pinned ? 'SIDEBAR.UNPIN' : 'SIDEBAR.PIN_TO_TOP') | translate"
+    (click)="togglePin(item, $event)"
+    (mouseleave)="releasePin(item)"
+    (blur)="releasePin(item)">
+    <span class="icon-swap" aria-hidden="true">
+      <oct-icon name="Pin" size="sm" />
+      <oct-icon name="PinOff" size="sm" />
+    </span>
+  </button>
+</ng-template>
+
+<!-- ">>" in the trailing column of a row that opens a panel. -->
+<ng-template #panelHint>
+  <span class="sidebar-row-hint pointer-events-none absolute top-1 right-1 flex size-7 items-center justify-center" aria-hidden="true">
+    <oct-icon name="ChevronsRight" size="sm" class="text-3" />
+  </span>
+</ng-template>
+
+<!-- Icon, page name and the grey group name of a Pinned row. -->
+<ng-template #pinnedRowContent let-item let-pageLabel="pageLabel" let-groupLabel="groupLabel">
+  <oct-icon [name]="item.icon" size="lg" class="pointer-events-none text-1 transition-colors duration-200 group-[.is-active]:text-primary" />
+  <span class="sidebar-label pointer-events-none ml-3 flex min-w-0 flex-1 items-baseline gap-1.5">
+    <span class="truncate text-1 group-[.is-active]:font-medium">{{ pageLabel }}</span>
+    @if (groupLabel) {
+      <span class="truncate text-xs text-3 [flex-shrink:1000] group-[.is-active]:text-2">{{ groupLabel }}</span>
+    }
+  </span>
+</ng-template>
+
+<div
+  #sidebarRoot
+  class="sidebar flex h-full flex-col antialiased"
+  [class.w-60]="!collapsed()"
+  [class.w-14]="collapsed()"
+  [class.rail-touched]="railTouched()">
+  <nav class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto pt-1 pb-4">
+    @for (section of config().sections; track section.id) {
+      @if (section.kind === 'pinned') {
+        @if (collapsed() && section.items.length > 0) {
+          <!-- The rail keeps the pinned pages behind one icon: a hover lists them, a click opens the sidebar. -->
+          @let pinnedRailItem = { label: section.label, route: section.id, icon: 'Pin', children: section.items };
+          <div class="mx-2 mb-2 border-b border-primary pb-2">
+            <button
+              type="button"
+              class="flex h-9 w-full items-center justify-center rounded-lg px-2 cursor-pointer
+                     transition-[background-color] duration-200 ease-out hover:bg-primary/5
+                     focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-200"
+              [attr.aria-label]="useTranslation() ? (section.label | translate) : section.label"
+              (click)="expandToPins()"
+              (mouseenter)="enterRailItem(pinnedRailItem, $event)"
+              (mouseleave)="leaveRailItem()">
+              <oct-icon name="Pin" size="lg" class="pointer-events-none text-1" />
+            </button>
+          </div>
+        } @else if (section.items.length > 0) {
+          <div class="mb-3 px-3">
+            <oct-text [id]="section.id + '-label'" color="3" variant="xs" weight="semibold" class="block px-2 py-2">
+              {{ useTranslation() ? (section.label | translate) : section.label }}
+            </oct-text>
+            <ul [attr.aria-labelledby]="section.id + '-label'">
+              @for (item of section.items; track item.route) {
+                @let pageLabel = useTranslation() ? (item.label | translate) : item.label;
+                @let groupLabel = item.context ? (useTranslation() ? (item.context | translate) : item.context) : '';
+                <li
+                  class="pinned-row"
+                  [animate.enter]="freshPin() === item.route ? 'pinned-row-enter' : ''"
+                  animate.leave="pinned-row-leave">
+                  <div class="pinned-row-inner">
+                    <div class="sidebar-row-wrap group/row relative mb-0.5">
+                      @if (item.flyoutItems && item.flyoutItems.length > 0) {
+                        <!-- A pinned Reports row opens the same panel as the one in the tree. -->
+                        <button
+                          type="button"
+                          class="group relative flex w-full items-center rounded-lg py-2 pr-9 pl-2 text-left text-sm font-normal cursor-pointer
+                                 transition-[background-color] duration-200 ease-out
+                                 [&:not(.is-active)]:group-hover/row:bg-primary/5
+                                 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-200"
+                          [class]="isPageActive(item) ? 'is-active bg-primary/15' : ''"
+                          [title]="groupLabel ? groupLabel + ' / ' + pageLabel : pageLabel"
+                          (mouseenter)="openPagesFlyout(item, $event)"
+                          (mouseleave)="scheduleFlyoutClose()"
+                          (click)="openPagesFlyout(item, $event)">
+                          <ng-container [ngTemplateOutlet]="pinnedRowContent" [ngTemplateOutletContext]="{ $implicit: item, pageLabel, groupLabel }" />
+                          <ng-container [ngTemplateOutlet]="panelHint" />
+                        </button>
+                      } @else {
+                        <a
+                          [routerLink]="item.route"
+                          routerLinkActive="is-active bg-primary/15"
+                          ariaCurrentWhenActive="page"
+                          [title]="groupLabel ? groupLabel + ' / ' + pageLabel : pageLabel"
+                          (click)="itemClicked.emit()"
+                          class="group relative flex items-center rounded-lg py-2 pr-9 pl-2 text-sm font-normal cursor-pointer
+                                 transition-[background-color] duration-200 ease-out
+                                 [&:not(.is-active)]:group-hover/row:bg-primary/5 [&:not(.is-active)]:active:bg-primary/25
+                                 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-200">
+                          <ng-container [ngTemplateOutlet]="pinnedRowContent" [ngTemplateOutletContext]="{ $implicit: item, pageLabel, groupLabel }" />
+                        </a>
+                      }
+                      <ng-container [ngTemplateOutlet]="pinButton" [ngTemplateOutletContext]="{ $implicit: item, inPinnedBlock: true }" />
+                    </div>
+                  </div>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      } @else {
+        <div class="mb-2" [class]="collapsed() ? 'px-2' : 'px-3'">
+          @if (!collapsed() && section.label && section.items.length > 0) {
+            <div class="px-2 py-2">
+              <oct-text color="3" variant="xs" weight="semibold">
+                {{ useTranslation() ? (section.label | translate) : section.label }}
+              </oct-text>
+            </div>
+          }
+          <ul class="flex flex-col gap-0.5">
+            @for (item of section.items; track item.route) {
+              @if (item.isShow !== false) {
+                @let label = useTranslation() ? (item.label | translate) : item.label;
+                <li>
+                  @if (item.children && item.children.length > 0) {
+                    @let open = isGroupOpen(item);
+                    @let current = hasCurrentPage(item);
+                    <button
+                      type="button"
+                      class="group relative flex h-9 w-full items-center rounded-lg text-left text-sm font-normal cursor-pointer
+                             transition-[background-color] duration-200 ease-out
+                             [&:not(.is-active)]:hover:bg-primary/5
+                             focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-200"
+                      [class]="collapsed() ? (current ? 'is-active bg-primary/15 justify-center px-2' : 'justify-center px-2') : 'pr-1 pl-2'"
+                      [attr.aria-expanded]="collapsed() ? null : open"
+                      [attr.aria-controls]="collapsed() ? null : groupPanelId(item)"
+                      [attr.aria-label]="collapsed() ? label : null"
+                      (click)="toggleGroup(item)"
+                      (mouseenter)="enterRailItem(item, $event)"
+                      (mouseleave)="leaveRailItem()">
+                      <oct-icon
+                        [name]="item.icon"
+                        size="lg"
+                        class="pointer-events-none text-1 transition-colors duration-200"
+                        [class.text-primary]="collapsed() && current" />
+                      @if (!collapsed()) {
+                        <span class="sidebar-label pointer-events-none ml-3 min-w-0 flex-1 truncate text-1">{{ label }}</span>
+                        @if (item.badge) {
+                          <oct-badge [text]="item.badge" color="warning" size="sm" mode="opacity" />
+                        }
+                        <span class="pointer-events-none flex size-7 flex-none items-center justify-center" aria-hidden="true">
+                          <oct-icon name="ChevronDown" size="sm" class="sidebar-chevron text-3" [class.is-open]="open" />
+                        </span>
+                      }
+                    </button>
+
+                    @if (!collapsed()) {
+                      <!-- A closed group keeps its current page row in view; the other rows close. -->
+                      <ul class="ml-5 pl-2" [id]="groupPanelId(item)">
+                        @for (child of item.children; track child.route) {
+                          @if (child.isShow !== false) {
+                            @let childLabel = useTranslation() ? (child.label | translate) : child.label;
+                            @let childCurrent = isPageActive(child);
+                            @let shown = open || childCurrent;
+                            <li class="sidebar-child" [class.is-shown]="shown" [inert]="!shown" [attr.aria-hidden]="shown ? null : true">
+                              <div class="sidebar-child-inner">
+                                @if (child.flyoutItems && child.flyoutItems.length > 0) {
+                                  <!-- Flyout trigger: hover or click opens its pages to the right. No navigation. -->
+                                  <div class="sidebar-row-wrap group/row relative mt-0.5">
+                                    <button
+                                      type="button"
+                                      class="relative flex h-9 w-full items-center rounded-lg pr-9 pl-3 text-left text-sm font-normal cursor-pointer
+                                             transition-[background-color] duration-200 ease-out
+                                             [&:not(.is-active)]:group-hover/row:bg-primary/5
+                                             focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-200"
+                                      [class]="childCurrent ? 'is-active bg-primary/15 font-medium' : ''"
+                                      (mouseenter)="openPagesFlyout(child, $event)"
+                                      (mouseleave)="scheduleFlyoutClose()"
+                                      (click)="openPagesFlyout(child, $event)">
+                                      <span class="sidebar-label pointer-events-none min-w-0 flex-1 truncate text-1">{{ childLabel }}</span>
+                                      <ng-container [ngTemplateOutlet]="panelHint" />
+                                    </button>
+                                    @if (child.pinnable) {
+                                      <ng-container [ngTemplateOutlet]="pinButton" [ngTemplateOutletContext]="{ $implicit: child, inPinnedBlock: false }" />
+                                    }
+                                  </div>
+                                } @else {
+                                  <div class="sidebar-row-wrap group/row relative mt-0.5">
+                                    <a
+                                      [routerLink]="child.route"
+                                      routerLinkActive="is-active bg-primary/15 !font-medium"
+                                      ariaCurrentWhenActive="page"
+                                      (click)="itemClicked.emit()"
+                                      class="group relative flex items-center rounded-lg py-2 pl-3 text-sm font-normal
+                                             transition-[background-color] duration-200 ease-out
+                                             [&:not(.is-active)]:group-hover/row:bg-primary/5
+                                             focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-200"
+                                      [class]="child.pinnable ? 'pr-9' : 'pr-3'">
+                                      <span class="sidebar-label pointer-events-none min-w-0 flex-1 truncate text-1">{{ childLabel }}</span>
+                                    </a>
+                                    @if (child.pinnable) {
+                                      <ng-container [ngTemplateOutlet]="pinButton" [ngTemplateOutletContext]="{ $implicit: child, inPinnedBlock: false }" />
+                                    }
+                                  </div>
+                                }
+                              </div>
+                            </li>
+                          }
+                        }
+                      </ul>
+                    }
+                  } @else {
+                    <div class="sidebar-row-wrap group/row relative">
+                      <a
+                        [routerLink]="[item.route]"
+                        routerLinkActive="is-active bg-primary/15"
+                        [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+                        ariaCurrentWhenActive="page"
+                        class="group relative flex items-center rounded-lg py-2 pl-2 text-sm font-normal cursor-pointer
+                               transition-[background-color] duration-200 ease-out
+                               [&:not(.is-active)]:group-hover/row:bg-primary/5 [&:not(.is-active)]:active:bg-primary/25
+                               focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-200"
+                        [class]="collapsed() ? 'justify-center pr-2' : item.pinnable ? 'pr-9' : 'pr-2'"
+                        [attr.aria-label]="collapsed() ? label : null"
+                        (click)="itemClicked.emit()"
+                        (mouseenter)="showItemPreview(item); enterRailItem(item, $event)"
+                        (mouseleave)="hideItemPreview(); leaveRailItem()">
+                        <oct-icon [name]="item.icon" size="lg" class="pointer-events-none text-1 transition-colors duration-200 group-[.is-active]:text-primary" />
+                        @if (!collapsed()) {
+                          <span class="sidebar-label pointer-events-none ml-3 min-w-0 flex-1 truncate text-1 group-[.is-active]:font-medium">{{ label }}</span>
+                          @if (item.badge) {
+                            <oct-badge [text]="item.badge" color="warning" size="sm" mode="opacity" />
+                          }
+                        }
+                      </a>
+                      @if (item.pinnable && !collapsed()) {
+                        <ng-container [ngTemplateOutlet]="pinButton" [ngTemplateOutletContext]="{ $implicit: item, inPinnedBlock: false }" />
+                      }
+                      @if (!collapsed() && componentPreview() === item && item.preview) {
+                        <div class="pointer-events-none absolute top-0 left-full z-40 ml-2 w-64 rounded-lg border bg-popover p-4 shadow-lg">
+                          <div class="space-y-2">
+                            <oct-text color="popover-foreground" variant="sm" weight="medium">{{ item.preview.title }}</oct-text>
+                            <oct-text color="muted-foreground" variant="xs" weight="regular">{{ item.preview.description }}</oct-text>
+                            @if (item.preview.content) {
+                              <div class="mt-2">
+                                <oct-text color="1" variant="sm" weight="regular">{{ item.preview.content }}</oct-text>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+                </li>
+                <!-- Divider after the design system's Overview -->
+                @if (item.route === '/design-system') {
+                  <li class="my-2 border-t border-primary" aria-hidden="true"></li>
+                }
+              }
+            }
+          </ul>
+        </div>
+      }
+    }
+  </nav>
+  <div class="sr-only" aria-live="polite">{{ announcement() }}</div>
+</div>
+
+<!-- Panels to the right of the sidebar. Fixed, because the scrolling <nav> clips overflow on both axes. -->
+@if (flyout(); as fly) {
+  @let flyoutLabel = useTranslation() ? (fly.item.label | translate) : fly.item.label;
+  @if (fly.kind === 'tip') {
+    <div
+      role="tooltip"
+      animate.leave="flyout-leave"
+      class="pointer-events-none fixed z-[60] mt-0.5 whitespace-nowrap rounded-lg bg-primary-100 px-3 py-1.5 text-sm text-white shadow-lg"
+      [style.top.px]="fly.top"
+      [style.left.px]="fly.left">
+      {{ flyoutLabel }}
+    </div>
+  } @else {
+    <div
+      #flyoutPanel
+      animate.leave="flyout-leave"
+      class="fixed z-[60] max-w-72 min-w-48 rounded-xl border border-primary bg-secondary p-1 shadow-lg antialiased"
+      [style.top.px]="fly.top"
+      [style.left.px]="fly.left"
+      (mouseenter)="cancelFlyoutClose()"
+      (mouseleave)="scheduleFlyoutClose()">
+      <!-- Invisible bridge over the gap to the sidebar, so the pointer can cross without closing the panel. -->
+      <span class="absolute top-0 -left-2.5 h-full w-2.5" aria-hidden="true"></span>
+      <div class="px-3 pt-1.5 pb-1">
+        <oct-text color="3" variant="xs" weight="semibold">{{ flyoutLabel }}</oct-text>
+      </div>
+      <ng-container [ngTemplateOutlet]="flyoutList" [ngTemplateOutletContext]="{ $implicit: flyoutPages().pages }" />
+      @if (flyoutPages().subPages.length > 0) {
+        <div class="px-3 pt-2.5 pb-0.5">
+          <oct-text color="3" variant="xs" weight="semibold">
+            {{ useTranslation() ? (flyoutPages().subTitle | translate) : flyoutPages().subTitle }}
+          </oct-text>
+        </div>
+        <ng-container [ngTemplateOutlet]="flyoutList" [ngTemplateOutletContext]="{ $implicit: flyoutPages().subPages }" />
+      }
+    </div>
+  }
+}
+
+<ng-template #flyoutList let-pages>
+  <ul class="flex flex-col gap-0.5">
+    @for (page of pages; track page.route) {
+      <li class="sidebar-row-wrap group/row relative">
+        <a
+          [routerLink]="[page.route]"
+          routerLinkActive="is-active bg-primary/15 !font-medium"
+          ariaCurrentWhenActive="page"
+          (click)="chooseFlyoutPage()"
+          class="group flex items-center gap-2.5 whitespace-nowrap rounded-lg py-2 pl-3 text-sm text-1
+                 transition-[background-color] duration-200 ease-out
+                 [&:not(.is-active)]:group-hover/row:bg-primary/5
+                 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-200"
+          [class]="page.pinnable ? 'pr-9' : 'pr-3'">
+          @if (page.icon) {
+            <oct-icon [name]="page.icon" size="md" class="pointer-events-none text-1 group-[.is-active]:text-primary" />
+          }
+          <span class="pointer-events-none flex min-w-0 flex-1 items-baseline gap-1.5">
+            <span>{{ useTranslation() ? (page.label | translate) : page.label }}</span>
+            @if (page.context) {
+              <span class="text-xs text-3 group-[.is-active]:text-2">{{ useTranslation() ? (page.context | translate) : page.context }}</span>
+            }
+          </span>
+        </a>
+        @if (page.pinnable) {
+          <ng-container [ngTemplateOutlet]="pinButton" [ngTemplateOutletContext]="{ $implicit: page, inPinnedBlock: false }" />
+        }
+      </li>
+    }
+  </ul>
+</ng-template>

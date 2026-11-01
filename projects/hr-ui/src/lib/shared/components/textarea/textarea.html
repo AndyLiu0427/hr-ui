@@ -1,0 +1,42 @@
+<div [class]="containerClass()">
+  <!-- Label -->
+  @if (label()) {
+    <label [for]="textareaId()" [class]="labelClass()">
+      {{ label() }}
+      @if (required()) {
+        <oct-text color="error" variant="sm" class="ml-0.5">*</oct-text>
+      }
+    </label>
+  }
+
+  <!-- Textarea element -->
+  <textarea
+    #textareaElement
+    [cdkTextareaAutosize]="autosize()"
+    [cdkAutosizeMinRows]="4"
+    [id]="textareaId()"
+    [name]="name() || textareaId()"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [readonly]="readonly()"
+    [value]="value()"
+    [class]="textareaClass()"
+    [attr.minlength]="minLength()"
+    [attr.maxlength]="maxLength()"
+    [attr.aria-invalid]="hasError()"
+    (input)="handleInput($event)"
+    (focus)="handleFocus($event)"
+    (blur)="handleBlur($event)"
+    (keydown)="handleKeydown($event)"
+    (keyup)="handleKeyup($event)"
+  ></textarea>
+
+  <!-- Helper/Error Text -->
+  @if (!hideHelper()) {
+    <div class="h-5">
+      <oct-text [color]="hasError() ? 'error' : '2'" variant="sm">
+        {{ displayHelperText() }}
+      </oct-text>
+    </div>
+  }
+</div>

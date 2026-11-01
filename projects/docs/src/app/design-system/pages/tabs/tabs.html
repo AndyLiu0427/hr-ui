@@ -1,0 +1,418 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Tabs</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Navigation component for organizing content into separate views with smooth sliding animations
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Interactive Playground Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <!-- Quick Presets -->
+    <div class="mb-6 flex flex-wrap gap-2">
+      <oct-text color="2" variant="sm" weight="medium" class="mr-4 self-center">Quick presets:</oct-text>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('2tabs')">
+        2 Tabs
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('3tabs')">
+        3 Tabs
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('4tabs')">
+        4 Tabs
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('6tabs')">
+        6 Tabs
+      </oct-button>
+    </div>
+
+    <!-- Playground Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+      <!-- Live Preview Area (Left - 2 cols) -->
+      <div class="lg:col-span-2">
+        <oct-card customClass="h-full">
+          <oct-card-content class="w-full">
+            <oct-tabs
+              [tabs]="config().tabs"
+              [(activeTab)]="config().activeTab"
+              (tabChange)="onPlaygroundTabChange($event)"
+            />
+            <div class="mt-6 p-4 bg-secondary rounded-lg">
+              <oct-text color="1" variant="sm" weight="medium">Active Tab Content</oct-text>
+              <oct-text color="2" variant="sm" weight="regular" class="mt-2 block">
+                Selected: {{ config().activeTab }}
+              </oct-text>
+            </div>
+          </oct-card-content>
+        </oct-card>
+      </div>
+
+      <!-- Controls Panel (Right - 3 cols) -->
+      <div class="lg:col-span-3">
+        <oct-card>
+          <oct-card-content class="flex flex-col gap-4">
+
+            <!-- Tab Labels -->
+            <div>
+              <oct-text color="1" variant="sm" weight="semibold" class="mb-1.5">Tab Labels</oct-text>
+              <div class="flex flex-col gap-2">
+                @for (tab of config().tabs; track tab.id; let i = $index) {
+                  <oct-input
+                    [label]="'Tab ' + (i + 1)"
+                    [value]="tab.label"
+                    (inputChange)="updateTabLabel(i, $event)"
+                    type="text"
+                    size="sm"
+                    hideHelper="true"
+                  />
+                }
+              </div>
+            </div>
+
+            <!-- Active Tab Info -->
+            <div class="p-3 bg-secondary rounded-lg border border-primary">
+              <oct-text color="1" variant="sm" weight="semibold" class="mb-1">Current State</oct-text>
+              <oct-text color="2" variant="xs" weight="regular" class="block">
+                Active Tab ID: <code class="text-1 font-mono">{{ config().activeTab }}</code>
+              </oct-text>
+              <oct-text color="2" variant="xs" weight="regular" class="block mt-1">
+                Total Tabs: <code class="text-1 font-mono">{{ config().tabs.length }}</code>
+              </oct-text>
+            </div>
+          </oct-card-content>
+        </oct-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Examples Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+
+    <oct-text color="1" variant="2xl" weight="semibold">Examples</oct-text>
+
+    <!-- Navigation Tabs (href) -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-2">Navigation Tabs</oct-text>
+        <oct-text color="2" variant="sm" weight="regular" class="mb-4 block">
+          Give a tab an <code class="text-1 font-mono">href</code> when selecting it navigates instead of swapping content in
+          place. The tab renders as a real anchor with <code class="text-1 font-mono">role="link"</code>, so right-click + "Open in new tab" works.
+        </oct-text>
+
+        <div class="max-w-2xl mx-auto flex flex-col gap-4">
+          <oct-tabs
+            [tabs]="navTabs()"
+            [(activeTab)]="activeNavTab"
+            [interactive]="navInteractive()"
+            (tabChange)="onNavTabChange($event)"
+          />
+
+          <oct-switch
+            [checked]="navInteractive()"
+            (switchChange)="navInteractive.set($event)"
+            label="interactive"
+          />
+
+          <div class="p-4 bg-secondary rounded-lg flex flex-col gap-1">
+            @if (navInteractive()) {
+              <oct-text color="2" variant="sm" weight="regular" class="block">
+                Router call from <code class="text-1 font-mono">tabChange</code>:
+                <code class="text-1 font-mono">{{ lastNavTarget() || '(pick a tab)' }}</code>
+              </oct-text>
+            } @else {
+              <oct-text color="2" variant="sm" weight="regular" class="block">
+                The whole strip is inert: no click, no keyboard, and the anchors have <strong>dropped their href</strong>.
+              </oct-text>
+            }
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Mixed Anchor and Button Tabs -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-2">Mixed Anchor and Button Tabs</oct-text>
+        <oct-text color="2" variant="sm" weight="regular" class="mb-4 block">
+          <code class="text-1 font-mono">href</code> is per tab, not per strip. Tabs without one stay
+          <code class="text-1 font-mono">role="tab"</code> buttons and swap content in place, alongside tabs that navigate.
+        </oct-text>
+        <div class="max-w-2xl mx-auto">
+          <oct-tabs
+            [tabs]="mixedTabs()"
+            [(activeTab)]="activeMixedTab"
+          />
+          <div class="mt-6 p-4 bg-secondary rounded-lg">
+            @for (tab of mixedTabs(); track tab.id) {
+              <oct-text color="2" variant="sm" weight="regular" class="block">
+                <code class="text-1 font-mono">{{ tab.label }}</code> renders as
+                @if (tab.href) {
+                  <code class="text-1 font-mono">&lt;a role="link"&gt;</code> to <code class="text-1 font-mono">{{ tab.href }}</code>
+                } @else {
+                  <code class="text-1 font-mono">&lt;button role="tab"&gt;</code>
+                }
+              </oct-text>
+            }
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- User Profile Settings (2 Tabs) -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-2">User Profile Settings</oct-text>
+        <oct-text color="2" variant="sm" weight="regular" class="mb-4 block">Manage your account information and security preferences</oct-text>
+        <div class="max-w-2xl mx-auto">
+          <oct-tabs
+            [tabs]="profileTabs()"
+            [(activeTab)]="activeProfileTab"
+            (tabChange)="onProfileTabChange($event)"
+          />
+          <div class="mt-6 p-4 bg-secondary rounded-lg">
+            <oct-text color="2" variant="sm" weight="regular">{{ getContent(activeProfileTab()) }}</oct-text>
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- E-commerce Product (3 Tabs) -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-2">E-commerce Product Details</oct-text>
+        <oct-text color="2" variant="sm" weight="regular" class="mb-4 block">Premium Wireless Headphones - $299</oct-text>
+        <div class="max-w-2xl mx-auto">
+          <oct-tabs
+            [tabs]="productTabs()"
+            [(activeTab)]="activeProductTab"
+            (tabChange)="onProductTabChange($event)"
+          />
+          <div class="mt-6 p-4 bg-secondary rounded-lg">
+            <oct-text color="2" variant="sm" weight="regular">{{ getContent(activeProductTab()) }}</oct-text>
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Dashboard Analytics (4 Tabs) -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-2">Dashboard Analytics</oct-text>
+        <oct-text color="2" variant="sm" weight="regular" class="mb-4 block">Monitor your business performance and metrics</oct-text>
+        <div class="max-w-2xl mx-auto">
+          <oct-tabs
+            [tabs]="dashboardTabs()"
+            [(activeTab)]="activeDashboardTab"
+            (tabChange)="onDashboardTabChange($event)"
+          />
+          <div class="mt-6 p-4 bg-secondary rounded-lg">
+            <oct-text color="2" variant="sm" weight="regular">{{ getContent(activeDashboardTab()) }}</oct-text>
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Social Media Feed (5 Tabs) -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-2">Social Media Platform</oct-text>
+        <oct-text color="2" variant="sm" weight="regular" class="mb-4 block">Stay connected with friends and explore new content</oct-text>
+        <div class="max-w-2xl mx-auto">
+          <oct-tabs
+            [tabs]="socialTabs()"
+            [(activeTab)]="activeSocialTab"
+            (tabChange)="onSocialTabChange($event)"
+          />
+          <div class="mt-6 p-4 bg-secondary rounded-lg">
+            <oct-text color="2" variant="sm" weight="regular">{{ getContent(activeSocialTab()) }}</oct-text>
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Project Management (6 Tabs) -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-2">Project Management Workspace</oct-text>
+        <oct-text color="2" variant="sm" weight="regular" class="mb-4 block">Collaborate with your team and track project progress</oct-text>
+        <div class="max-w-2xl mx-auto">
+          <oct-tabs
+            [tabs]="projectTabs()"
+            [(activeTab)]="activeProjectTab"
+            (tabChange)="onProjectTabChange($event)"
+          />
+          <div class="mt-6 p-4 bg-secondary rounded-lg">
+            <oct-text color="2" variant="sm" weight="regular">{{ getContent(activeProjectTab()) }}</oct-text>
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Keyboard Navigation Example -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-2">Keyboard Navigation</oct-text>
+        <oct-text color="2" variant="sm" weight="regular" class="mb-4 block">
+          Try using keyboard to navigate: Arrow Left/Right, Home, End, Enter, or Space
+        </oct-text>
+        <div class="max-w-2xl mx-auto">
+          <oct-tabs
+            [tabs]="dashboardTabs()"
+            [(activeTab)]="activeDashboardTab"
+            (tabChange)="onDashboardTabChange($event)"
+          />
+        </div>
+      </oct-card-content>
+    </oct-card>
+  </div>
+
+  <!-- Props Table -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Component Props</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary transition-all duration-300">
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">tabs</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">TabItem[]</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">required</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Array of tab items with id and label</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">activeTab</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">''</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Two-way binding for active tab ID (supports ngModel)</oct-text></td>
+          </tr>
+          <tr>
+            <td class="p-4"><code class="text-1 font-mono text-sm">interactive</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">true</code></td>
+            <td class="p-4">
+              <oct-text color="2" variant="sm" weight="regular">
+                False makes the whole strip inert: no click, no keyboard, and anchor tabs drop their href so the
+                context menu cannot navigate either
+              </oct-text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TabItem Interface -->
+    <oct-text color="1" variant="xl" weight="semibold" class="mt-8">TabItem Interface</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary transition-all duration-300">
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Property</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">id</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Unique identifier for the tab</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">label</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Display text for the tab</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">description</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string?</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Optional extra text announced with the tab via aria-describedby</oct-text></td>
+          </tr>
+          <tr>
+            <td class="p-4"><code class="text-1 font-mono text-sm">href</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string?</code></td>
+            <td class="p-4">
+              <oct-text color="2" variant="sm" weight="regular">
+                Present when selecting the tab navigates rather than swapping content in place. Renders an anchor with
+                role="link" and aria-current instead of a role="tab" button; left-click is still preventDefaulted so the
+                caller routes
+              </oct-text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Events Table -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Events</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary transition-all duration-300">
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Event</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="p-4"><code class="text-1 font-mono text-sm">tabChange</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">EventEmitter&lt;string&gt;</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Emits the selected tab ID when a tab is clicked</oct-text></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

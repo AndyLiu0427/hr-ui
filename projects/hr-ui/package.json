@@ -1,0 +1,49 @@
+{
+  "name": "hr-ui",
+  "version": "0.1.0",
+  "description": "Angular components for HR and payroll apps: forms, tables, dialogs, and Tailwind 4 design tokens with light and dark themes.",
+  "license": "MIT",
+  "author": "YingYen Liu",
+  "homepage": "https://andyliu0427.github.io/hr-ui/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndyLiu0427/hr-ui.git"
+  },
+  "bugs": "https://github.com/AndyLiu0427/hr-ui/issues",
+  "keywords": [
+    "angular",
+    "components",
+    "ui",
+    "design-system",
+    "tailwind",
+    "hr",
+    "payroll"
+  ],
+  "peerDependencies": {
+    "@angular/animations": "^22.2.0",
+    "@angular/cdk": "^22.2.0",
+    "@angular/common": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/material": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "@angular/router": "^22.2.0",
+    "@ngx-translate/core": "^15.0.0",
+    "lucide-angular": ">=0.562.0",
+    "rxjs": "^7.8.0",
+    "tailwindcss": "^4.1.0"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "hr-icons": "^0.5.0",
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
+  "exports": {
+    "./styles/*": "./styles/*",
+    "./i18n/*": "./i18n/*"
+  }
+}

@@ -1,0 +1,210 @@
+<div class="relative grid gap-1.5" [class.w-full]="fullWidth()" [class.h-full]="bare()" data-slot="form-item">
+  @if (label() && !bare()) {
+    <label [for]="selectId()" [class]="'inline-flex text-sm font-medium transition-colors duration-300 ' + (hasError() ? 'text-error' : 'text-1')">
+      {{ label() }}
+      @if (required()) {
+        <oct-text color="error" variant="sm" class="ml-0.5">*</oct-text>
+      }
+    </label>
+  }
+
+  <div class="relative w-full min-w-0" [class.h-full]="bare()" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+    <button
+      type="button"
+      class="group w-full"
+      [class.h-full]="bare()"
+      #selectTrigger
+      [id]="selectId()"
+      (click)="toggleDropdown()"
+      [attr.aria-expanded]="isOpen()"
+      [attr.aria-haspopup]="'listbox'"
+      [attr.aria-disabled]="isDisabled()"
+      [attr.aria-label]="ariaLabel() || label() || placeholder() || 'Select an option'"
+      [attr.aria-required]="required() ? 'true' : null"
+      [attr.aria-invalid]="hasError() ? 'true' : null"
+      [attr.aria-owns]="isOpen() ? selectId() + '-listbox' : null"
+      [attr.aria-activedescendant]="isOpen() ? (selectAllHighlighted() ? selectId() + '-option-select-all' : (activeIndex() >= 0 ? selectId() + '-option-' + activeIndex() : null)) : null"
+      [attr.role]="'combobox'"
+      [disabled]="isDisabled()"
+      (keydown)="handleKeyDown($event)"
+      (focus)="selectFocus.emit($event)"
+      (blur)="selectBlur.emit($event)"
+    >
+      <div [class]="triggerClasses()">
+        <div class="flex-1 min-w-0 flex items-center gap-1.5 flex-wrap">
+          @if (multiple()) {
+            @if (hasMultipleSelections()) {
+              @for (option of displayedOptions(); track option.value) {
+                <oct-badge
+                  [text]="option.label"
+                  size="sm"
+                  mode="opacity"
+                  color="neutral"
+                  [dismissible]="!isDisabled()"
+                  (dismiss)="removeOption($event, option)"
+                  class="max-w-[100px] shrink-0 [&>span]:truncate"
+                />
+              }
+              @if (overflowCount() > 0) {
+                <oct-badge
+                  [text]="'+' + overflowCount()"
+                  size="sm"
+                  mode="opacity"
+                  color="neutral"
+                  class="shrink-0"
+                />
+              }
+            } @else {
+              <oct-text color="3" variant="sm" [truncate]="!bare()" [nowrap]="bare()">{{ placeholder() || 'Select options' }}</oct-text>
+            }
+          } @else {
+            @if (selectedOption()) {
+              @if (selectedOption()!.colorTag) {
+                <oct-color-tag variant="inline" [color]="selectedOption()!.colorTag!" />
+              }
+              <!-- Always nowrap: oct-text's truncate does not include white-space:nowrap. -->
+              <oct-text
+                [color]="isDisabled() ? 'text-neutral-600' : '1'"
+                variant="sm"
+                [truncate]="!bare()"
+                [nowrap]="true"
+                >{{ selectedOption()!.label }}</oct-text
+              >
+            } @else {
+              <oct-text color="3" variant="sm" [truncate]="!bare()" [nowrap]="bare()">{{ placeholder() || 'Select an option' }}</oct-text>
+            }
+          }
+        </div>
+
+        @if (clearable() && ((multiple() && hasMultipleSelections()) || (!multiple() && selectedOption())) && !isDisabled()) {
+          <oct-icon
+            name="X"
+            [class]="'ml-1 shrink-0 cursor-pointer hover:!text-1 transition-colors duration-300' + (isDisabled() ? ' !text-neutral-600' : ' !text-3')"
+            (click)="clearSelection($event)"
+            (keydown.enter)="clearSelection($event)"
+            (keydown.space)="clearSelection($event)"
+            [attr.aria-label]="'Clear all selections'"
+            [attr.role]="'button'"
+            [attr.tabindex]="'-1'"
+            color="currentColor"
+          />
+        }
+        @if (loading()) {
+          <oct-icon name="RefreshCw" class="animate-spin text-2 shrink-0" />
+        }
+        <oct-icon
+          name="ChevronDown"
+          [class]="'shrink-0 transition-all duration-300 origin-center' + (isDisabled() ? ' !text-neutral-600' : ' !text-3')"
+          [class.rotate-180]="isOpen()"
+          color="currentColor"
+        />
+      </div>
+    </button>
+  </div>
+
+  @if (!hideHelper() && !bare()) {
+    <div class="min-h-5">
+      <oct-text
+        [color]="hasError() ? 'error' : '2'"
+        variant="sm"
+        >
+        {{ displayHelperText() }}
+      </oct-text>
+    </div>
+  }
+</div>
+
+<ng-template #overlayTemplate>
+  <div
+    [class]="menuClasses">
+
+    @if (loading()) {
+      <div class="p-1 flex items-center justify-center py-4">
+        <oct-icon name="RefreshCw" class="animate-spin text-2" />
+      </div>
+    } @else if (filteredOptions().length === 0) {
+      <div class="p-1 px-2 py-3 text-center text-3 text-sm">
+        No options found
+      </div>
+    } @else if (virtualScrolling()) {
+      <div class="p-1">
+        @if (multiple()) {
+          <ng-container [ngTemplateOutlet]="selectAllRow" />
+        }
+        <cdk-virtual-scroll-viewport
+          #virtualViewport
+          [itemSize]="itemSize()"
+          [style.height.px]="getVirtualScrollHeight()"
+          class="select-options-virtual">
+          <oct-select-option
+            *cdkVirtualFor="let option of filteredOptions(); let i = index; trackBy: trackByValue"
+            [option]="option"
+            [selected]="isSelected(option)"
+            [highlighted]="i === activeIndex()"
+            [showCheckIcon]="true"
+            [showIcon]="showIcon()"
+            [attr.id]="selectId() + '-option-' + i"
+            (optionClick)="onOptionSelect($event)"
+            (optionHover)="onOptionHover($event)">
+          </oct-select-option>
+        </cdk-virtual-scroll-viewport>
+      </div>
+    } @else {
+      <div
+        class="select-options relative overflow-y-auto p-1"
+        [style.max-height]="maxHeight()"
+        cdkScrollable
+        (scroll)="updateScrollIndicators()">
+
+        @if (multiple()) {
+          <ng-container [ngTemplateOutlet]="selectAllRow" />
+        }
+        @for (option of filteredOptions(); track option.value; let i = $index) {
+          <oct-select-option
+            [option]="option"
+            [selected]="isSelected(option)"
+            [highlighted]="i === activeIndex()"
+            [showCheckIcon]="true"
+            [showIcon]="showIcon()"
+            [attr.id]="selectId() + '-option-' + i"
+            (optionClick)="onOptionSelect($event)"
+            (optionHover)="onOptionHover($event)">
+          </oct-select-option>
+        }
+      </div>
+    }
+
+    <ng-template #selectAllRow>
+      <div
+        class="flex items-center px-2 py-1.5 cursor-pointer text-sm rounded-lg"
+        [class.bg-neutral-800]="selectAllHighlighted()"
+        role="option"
+        [attr.aria-selected]="isAllSelected()"
+        [attr.id]="selectId() + '-option-select-all'"
+        (click)="toggleSelectAll()"
+        (mouseenter)="onSelectAllHover()"
+      >
+        @if (isAllSelected()) {
+          <oct-icon name="Check" class="text-1 mr-2" />
+        } @else {
+          <div class="w-4 mr-2"></div>
+        }
+        <oct-text color="1" variant="sm" class="flex-1">{{ selectAllLabel() }}</oct-text>
+      </div>
+      <div class="border-b border-neutral-700 my-1"></div>
+    </ng-template>
+
+    @if (showScrollIndicators() && (canScrollUp() || canScrollDown())) {
+      @if (canScrollUp()) {
+        <div class="absolute top-0 left-0 right-0 flex justify-center py-0 pointer-events-none">
+          <oct-icon name="ChevronUp" class="text-3" />
+        </div>
+      }
+      @if (canScrollDown()) {
+        <div class="absolute bottom-0 left-0 right-0 flex justify-center py-0 pointer-events-none">
+          <oct-icon name="ChevronDown" class="text-3" />
+        </div>
+      }
+    }
+  </div>
+</ng-template>

@@ -1,0 +1,118 @@
+import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
+import { IconComponent, IconSize } from '../icon/icon';
+
+export type BadgeSize = 'sm' | 'md' | 'lg';
+export type BadgeMode = 'solid' | 'opacity';
+export type BadgeColor = 'neutral' | 'success' | 'warning' | 'error' | 'info';
+
+export interface BadgeProps {
+  text?: string;
+  icon?: string;
+  size?: BadgeSize;
+  mode?: BadgeMode;
+  color?: BadgeColor;
+  dismissible?: boolean;
+}
+
+@Component({
+  selector: 'oct-badge',
+  host: {
+    class: 'contents'
+  },
+  template: `
+    <span [class]="badgeClasses()">
+      @if (icon()) {
+        <oct-icon [name]="icon()!" [size]="iconSize()" />
+      }
+      @if (text()) {
+        <span [class]="textClasses()">{{ text() }}</span>
+      }
+      @if (dismissible()) {
+        <oct-icon name="X" [size]="iconSize()" class="cursor-pointer hover:opacity-70 transition-opacity duration-200" (click)="onDismiss($event)" />
+      }
+    </span>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IconComponent]
+})
+export class BadgeComponent {
+  readonly text = input<string>('Badge text');
+  readonly icon = input<string>();
+  readonly size = input<BadgeSize>('sm');
+  readonly mode = input<BadgeMode>('opacity');
+  readonly color = input<BadgeColor>('neutral');
+  readonly dismissible = input<boolean>(false);
+
+  readonly dismiss = output<void>();
+
+  readonly badgeClasses = computed(() => {
+    const baseClasses = ['inline-flex', 'items-center', 'justify-center', 'font-medium', 'rounded-full', 'transition-all', 'duration-300'];
+
+    const sizeClasses: Record<BadgeSize, string[]> = {
+      sm: ['px-1.5', 'py-0.5', 'text-xs', 'leading-4'],
+      md: ['px-2.5', 'py-1', 'text-xs', 'leading-4'],
+      lg: ['px-3', 'py-2', 'text-sm', 'leading-5']
+    };
+
+    const gapClasses: Record<BadgeSize, string> = {
+      sm: 'gap-1',
+      md: 'gap-1',
+      lg: 'gap-1.5'
+    };
+
+    const colorClasses = this.getColorClasses();
+    const currentSize = this.size();
+
+    return [...baseClasses, ...(sizeClasses[currentSize] || sizeClasses['sm']), gapClasses[currentSize] || gapClasses['sm'], ...colorClasses].join(
+      ' '
+    );
+  });
+
+  readonly iconSize = computed((): IconSize => {
+    const iconSizeMap: Record<BadgeSize, IconSize> = {
+      sm: 'xs',
+      md: 'xs',
+      lg: 'sm'
+    };
+    return iconSizeMap[this.size()];
+  });
+
+  readonly textClasses = computed(() => {
+    const textClasses = ['font-medium', 'text-center', 'whitespace-nowrap'];
+
+    const textSizeClasses: Record<BadgeSize, string[]> = {
+      sm: ['text-xs', 'leading-4'],
+      md: ['text-xs', 'leading-4'],
+      lg: ['text-sm', 'leading-5']
+    };
+
+    return [...textClasses, ...textSizeClasses[this.size()]].join(' ');
+  });
+
+  onDismiss(event: Event): void {
+    event.stopPropagation();
+    this.dismiss.emit();
+  }
+
+  private getColorClasses(): string[] {
+    if (this.mode() === 'solid') {
+      const solidColors: Record<BadgeColor, string[]> = {
+        neutral: ['bg-neutral-400', 'text-neutral-950'],
+        success: ['bg-green-600', 'text-neutral-950'],
+        warning: ['bg-orange-600', 'text-neutral-950'],
+        error: ['bg-red-600', 'text-neutral-950'],
+        info: ['bg-blue-600', 'text-neutral-950']
+      };
+      return solidColors[this.color()] || solidColors['neutral'];
+    } else {
+      const opacityColors: Record<BadgeColor, string[]> = {
+        neutral: ['bg-neutral-900', 'text-1'],
+        success: ['bg-green-950', 'text-green-600'],
+        warning: ['bg-orange-950', 'text-orange-600'],
+        error: ['bg-red-950', 'text-red-600'],
+        info: ['bg-blue-950', 'text-blue-600']
+      };
+      return opacityColors[this.color()] || opacityColors['neutral'];
+    }
+  }
+}

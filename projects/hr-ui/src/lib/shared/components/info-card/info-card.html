@@ -1,0 +1,92 @@
+<oct-card>
+  <oct-card-header>
+    <div class="flex items-start justify-between w-full">
+      <div class="flex flex-col gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <oct-text color="1" variant="lg" weight="semibold">
+            {{ config().title | translate }}
+          </oct-text>
+          @if (status()) {
+            <oct-badge
+              [text]="status()"
+              [color]="statusColor()"
+              size="md"
+              mode="opacity">
+            </oct-badge>
+          }
+        </div>
+        @if (titleActions() && titleActions()!.length > 0) {
+          <div class="flex flex-wrap items-center gap-2">
+            @for (action of titleActions(); track (action.label || action.icon || '') + '_title_' + $index) {
+              <oct-button
+                [color]="action.color || 'neutral'"
+                [variant]="action.variant || 'outline'"
+                size="sm"
+                [icon]="action.icon"
+                [disabled]="action.disabled"
+                (buttonClick)="action.handler()">
+                @if (isDesktop() && action.label) {
+                  {{ action.label | translate }}
+                }
+              </oct-button>
+            }
+          </div>
+        }
+      </div>
+      @if (rightActions() && rightActions()!.length > 0) {
+        <div class="flex items-center gap-2">
+          @for (action of rightActions(); track (action.label || action.icon || '') + '_' + $index) {
+            <oct-button
+              [color]="action.color || 'neutral'"
+              [variant]="action.variant || 'outline'"
+              size="sm"
+              [icon]="action.icon"
+              [disabled]="action.disabled"
+              (buttonClick)="action.handler()">
+              @if (isDesktop() && action.label) {
+                {{ action.label | translate }}
+              }
+            </oct-button>
+          }
+        </div>
+      }
+    </div>
+  </oct-card-header>
+
+  <oct-card-content>
+    @if (loading()) {
+      <div class="text-center py-8">
+        <oct-text color="3" variant="md">
+          {{ 'GENERAL.LOADING' | translate }}
+        </oct-text>
+      </div>
+    } @else if (data()) {
+      <div class="grid" [class]="getGridColsClass() + ' gap-' + (gapSize() || '6')">
+        @for (field of config().fields; track field.key + '_' + $index) {
+          @if (isFieldVisible(field)) {
+            <div class="flex flex-col gap-0.5">
+              <oct-text color="3" variant="sm">
+                {{ field.label | translate }}
+              </oct-text>
+              <oct-text 
+                color="1" 
+                variant="md"
+                [class.whitespace-pre-line]="field.preserveLineBreaks">
+                {{ formatFieldValue(getFieldValue(field.key), field.formatter, field.defaultValue) }}
+              </oct-text>
+            </div>
+          }
+        }
+      </div>
+      <div class="grid" [class]="getGridColsClass() + ' gap-' + (gapSize() || '6')">
+        <ng-content></ng-content>
+      </div>
+    } @else {
+      <div class="text-center py-8">
+        <oct-text color="3" variant="md">
+          {{ 'GENERAL.NODATAFOUND' | translate }}
+        </oct-text>
+      </div>
+    }
+  </oct-card-content>
+</oct-card>

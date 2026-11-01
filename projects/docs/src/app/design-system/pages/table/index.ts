@@ -1,0 +1,1 @@
+export { TablePageComponent } from './table';

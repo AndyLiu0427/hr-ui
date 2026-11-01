@@ -1,0 +1,149 @@
+/* The sidebar owns its width. Labels clip while the rail opens or closes. */
+.sidebar {
+  overflow: hidden;
+  transition: width var(--motion-open) var(--ease-smooth-out);
+}
+
+/* Labels fade in when the user opens the rail, never on page load. */
+.rail-touched .sidebar-label {
+  animation: sidebar-label-in var(--motion-open) ease-out both;
+}
+@keyframes sidebar-label-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Group chevron: v when closed, ^ when open, flipped through a flat line. */
+.sidebar-chevron {
+  transition: transform var(--motion-close) var(--ease-smooth-out);
+}
+.sidebar-chevron.is-open {
+  transform: scaleY(-1);
+  transition-duration: var(--motion-open);
+}
+
+/* Child rows open and close one by one, so the current page row can stay under a closed group. */
+.sidebar-child {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--motion-close) var(--ease-smooth-out);
+}
+.sidebar-child.is-shown {
+  grid-template-rows: 1fr;
+  transition-duration: var(--motion-open);
+}
+.sidebar-child-inner {
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  filter: blur(var(--motion-blur));
+  transition:
+    opacity var(--motion-close) var(--ease-smooth-out),
+    filter var(--motion-close) var(--ease-smooth-out);
+}
+.sidebar-child.is-shown .sidebar-child-inner {
+  opacity: 1;
+  filter: blur(0);
+  transition-duration: var(--motion-open);
+}
+
+/* A Pinned row grows in when the user pins it and shrinks out when the user unpins it. */
+.pinned-row {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.pinned-row-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+/* Set by animate.enter on a newly pinned row. */
+.pinned-row-enter {
+  animation: pinned-row-in var(--motion-open) var(--ease-smooth-out);
+}
+@keyframes pinned-row-in {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    filter: blur(var(--motion-blur));
+  }
+}
+/* Set by animate.leave; Angular removes the row when the transition ends. */
+.pinned-row-leave {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows var(--motion-close) var(--ease-smooth-out),
+    opacity var(--motion-close) var(--ease-smooth-out);
+}
+
+/* Pin button: shows on row hover or keyboard focus (not mouse focus). A pinned page keeps it in the tree. */
+.sidebar-pin {
+  opacity: 0;
+  transition:
+    color var(--motion-close) ease,
+    background-color var(--motion-close) ease;
+}
+.sidebar-pin.is-pinned.in-tree,
+.sidebar-row-wrap:has(:focus-visible) .sidebar-pin {
+  opacity: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sidebar-row-wrap:hover .sidebar-pin {
+    opacity: 1;
+    transition:
+      opacity var(--motion-reveal) ease-out,
+      color var(--motion-close) ease,
+      background-color var(--motion-close) ease;
+  }
+}
+@media (hover: none) {
+  .sidebar-pin {
+    opacity: 1;
+  }
+}
+
+/* ">>" on a row that opens a panel. Where the row has a pin, the pin takes its place on hover, on
+   keyboard focus, and once pinned. */
+.sidebar-row-wrap:has(.sidebar-pin.is-pinned.in-tree) .sidebar-row-hint,
+.sidebar-row-wrap:has(.sidebar-pin):has(:focus-visible) .sidebar-row-hint {
+  opacity: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sidebar-row-wrap:has(.sidebar-pin):hover .sidebar-row-hint {
+    opacity: 0;
+    transition: opacity var(--motion-reveal) ease-out;
+  }
+}
+@media (hover: none) {
+  .sidebar-row-wrap:has(.sidebar-pin) .sidebar-row-hint {
+    opacity: 0;
+  }
+}
+
+/* Panels open at once; only the exit is animated. */
+.flyout-leave {
+  opacity: 0;
+  transform: translateX(calc(var(--spacing) * -0.5));
+  transition:
+    opacity var(--motion-reveal) ease-in,
+    transform var(--motion-reveal) ease-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar-chevron,
+  .sidebar-child,
+  .sidebar-child-inner,
+  .pinned-row-leave,
+  .flyout-leave {
+    transition: none;
+  }
+  .sidebar-child-inner {
+    filter: none;
+  }
+  .rail-touched .sidebar-label,
+  .pinned-row-enter {
+    animation: none;
+  }
+}

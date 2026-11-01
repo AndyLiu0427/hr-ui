@@ -1,0 +1,121 @@
+<oct-dialog
+  [isOpen]="isOpen()"
+  (dialogClose)="onPanelClose()"
+  size="lg"
+  maxHeight="70vh"
+  [showCloseButton]="false"
+  [noGap]="true">
+
+  <!-- APG combobox: focus never leaves the box, the arrow keys move aria-activedescendant. -->
+  <div class="flex items-center gap-3 px-4 py-3 border-b border-primary">
+    <oct-icon name="Search" class="text-3 flex-shrink-0"></oct-icon>
+    <input
+      #searchInput
+      type="text"
+      id="search-panel-query"
+      name="search-panel-query"
+      class="flex-1 bg-transparent border-none outline-none text-1 text-base placeholder:text-3"
+      [placeholder]="placeholder()"
+      [value]="query()"
+      (input)="onQueryInput($any($event.target).value)"
+      (keydown)="onQueryKeydown($event)"
+      autocomplete="off"
+      [attr.aria-label]="ariaLabel()"
+      role="combobox"
+      aria-autocomplete="list"
+      aria-controls="search-panel-results"
+      [attr.aria-expanded]="hasResults()"
+      [attr.aria-activedescendant]="activeOptionId()"
+    />
+    <oct-kbd class="flex-shrink-0 hidden sm:flex">ESC</oct-kbd>
+  </div>
+
+  <!-- Consumer controls under the query box, such as the header search's scope chips -->
+  <ng-content select="[octSearchPanelToolbar]"></ng-content>
+
+  <!-- Capped, not fixed, so a two-hit query does not open a mostly empty box. -->
+  <div class="overflow-y-auto max-h-[26rem] pb-2">
+    @if (loading()) {
+      <div class="flex flex-col items-center justify-center py-12 px-4 gap-2">
+        <oct-icon name="LoaderCircle" size="xl" class="text-3 motion-safe:animate-spin"></oct-icon>
+        <oct-text variant="sm" color="3">Searching...</oct-text>
+      </div>
+    } @else if (hasResults()) {
+      <!-- ARIA wants every option owned directly by the listbox or a role="group" in it, so the
+           ungrouped branch adds no element at all rather than a styling div. -->
+      <div role="listbox" id="search-panel-results" class="flex flex-col px-2" [class.pt-2]="!resultGroups()[0]?.group" [attr.aria-label]="ariaLabel()">
+        @for (group of resultGroups(); track group.group ?? '') {
+          @if (group.group) {
+            <div role="group" [attr.aria-label]="group.group" class="flex flex-col -mx-2 px-2 pb-1.5 not-first:border-t border-primary">
+              <!-- The group already carries the name, so this must not repeat it. Sticky so a long group keeps
+                   its name in view; the group's own top border scrolls away, so a stuck heading draws no double line. -->
+              <oct-text variant="xs" color="2" weight="semibold" class="sticky top-0 z-10 block -mx-2 mb-1 px-4 py-1.5 bg-neutral-900 border-b border-primary uppercase tracking-wider" aria-hidden="true">
+                {{ group.group }}
+              </oct-text>
+              @for (row of group.rows; track row.item.id) {
+                <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ $implicit: row }"></ng-container>
+              }
+            </div>
+          } @else {
+            @for (row of group.rows; track row.item.id) {
+              <ng-container [ngTemplateOutlet]="optionRow" [ngTemplateOutletContext]="{ $implicit: row }"></ng-container>
+            }
+          }
+        }
+      </div>
+      <!-- A silent cap reads as "that is everything", so say what was left out. -->
+      @if (hiddenCount() > 0) {
+        <div class="flex items-center gap-2 px-2 pt-3 pb-1">
+          <oct-icon name="Info" size="xs" class="text-3 flex-shrink-0" />
+          <oct-text variant="xs" color="3">
+            Showing the first {{ visibleItems().length }} of {{ items().length }}. Refine your search to narrow them down.
+          </oct-text>
+        </div>
+      }
+    } @else if (emptyContent()) {
+      <ng-container [ngTemplateOutlet]="emptyContent()!" [ngTemplateOutletContext]="{ $implicit: query() }"></ng-container>
+    }
+  </div>
+
+  @if (showHints()) {
+    <div class="flex items-center gap-4 px-4 py-2 border-t border-primary bg-tertiary/50">
+      <div class="flex items-center gap-1.5">
+        <div class="flex items-center gap-0.5">
+          <oct-kbd variant="secondary">↑</oct-kbd>
+          <oct-kbd variant="secondary">↓</oct-kbd>
+        </div>
+        <oct-text variant="xs" color="3">Navigate</oct-text>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <oct-kbd variant="secondary">Enter</oct-kbd>
+        <oct-text variant="xs" color="3">Open</oct-text>
+      </div>
+    </div>
+  }
+
+  <!-- Stable region, only its text changes, so repeated filtering announces reliably. -->
+  <div role="status" class="sr-only">{{ resultAnnouncement() }}</div>
+</oct-dialog>
+
+<ng-template #optionRow let-row>
+  <div
+    #resultItem
+    role="option"
+    [id]="optionId(row.position)"
+    [class]="getRowClass(row.position)"
+    (click)="onRowClick(row.item)"
+    (mousemove)="selectByPointer(row.position)"
+    [attr.aria-selected]="selectedIndex() === row.position">
+    <ng-container
+      [ngTemplateOutlet]="rowContent()"
+      [ngTemplateOutletContext]="{ $implicit: row.item, query: query(), selected: selectedIndex() === row.position }">
+    </ng-container>
+
+    <!-- Panel-owned, not row-template-owned: consumers kept forgetting it. -->
+    <oct-icon
+      name="CornerDownLeft"
+      size="sm"
+      class="text-3 flex-shrink-0 motion-safe:transition-opacity motion-safe:duration-100 ease-out"
+      [class.opacity-0]="selectedIndex() !== row.position" />
+  </div>
+</ng-template>

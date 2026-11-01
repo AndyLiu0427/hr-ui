@@ -1,0 +1,79 @@
+<div class="flex flex-col gap-3">
+  <div
+    class="relative flex flex-wrap sm:flex-nowrap items-center bg-neutral-900 px-1 py-1 rounded-lg gap-0.5 sm:gap-0"
+    role="tablist"
+    aria-label="Tabs navigation">
+
+    <!-- Sliding Background Indicator (works on both mobile and desktop) -->
+    <div
+      #indicator
+      class="absolute bg-secondary rounded-sm shadow-sm motion-reduce:transition-none"
+      [class.inset-y-1]="!indicatorStyle().isVertical"
+      [class.inset-x-1]="indicatorStyle().isVertical"
+      [style.left]="indicatorStyle().isVertical ? '4px' : indicatorStyle().left"
+      [style.right]="indicatorStyle().isVertical ? '4px' : 'auto'"
+      [style.width]="indicatorStyle().isVertical ? 'auto' : indicatorStyle().width"
+      [style.top]="indicatorStyle().isVertical ? indicatorStyle().top : '4px'"
+      [style.height]="indicatorStyle().isVertical ? indicatorStyle().height : 'auto'"
+      [style.bottom]="indicatorStyle().isVertical ? 'auto' : '4px'"
+      [style.transition]="indicatorPlaced() ? 'all 300ms cubic-bezier(0.4, 0.0, 0.2, 1)' : 'none'"
+      aria-hidden="true">
+    </div>
+
+    @for (tab of tabs(); track trackByTabId($index, tab); let i = $index) {
+      @if (tab.href) {
+        <a
+          #tabButton
+          role="link"
+          [attr.href]="interactive() ? tab.href : null"
+          class="relative z-10 flex-1 basis-full sm:basis-0 grow flex items-center justify-center px-3 py-1.5 text-sm font-medium transition-colors duration-300 select-none focus:outline-none rounded-sm no-underline"
+          [class.cursor-pointer]="interactive()"
+          [class.cursor-default]="!interactive()"
+          [class.text-neutral-50]="isActive(tab.id)"
+          [class.text-neutral-500]="!isActive(tab.id)"
+          [class.opacity-60]="!interactive()"
+          [attr.aria-current]="isActive(tab.id) ? 'page' : null"
+          [attr.aria-disabled]="interactive() ? null : 'true'"
+          [attr.aria-label]="tab.label"
+          [attr.aria-describedby]="tab.description ? 'tab-desc-' + tab.id : null"
+          [attr.tabindex]="!interactive() ? -1 : (isActive(tab.id) ? 0 : -1)"
+          (click)="onTabClick(tab.id, i, $event)"
+          (keydown)="onKeyDown($event, i)">
+          <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+            {{ tab.label }}
+          </span>
+        </a>
+      } @else {
+        <button
+          #tabButton
+          type="button"
+          role="tab"
+          class="relative z-10 flex-1 basis-full sm:basis-0 grow flex items-center justify-center px-3 py-1.5 text-sm font-medium transition-colors duration-300 cursor-pointer select-none focus:outline-none rounded-sm"
+          [class.text-neutral-50]="isActive(tab.id)"
+          [class.text-neutral-500]="!isActive(tab.id)"
+          [attr.aria-selected]="isActive(tab.id)"
+          [attr.aria-disabled]="interactive() ? null : 'true'"
+          [attr.aria-label]="tab.label"
+          [attr.aria-describedby]="tab.description ? 'tab-desc-' + tab.id : null"
+          [attr.tabindex]="isActive(tab.id) ? 0 : -1"
+          (click)="onTabClick(tab.id, i, $event)"
+          (keydown)="onKeyDown($event, i)">
+          <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+            {{ tab.label }}
+          </span>
+        </button>
+      }
+    }
+  </div>
+
+  @if (activeTabDescription()) {
+    <oct-text
+      color="3"
+      variant="sm"
+      [id]="'tab-desc-' + activeTab()"
+      role="region"
+      aria-live="polite">
+      {{ activeTabDescription() }}
+    </oct-text>
+  }
+</div>

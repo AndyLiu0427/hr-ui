@@ -1,0 +1,231 @@
+import {
+  Component,
+  input,
+  output,
+  ChangeDetectionStrategy,
+  ViewContainerRef,
+  TemplateRef,
+  viewChild,
+  effect,
+  inject,
+  ElementRef
+} from '@angular/core';
+
+import { Overlay, OverlayRef, OverlayModule, ConnectedPosition } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { CdkMenu, CdkMenuItem } from '@angular/cdk/menu';
+import { IconComponent } from '../icon/icon';
+import { MenuItem, MenuSection, MenuAlignment, MenuAlign } from './dropdown-menu.interface';
+import { AvatarComponent } from '../avatar/avatar';
+
+@Component({
+  selector: 'oct-dropdown-menu',
+  templateUrl: './dropdown-menu.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [OverlayModule, CdkMenu, CdkMenuItem, IconComponent, AvatarComponent],
+  host: {
+    '[class.dropdown-menu-open]': 'isOpen()'
+  }
+})
+export class DropdownMenuComponent {
+  static readonly Align = MenuAlign;
+
+  private readonly overlay = inject(Overlay);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+  private readonly elementRef = inject(ElementRef);
+  private overlayRef?: OverlayRef;
+
+  // Inputs
+  isOpen = input<boolean>(false);
+  alignment = input<MenuAlignment>(MenuAlign.RIGHT);
+  menuSections = input<MenuSection[]>([]);
+  offsetY = input<number>(8);
+  width = input<number | string>('280px');
+  closeOnItemClick = input<boolean>(true);
+
+  // Outputs
+  readonly closed = output<void>();
+  readonly itemClick = output<MenuItem>();
+
+  // Template references
+  menuTemplate = viewChild<TemplateRef<unknown>>('menuTemplate');
+  customContent = viewChild<TemplateRef<unknown>>('customContent');
+
+  constructor() {
+    // Effect to manage overlay when menu opens/closes
+    effect(() => {
+      const open = this.isOpen();
+      const customTemplate = this.customContent();
+      const defaultTemplate = this.menuTemplate();
+
+      if (open) {
+        // Strategy: Create a temporary embedded view to check if custom content has actual nodes
+        // This is necessary because ng-content projection doesn't show up in querySelector
+        let hasCustomContent = false;
+
+        if (customTemplate) {
+          const tempView = this.viewContainerRef.createEmbeddedView(customTemplate);
+          const hasNodes = tempView.rootNodes.some(node => {
+            // Check if it's an element node (not just text/comment)
+            return node.nodeType === Node.ELEMENT_NODE && (node as Element).hasAttribute('dropdownContent');
+          });
+          hasCustomContent = hasNodes;
+          // Clean up the temporary view immediately
+          const viewIndex = this.viewContainerRef.indexOf(tempView);
+          if (viewIndex !== -1) {
+            this.viewContainerRef.remove(viewIndex);
+          }
+        }
+
+        // Use custom content if it has actual projected content, otherwise use default menu template
+        const template = hasCustomContent ? customTemplate : defaultTemplate;
+        if (template) {
+          this.openOverlay(template);
+        }
+      } else {
+        this.closeOverlay();
+      }
+    });
+  }
+
+  private openOverlay(template: TemplateRef<unknown>): void {
+    if (this.overlayRef) {
+      return; // Already open
+    }
+
+    // Define multiple position strategies for better positioning
+    const positions: ConnectedPosition[] = [
+      // Primary position - below aligned to edge
+      {
+        originX: this.alignment() === MenuAlign.LEFT ? 'start' : 'end',
+        originY: 'bottom',
+        overlayX: this.alignment() === MenuAlign.LEFT ? 'start' : 'end',
+        overlayY: 'top',
+        offsetY: this.offsetY()
+      },
+      // Fallback - above aligned to edge
+      {
+        originX: this.alignment() === MenuAlign.LEFT ? 'start' : 'end',
+        originY: 'top',
+        overlayX: this.alignment() === MenuAlign.LEFT ? 'start' : 'end',
+        overlayY: 'bottom',
+        offsetY: -this.offsetY()
+      },
+      // Fallback - opposite alignment below
+      {
+        originX: this.alignment() === MenuAlign.LEFT ? 'end' : 'start',
+        originY: 'bottom',
+        overlayX: this.alignment() === MenuAlign.LEFT ? 'end' : 'start',
+        overlayY: 'top',
+        offsetY: this.offsetY()
+      }
+    ];
+
+    // Create position strategy
+    const positionStrategy = this.overlay
+      .position()
+      .flexibleConnectedTo(this.elementRef)
+      .withPositions(positions)
+      .withPush(false)
+      .withViewportMargin(8)
+      .withFlexibleDimensions(true);
+
+    // Detect custom content mode by checking for dropdownContent attribute
+    let isCustomContentMode = false;
+    const customTemplate = this.customContent();
+
+    if (customTemplate) {
+      const tempView = this.viewContainerRef.createEmbeddedView(customTemplate);
+      const hasNodes = tempView.rootNodes.some(node => {
+        return node.nodeType === Node.ELEMENT_NODE && (node as Element).hasAttribute('dropdownContent');
+      });
+      isCustomContentMode = hasNodes;
+      const viewIndex = this.viewContainerRef.indexOf(tempView);
+      if (viewIndex !== -1) {
+        this.viewContainerRef.remove(viewIndex);
+      }
+    }
+
+    this.overlayRef = this.overlay.create({
+      positionStrategy,
+      scrollStrategy: isCustomContentMode ? this.overlay.scrollStrategies.noop() : this.overlay.scrollStrategies.reposition(),
+      hasBackdrop: !isCustomContentMode,
+      backdropClass: '',
+      disposeOnNavigation: true,
+      width: this.width(),
+      maxHeight: '90vh'
+    });
+
+    // Attach template portal
+    const portal = new TemplatePortal(template, this.viewContainerRef);
+    this.overlayRef.attach(portal);
+
+    if (!isCustomContentMode) {
+      this.overlayRef.backdropClick().subscribe(() => {
+        this.handleClose();
+      });
+    }
+
+    this.overlayRef.keydownEvents().subscribe(event => {
+      if (event.key === 'Escape') {
+        this.handleClose();
+      }
+    });
+
+    // Handle outside clicks, ignoring child component overlays and their backdrops
+    this.overlayRef.outsidePointerEvents().subscribe(event => {
+      const target = event.target as HTMLElement;
+      const overlayPane = this.overlayRef.overlayElement;
+      const isInsideThisOverlay = overlayPane.contains(target);
+      const isInOtherCdkOverlay = target.closest('.cdk-overlay-pane') !== null;
+      const isBackdropClick = target.classList.contains('cdk-overlay-backdrop');
+      let isChildComponentBackdrop = false;
+
+      if (isBackdropClick) {
+        const allOverlayPanes = document.querySelectorAll('.cdk-overlay-pane');
+        const visiblePanes = Array.from(allOverlayPanes).filter(pane => {
+          const element = pane as HTMLElement;
+          return element.offsetParent !== null;
+        });
+
+        if (visiblePanes.length > 1) {
+          isChildComponentBackdrop = true;
+        }
+      }
+
+      if (!isInsideThisOverlay && !isInOtherCdkOverlay && !isChildComponentBackdrop) {
+        this.handleClose();
+      }
+    });
+  }
+
+  private closeOverlay(): void {
+    if (this.overlayRef) {
+      this.overlayRef.dispose();
+      this.overlayRef = undefined;
+    }
+  }
+
+  handleItemClick(item: MenuItem, sectionIndex?: number, itemIndex?: number): void {
+    if (!item.disabled) {
+      this.itemClick.emit(item);
+      if (item.action) {
+        item.action();
+      }
+      // Don't close menu if it's the header item (first item in first section)
+      // or if closeOnItemClick is disabled
+      const shouldClose = this.closeOnItemClick() && !this.isHeader(item, sectionIndex || 0, itemIndex || 0);
+      if (shouldClose) {
+        this.handleClose();
+      }
+    }
+  }
+
+  handleClose(): void {
+    this.closed.emit();
+  }
+
+  isHeader(item: MenuItem, _sectionIndex: number, _itemIndex: number): boolean {
+    return item.header;
+  }
+}

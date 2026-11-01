@@ -1,0 +1,94 @@
+<div [class]="containerClass()">
+  @if (label() && !bare()) {
+  <label [for]="inputId()" [class]="labelClass()">
+    {{ label() }} @if (required()) {
+    <oct-text color="error" variant="sm" class="ml-0.5">*</oct-text>
+    }
+  </label>
+  }
+
+  <div [class]="inputWrapperClass()">
+    @if (showPrefix()) {
+    <div [class]="prefixClass()">
+      @if (leftIcon()) {
+      <oct-icon [name]="leftIcon()" [class]="iconSize" />
+      } @else if (leftText()) {
+      <oct-text color="3" variant="sm">{{ leftText() }}</oct-text>
+      }
+    </div>
+    }
+
+    <input
+      #inputElement
+      [id]="inputId()"
+      [name]="name() || inputId()"
+      [type]="inputType()"
+      [value]="value()"
+      [placeholder]="placeholder()"
+      [disabled]="isDisabled()"
+      [readonly]="isReadonly()"
+      [class]="inputClass()"
+      [attr.step]="step()"
+      [attr.inputmode]="inputMode()"
+      [attr.pattern]="inputPattern()"
+      [attr.aria-label]="ariaLabel() || label() || placeholder()"
+      [attr.aria-describedby]="ariaDescribedBy()"
+      [attr.aria-required]="required() ? 'true' : null"
+      [attr.aria-invalid]="hasError() ? 'true' : null"
+      (input)="handleInput($event)"
+      (focus)="handleFocus($event)"
+      (blur)="handleBlur($event)"
+    />
+
+    @if (showClearButton()) {
+    <button
+      type="button"
+      [class]="clearButtonClass()"
+      [attr.aria-label]="'Clear ' + (label() || placeholder() || 'value')"
+      tabindex="-1"
+      (click)="clear()"
+    >
+      <oct-icon name="X" [class]="iconSize" />
+    </button>
+    }
+    @if (showSuffix()) {
+    <div [class]="suffixClass()">
+      @if (rightIcon()) {
+      <oct-icon
+        [name]="rightIcon()"
+        [class]="iconSize"
+        [color]="rightIcon() === 'Check' ? 'rgb(34 197 94)' : rightIcon() === 'CircleAlert' ? 'rgb(239 68 68)' : 'currentColor'"
+      />
+      } @else if (rightText()) {
+      <oct-text color="3" variant="sm">{{ rightText() }}</oct-text>
+      }
+    </div>
+    }
+    @if (loading()) {
+    <oct-icon name="RefreshCw" class="animate-spin text-2 shrink-0 mr-2.5" />
+    }
+    @if (showPasswordToggleButton()) {
+    <button
+      type="button"
+      [class]="passwordToggleClass()"
+      [disabled]="isDisabled()"
+      [attr.aria-label]="passwordVisible() ? 'Hide password' : 'Show password'"
+      (click)="togglePasswordVisibility()"
+    >
+      <oct-icon [name]="passwordToggleIconName()" [class]="iconSize" />
+    </button>
+    }
+  </div>
+
+  @if (!hideHelper() && !bare()) {
+  <div class="min-h-5">
+    <oct-text
+      [id]="ariaDescribedBy()"
+      [color]="hasError() ? 'error' : '2'"
+      variant="sm"
+    >
+      {{ displayHelperText() }}
+    </oct-text>
+  </div>
+  }
+</div>

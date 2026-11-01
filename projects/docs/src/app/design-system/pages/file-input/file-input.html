@@ -1,0 +1,206 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">File Input</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Native file picker with two visual modes — dropzone + preview for single-file flows
+        (e.g. company logo), and a compact inline button for multi-file toolbars (e.g. attachments).
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-12">
+
+    <!-- Preview Mode -->
+    <section>
+      <oct-text color="1" variant="xl" weight="semibold" class="mb-6 block">Preview mode</oct-text>
+      <oct-text color="3" variant="sm" class="mb-6 block">
+        Default mode. Renders a dropzone with thumbnail preview, button, and help text.
+        Validates MIME type + size (via <code>accept</code> + <code>maxFileSize</code>).
+      </oct-text>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <oct-card>
+          <oct-card-content class="flex flex-col gap-4 max-w-sm">
+            <oct-text color="1" variant="sm" weight="semibold">Empty state</oct-text>
+            <oct-file-input
+              accept="image/png,image/jpeg,image/jpg,image/svg+xml"
+              [preview]="previewLogo()"
+              (filesSelected)="onPreviewSelected($event)"
+              (removeFile)="onPreviewRemove()" />
+            @if (previewSelectedName()) {
+              <oct-text color="2" variant="xs">
+                Selected: {{ previewSelectedName() }}
+              </oct-text>
+            }
+          </oct-card-content>
+        </oct-card>
+
+        <oct-card>
+          <oct-card-content class="flex flex-col gap-4 max-w-sm">
+            <oct-text color="1" variant="sm" weight="semibold">Disabled</oct-text>
+            <oct-file-input
+              accept="image/png,image/jpeg,image/jpg,image/svg+xml"
+              [disabled]="true" />
+          </oct-card-content>
+        </oct-card>
+      </div>
+    </section>
+
+    <!-- Button Mode -->
+    <section>
+      <oct-text color="1" variant="xl" weight="semibold" class="mb-6 block">Button mode</oct-text>
+      <oct-text color="3" variant="sm" class="mb-6 block">
+        Bare button that opens the picker — no preview, no validation. All <code>oct-button</code>
+        props pass through (<code>color</code>, <code>variant</code>, <code>size</code>, <code>icon</code>,
+        <code>iconOnly</code>, <code>loading</code>). Use projected content for the label.
+      </oct-text>
+
+      <oct-card>
+        <oct-card-content class="flex flex-col gap-6">
+          <div class="flex flex-wrap items-center gap-3">
+            <oct-file-input
+              mode="button"
+              [multiple]="true"
+              (filesSelected)="onButtonSelected($event)">
+              Upload
+            </oct-file-input>
+
+            <oct-file-input
+              mode="button"
+              variant="outline"
+              icon="Upload"
+              [multiple]="true"
+              (filesSelected)="onButtonSelected($event)">
+              Outline
+            </oct-file-input>
+
+            <oct-file-input
+              mode="button"
+              variant="ghost"
+              icon="Paperclip"
+              [multiple]="true"
+              (filesSelected)="onButtonSelected($event)">
+              Ghost
+            </oct-file-input>
+
+            <oct-file-input
+              mode="button"
+              variant="outline"
+              size="sm"
+              icon="Upload"
+              iconOnly="mobile"
+              [multiple]="true"
+              (filesSelected)="onButtonSelected($event)">
+              Compact (iconOnly on mobile)
+            </oct-file-input>
+
+            <oct-file-input
+              mode="button"
+              variant="outline"
+              icon="Upload"
+              [loading]="true">
+              Uploading…
+            </oct-file-input>
+
+            <oct-file-input
+              mode="button"
+              variant="outline"
+              icon="Upload"
+              [disabled]="true">
+              Disabled
+            </oct-file-input>
+          </div>
+
+          @if (buttonSelectedNames().length > 0) {
+            <div class="flex items-center gap-3">
+              <oct-text color="2" variant="sm">
+                Last picked: {{ buttonSelectedNames().join(', ') }}
+              </oct-text>
+              <oct-button variant="ghost" color="neutral" size="sm" (buttonClick)="resetButtonDemo()">
+                Reset
+              </oct-button>
+            </div>
+          }
+        </oct-card-content>
+      </oct-card>
+    </section>
+
+    <!-- API -->
+    <section>
+      <oct-text color="1" variant="xl" weight="semibold" class="mb-6 block">API</oct-text>
+
+      <oct-card>
+        <oct-card-content class="flex flex-col gap-6">
+          <div>
+            <oct-text color="1" variant="sm" weight="semibold" class="mb-2 block">Inputs (both modes)</oct-text>
+            <ul class="text-sm text-2 list-disc pl-5 space-y-1">
+              <li><code>mode</code>: <code>'preview' | 'button'</code> — default <code>'preview'</code></li>
+              <li><code>accept</code>: comma-separated mime / extension list — default <code>''</code> (all)</li>
+              <li><code>multiple</code>: allow picking many files — default <code>false</code></li>
+              <li><code>disabled</code>, <code>loading</code></li>
+            </ul>
+          </div>
+
+          <div>
+            <oct-text color="1" variant="sm" weight="semibold" class="mb-2 block">Inputs (preview mode only)</oct-text>
+            <ul class="text-sm text-2 list-disc pl-5 space-y-1">
+              <li><code>preview</code>: external DataURL / image src</li>
+              <li><code>maxFileSize</code>: bytes — default 5 MiB; <code>null</code> disables</li>
+              <li><code>placeholderIcon</code>, <code>error</code>, <code>labels</code></li>
+            </ul>
+          </div>
+
+          <div>
+            <oct-text color="1" variant="sm" weight="semibold" class="mb-2 block">Inputs (button mode — oct-button passthrough)</oct-text>
+            <ul class="text-sm text-2 list-disc pl-5 space-y-1">
+              <li><code>color</code>, <code>variant</code>, <code>size</code></li>
+              <li><code>icon</code>, <code>iconPosition</code>, <code>iconOnly</code></li>
+              <li><code>fullWidth</code>, <code>ariaLabel</code></li>
+            </ul>
+          </div>
+
+          <div>
+            <oct-text color="1" variant="sm" weight="semibold" class="mb-2 block">Outputs</oct-text>
+            <ul class="text-sm text-2 list-disc pl-5 space-y-1">
+              <li><code>filesSelected: File[]</code> — single-file callers read <code>$event[0]</code></li>
+              <li><code>previewChanged: string | null</code> — preview mode DataURL changes</li>
+              <li><code>removeFile: void</code> — preview-mode remove button</li>
+              <li><code>validationError: string</code> — preview-mode validation failure</li>
+            </ul>
+          </div>
+        </oct-card-content>
+      </oct-card>
+    </section>
+
+    <!-- Usage -->
+    <section>
+      <oct-text color="1" variant="xl" weight="semibold" class="mb-6 block">Usage</oct-text>
+
+      <oct-card>
+        <oct-card-content>
+          <pre class="text-sm text-neutral-300 font-mono leading-relaxed"><code>&lt;!-- Preview mode (default) — image upload with dropzone --&gt;
+&lt;oct-file-input
+  [preview]="logoPreview()"
+  [labels]="logoLabels()"
+  (filesSelected)="onLogoSelected($event[0])"
+  (removeFile)="removeLogo()" /&gt;
+
+&lt;!-- Button mode — inline multi-file picker --&gt;
+&lt;oct-file-input
+  mode="button"
+  variant="outline"
+  icon="Upload"
+  [multiple]="true"
+  [loading]="uploading()"
+  (filesSelected)="onFiles($event)"&gt;
+  Upload
+&lt;/oct-file-input&gt;</code></pre>
+        </oct-card-content>
+      </oct-card>
+    </section>
+
+  </div>
+</div>

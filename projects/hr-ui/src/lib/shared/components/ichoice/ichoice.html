@@ -1,0 +1,36 @@
+@if (brackets()) {
+  <span aria-hidden="true" class="text-2">(</span>
+}
+
+@for (option of options(); track option.value; let last = $last) {
+  <label
+    class="rounded px-1"
+    [class.cursor-pointer]="!disabled()"
+    [class.cursor-not-allowed]="disabled()"
+    [class.hover:bg-secondary]="!disabled()"
+    [class]="isSelected(option.value) ? 'text-1 font-semibold' : 'text-3'"
+  >
+    <!-- A real radio, visually hidden: arrow-key navigation within the group and the
+         "radio, selected" announcement come from the browser rather than being reimplemented. -->
+    <input
+      type="radio"
+      class="peer sr-only"
+      [name]="groupName()"
+      [value]="option.value"
+      [checked]="isSelected(option.value)"
+      [disabled]="disabled()"
+      (change)="select(option.value)"
+    />
+    <span class="rounded peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-primary">
+      {{ option.label }}
+    </span>
+  </label>
+
+  @if (!last) {
+    <span aria-hidden="true" class="text-2">/</span>
+  }
+}
+
+@if (brackets()) {
+  <span aria-hidden="true" class="text-2">)</span>
+}

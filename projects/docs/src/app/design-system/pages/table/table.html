@@ -1,0 +1,449 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Table</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Advanced data table component with sorting, filtering, pagination, and responsive design
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Interactive Playground Section -->
+  <div class="container mx-auto px-6 py-8">
+    <!-- Quick Presets -->
+    <div class="mb-6 flex flex-wrap gap-2">
+      <oct-text color="2" variant="sm" weight="medium" class="mr-4 self-center">Quick presets:</oct-text>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('basic')">
+        Basic Table
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('advanced')">
+        Advanced Features
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('api')">
+        API Example
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('striped')">
+        Striped
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('no-data')">
+        No Data
+      </oct-button>
+    </div>
+
+    <!-- Playground Section -->
+    <div class="flex flex-col gap-6 mb-12">
+      <!-- Live Preview Area -->
+      <div>
+        <oct-table
+          [columns]="currentColumns()"
+          [data]="currentData()"
+          [pagination]="pagination()"
+          [loading]="isLoadingValue"
+          [sortable]="true"
+
+          [fixedHeader]="true"
+          [striped]="tableStriped()"
+          [clickableRows]="tableClickableRows()"
+          [selectionConfig]="selectionConfig()"
+          [cellLines]="tableCellLines()"
+          [dense]="tableDense()"
+          maxHeight="400px"
+          [rowActions]="rowActions"
+          (rowClick)="onRowClick($event)"
+          (sortChange)="onSortChange($event)"
+          (filterChange)="onFilterChange($event)"
+          (pageChange)="onPageChange($event)"
+          (pageSizeChange)="onPageSizeChange($event)"
+          (selectionChange)="onSelectionChange($event)">
+
+          <!-- Footer Template Example -->
+          <ng-template #footerTemplate let-context>
+            <div class="flex items-center gap-6">
+              <div class="flex flex-row items-center">
+                <oct-text color="2" variant="xs" weight="medium" class="mr-2">Total Rows: </oct-text>
+                <oct-text color="1" variant="lg" weight="medium">{{ context.totalRows }}</oct-text>
+              </div>
+              <div class="flex flex-row items-center">
+                <oct-text color="2" variant="xs" weight="medium" class="mr-2">Selected: </oct-text>
+                <oct-text color="1" variant="lg" weight="medium">{{ context.selectedRows.length }}</oct-text>
+              </div>
+            </div>
+          </ng-template>
+
+          <!-- Featured Checkbox Template -->
+          <ng-template #featuredTemplate let-row let-column="column">
+            <div class="flex items-center justify-center">
+              <oct-checkbox
+                [checked]="row.featured || false"
+                (checkboxChange)="toggleFeatured(row)"
+                (click)="$event.stopPropagation()"
+                class="[&>label]:!mb-0 [&>label]:!gap-0">
+              </oct-checkbox>
+            </div>
+          </ng-template>
+        </oct-table>
+      </div>
+
+      <!-- Controls Panel -->
+      <div>
+        <oct-card>
+          <oct-card-content class="space-y-6">
+            <!-- Table Type Selection -->
+            <div>
+              <oct-text color="1" variant="sm" weight="medium" class="mb-2 block">Table Type</oct-text>
+              <div class="flex gap-2">
+                <oct-button
+                  [variant]="activeTableType() === 'basic' ? 'solid' : 'outline'"
+                  [color]="activeTableType() === 'basic' ? 'primary' : 'neutral'"
+                  size="sm"
+                  shape="square"
+                  (buttonClick)="setTableType('basic')">
+                  Basic
+                </oct-button>
+                <oct-button
+                  [variant]="activeTableType() === 'advanced' ? 'solid' : 'outline'"
+                  [color]="activeTableType() === 'advanced' ? 'primary' : 'neutral'"
+                  size="sm"
+                  shape="square"
+                  (buttonClick)="setTableType('advanced')">
+                  Advanced
+                </oct-button>
+                <oct-button
+                  [variant]="activeTableType() === 'api' ? 'solid' : 'outline'"
+                  [color]="activeTableType() === 'api' ? 'primary' : 'neutral'"
+                  size="sm"
+                  shape="square"
+                  (buttonClick)="setTableType('api')">
+                  API
+                </oct-button>
+                <oct-button
+                  [variant]="activeTableType() === 'no-data' ? 'solid' : 'outline'"
+                  [color]="activeTableType() === 'no-data' ? 'primary' : 'neutral'"
+                  size="sm"
+                  shape="square"
+                  (buttonClick)="setTableType('no-data')">
+                  No Data
+                </oct-button>
+              </div>
+            </div>
+
+            <!-- Style Options -->
+            <div class="flex flex-wrap items-start gap-6">
+              <div>
+                <oct-text color="1" variant="sm" weight="medium" class="mb-3 block">Styling</oct-text>
+                <div class="flex flex-wrap gap-4">
+                  <oct-checkbox
+                    [checked]="tableStriped()"
+                    (checkboxChange)="toggleStriped()"
+                    label="Striped rows">
+                  </oct-checkbox>
+                  <oct-checkbox
+                    [checked]="tableClickableRows()"
+                    (checkboxChange)="toggleClickableRows()"
+                    label="Clickable rows">
+                  </oct-checkbox>
+                  <oct-checkbox
+                    [checked]="selectionEnabled()"
+                    (checkboxChange)="toggleSelection()"
+                    label="Enable selection">
+                  </oct-checkbox>
+                  <oct-checkbox
+                    [checked]="tableCellLines()"
+                    (checkboxChange)="toggleCellLines()"
+                    label="Cell lines">
+                  </oct-checkbox>
+                  <oct-checkbox
+                    [checked]="tableDense()"
+                    (checkboxChange)="toggleDense()"
+                    label="Dense">
+                  </oct-checkbox>
+                </div>
+              </div>
+
+              <!-- Selection Configuration -->
+              @if (selectionEnabled()) {
+              <div>
+                <oct-text color="1" variant="sm" weight="medium" class="mb-3 block">Selection Mode</oct-text>
+                <div class="flex gap-2">
+                  <oct-button
+                    [variant]="selectionMode() === 'single' ? 'solid' : 'outline'"
+                    [color]="selectionMode() === 'single' ? 'primary' : 'neutral'"
+                    size="sm"
+                    shape="square"
+                    (buttonClick)="setSelectionMode('single')">
+                    Single
+                  </oct-button>
+                  <oct-button
+                    [variant]="selectionMode() === 'multiple' ? 'solid' : 'outline'"
+                    [color]="selectionMode() === 'multiple' ? 'primary' : 'neutral'"
+                    size="sm"
+                    shape="square"
+                    (buttonClick)="setSelectionMode('multiple')">
+                    Multiple
+                  </oct-button>
+                </div>
+              </div>
+
+              <!-- Selection Status -->
+              <div>
+                <oct-text color="1" variant="sm" weight="medium" class="mb-3 block">Selection Status</oct-text>
+                <div class="flex flex-wrap gap-x-4 gap-y-1">
+                  <oct-text color="2" variant="xs">Selected: {{ currentSelection().selectedRows.length }}</oct-text>
+                  <oct-text color="2" variant="xs">All: {{ currentSelection().isAllSelected ? 'Yes' : 'No' }}</oct-text>
+                  <oct-text color="2" variant="xs">Partial: {{ currentSelection().isIndeterminate ? 'Yes' : 'No' }}</oct-text>
+                </div>
+              </div>
+              }
+            </div>
+          </oct-card-content>
+        </oct-card>
+        </div>
+      </div>
+  </div>
+
+  <!-- Inline Editing Section -->
+  <div class="container mx-auto px-6 pb-8 flex flex-col gap-3">
+    <oct-text color="1" variant="2xl" weight="semibold">Inline editing</oct-text>
+    <oct-text color="2" variant="sm" weight="regular" class="max-w-3xl">
+      Fully generic — the table is <code class="text-1 font-mono">oct-table&lt;T&gt;</code> and imposes no row shape; editing
+      is driven purely by per-column config, so any table can opt in without new types. Set
+      <code class="text-1 font-mono">editable</code> on a column to make its cells click-to-edit. Use
+      <code class="text-1 font-mono">editType: 'number'</code> with <code class="text-1 font-mono">editMin</code> /
+      <code class="text-1 font-mono">editInteger</code> for numeric validation, or a per-row predicate
+      <code class="text-1 font-mono">editable: (row) =&gt; …</code> to lock specific rows (row 3 below). Columns without
+      <code class="text-1 font-mono">editable</code> (e.g. Name) stay read-only. Committing a change emits
+      <code class="text-1 font-mono">(cellValueChange)</code> with the row, column, rowIndex and value.
+      Click a value, edit it, then press Enter (or click away); Esc cancels.
+    </oct-text>
+    <oct-card>
+      <oct-card-content>
+        <oct-table
+          [columns]="inlineEditColumns"
+          [data]="inlineEditData()"
+          [dense]="true"
+          [bordered]="true"
+          [sortable]="false"
+          [maxHeight]="'320px'"
+          (cellValueChange)="onDemoCellEdit($event)"
+        />
+        <div class="mt-3 flex items-center gap-2">
+          <oct-text color="3" variant="sm" weight="medium">Last emitted event:</oct-text>
+          @if (lastInlineEdit(); as last) {
+            <code class="text-1 font-mono text-sm tabular-nums">cellValueChange → {{ last }}</code>
+          } @else {
+            <oct-text color="3" variant="sm" weight="regular">— (edit a cell to see the payload)</oct-text>
+          }
+        </div>
+      </oct-card-content>
+    </oct-card>
+  </div>
+
+  <!-- Props Table -->
+  <div class="container mx-auto px-6 pb-8 flex flex-col gap-6">
+        <oct-text color="1" variant="2xl" weight="semibold">Component Props</oct-text>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+            <thead>
+              <tr class="border-b border-primary bg-secondary transition-all duration-300">
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Required</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-primary">
+                <td class="p-4">
+                  <code class="text-1 font-mono text-sm">columns</code>
+                </td>
+                <td class="p-4">
+                  <code class="text-2 font-mono text-sm">TableColumn[]</code>
+                </td>
+                <td class="p-4">
+                  <oct-text color="1" variant="sm" weight="medium">Yes</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="3" variant="sm" weight="regular">[]</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="2" variant="sm" weight="regular">Column definitions with keys, labels, and options</oct-text>
+                </td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4">
+                  <code class="text-1 font-mono text-sm">data</code>
+                </td>
+                <td class="p-4">
+                  <code class="text-2 font-mono text-sm">T[]</code>
+                </td>
+                <td class="p-4">
+                  <oct-text color="1" variant="sm" weight="medium">Yes</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="3" variant="sm" weight="regular">[]</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="2" variant="sm" weight="regular">Array of data objects to display</oct-text>
+                </td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4">
+                  <code class="text-1 font-mono text-sm">sortable</code>
+                </td>
+                <td class="p-4">
+                  <code class="text-2 font-mono text-sm">boolean</code>
+                </td>
+                <td class="p-4">
+                  <oct-text color="1" variant="sm" weight="medium">No</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="3" variant="sm" weight="regular">true</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="2" variant="sm" weight="regular">Enable column sorting functionality</oct-text>
+                </td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4">
+                  <code class="text-1 font-mono text-sm">filterable</code>
+                </td>
+                <td class="p-4">
+                  <code class="text-2 font-mono text-sm">boolean</code>
+                </td>
+                <td class="p-4">
+                  <oct-text color="1" variant="sm" weight="medium">No</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="3" variant="sm" weight="regular">true</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="2" variant="sm" weight="regular">Enable filtering controls</oct-text>
+                </td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4">
+                  <code class="text-1 font-mono text-sm">pagination</code>
+                </td>
+                <td class="p-4">
+                  <code class="text-2 font-mono text-sm">TablePagination</code>
+                </td>
+                <td class="p-4">
+                  <oct-text color="1" variant="sm" weight="medium">No</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="3" variant="sm" weight="regular">-</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="2" variant="sm" weight="regular">Pagination configuration object</oct-text>
+                </td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4">
+                  <code class="text-1 font-mono text-sm">loading</code>
+                </td>
+                <td class="p-4">
+                  <code class="text-2 font-mono text-sm">boolean</code>
+                </td>
+                <td class="p-4">
+                  <oct-text color="1" variant="sm" weight="medium">No</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="3" variant="sm" weight="regular">false</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="2" variant="sm" weight="regular">Show loading spinner overlay</oct-text>
+                </td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4">
+                  <code class="text-1 font-mono text-sm">clickableRows</code>
+                </td>
+                <td class="p-4">
+                  <code class="text-2 font-mono text-sm">boolean</code>
+                </td>
+                <td class="p-4">
+                  <oct-text color="1" variant="sm" weight="medium">No</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="3" variant="sm" weight="regular">false</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="2" variant="sm" weight="regular">Enable row click interactions</oct-text>
+                </td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4">
+                  <code class="text-1 font-mono text-sm">cellLines</code>
+                </td>
+                <td class="p-4">
+                  <code class="text-2 font-mono text-sm">boolean</code>
+                </td>
+                <td class="p-4">
+                  <oct-text color="1" variant="sm" weight="medium">No</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="3" variant="sm" weight="regular">false</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="2" variant="sm" weight="regular">Show vertical dividing lines between cells</oct-text>
+                </td>
+              </tr>
+              <tr>
+                <td class="p-4">
+                  <code class="text-1 font-mono text-sm">dense</code>
+                </td>
+                <td class="p-4">
+                  <code class="text-2 font-mono text-sm">boolean</code>
+                </td>
+                <td class="p-4">
+                  <oct-text color="1" variant="sm" weight="medium">No</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="3" variant="sm" weight="regular">false</oct-text>
+                </td>
+                <td class="p-4">
+                  <oct-text color="2" variant="sm" weight="regular">Reduce padding and spacing for compact display</oct-text>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+  </div>
+</div>

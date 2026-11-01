@@ -1,0 +1,199 @@
+<div class="max-w-4xl mx-auto flex flex-col gap-8">
+  <header class="flex flex-col gap-2">
+    <oct-text variant="2xl" weight="bold" color="1">Search Panel</oct-text>
+    <oct-text variant="sm" color="3">
+      Command palette shell with keyboard navigation and APG combobox semantics. It never filters: pass an
+      already-filtered list and supply the row markup, so an async lookup and a static catalogue share one implementation.
+    </oct-text>
+  </header>
+
+  <!-- Grouped, synchronous -->
+  <oct-card>
+    <oct-card-content>
+      <div class="flex flex-col gap-4">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex flex-col gap-1">
+            <oct-text variant="lg" weight="semibold" color="1">Grouped and synchronous</oct-text>
+            <oct-text variant="sm" color="3">
+              Items carry a <code class="text-1 font-mono text-xs">group</code>, so the panel renders headings. An empty
+              query returns everything, so it opens on a browsable list.
+            </oct-text>
+          </div>
+          <oct-badge size="sm" text="grouped" />
+        </div>
+
+        <div class="flex items-center gap-3">
+          <oct-button variant="outline" color="neutral" size="sm" icon="Search" (buttonClick)="openCommands()">
+            Open command palette
+          </oct-button>
+          @if (lastCommand()) {
+            <oct-text variant="sm" color="3">Selected: <span class="text-1">{{ lastCommand() }}</span></oct-text>
+          }
+        </div>
+      </div>
+    </oct-card-content>
+  </oct-card>
+
+  <!-- Flat, asynchronous -->
+  <oct-card>
+    <oct-card-content>
+      <div class="flex flex-col gap-4">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex flex-col gap-1">
+            <oct-text variant="lg" weight="semibold" color="1">Flat, asynchronous, with a minimum query</oct-text>
+            <oct-text variant="sm" color="3">
+              No <code class="text-1 font-mono text-xs">group</code>, so no headings. A simulated 600ms lookup drives the
+              loading state, and one empty template serves both the idle and no-results cases.
+            </oct-text>
+          </div>
+          <oct-badge size="sm" color="warning" text="async" />
+        </div>
+
+        <div class="flex items-center gap-3">
+          <oct-button variant="outline" color="neutral" size="sm" icon="Users" (buttonClick)="openPeople()">
+            Open people search
+          </oct-button>
+          @if (lastPerson()) {
+            <oct-text variant="sm" color="3">Selected: <span class="text-1">{{ lastPerson() }}</span></oct-text>
+          }
+        </div>
+      </div>
+    </oct-card-content>
+  </oct-card>
+
+  <!-- Large result set -->
+  <oct-card>
+    <oct-card-content>
+      <div class="flex flex-col gap-4">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex flex-col gap-1">
+            <oct-text variant="lg" weight="semibold" color="1">Large result set</oct-text>
+            <oct-text variant="sm" color="3">
+              {{ bulkTotal }} matches, the shape a short employee query produces. The panel caps what it renders and
+              says so, so arrow-key navigation stays responsive.
+            </oct-text>
+          </div>
+          <oct-badge size="sm" color="error" text="stress" />
+        </div>
+
+        <div class="flex items-center gap-3">
+          <oct-button variant="outline" color="neutral" size="sm" icon="Layers" (buttonClick)="openBulk()">
+            Open {{ bulkTotal }} results
+          </oct-button>
+        </div>
+      </div>
+    </oct-card-content>
+  </oct-card>
+
+  <!-- API -->
+  <oct-card>
+    <oct-card-content>
+      <div class="flex flex-col gap-3">
+        <oct-text variant="lg" weight="semibold" color="1">Component API</oct-text>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-primary text-left">
+                <th class="py-2 pr-4"><oct-text variant="xs" color="3" weight="semibold">Name</oct-text></th>
+                <th class="py-2 pr-4"><oct-text variant="xs" color="3" weight="semibold">Type</oct-text></th>
+                <th class="py-2"><oct-text variant="xs" color="3" weight="semibold">Description</oct-text></th>
+              </tr>
+            </thead>
+            <tbody class="align-top">
+              @for (row of API_ROWS; track row.name) {
+                <tr class="border-b border-primary/50">
+                  <td class="py-2 pr-4"><code class="text-1 font-mono text-xs">{{ row.name }}</code></td>
+                  <td class="py-2 pr-4"><code class="text-3 font-mono text-xs">{{ row.type }}</code></td>
+                  <td class="py-2"><oct-text variant="xs" color="3">{{ row.description }}</oct-text></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </oct-card-content>
+  </oct-card>
+</div>
+
+<!-- Grouped, synchronous palette -->
+<oct-search-panel
+  #commandPanel
+  [isOpen]="commandsOpen()"
+  [(query)]="commandQuery"
+  [items]="commandResults()"
+  placeholder="Search commands..."
+  ariaLabel="Search commands"
+  (itemSelected)="onCommandSelected($event)"
+  (dialogClose)="commandsOpen.set(false)">
+
+  <ng-template octSearchPanelRow let-command let-query="query">
+    <oct-icon [name]="command.icon" size="sm" class="text-3 flex-shrink-0"></oct-icon>
+    <div class="flex-1 min-w-0">
+      <div class="text-sm text-1 truncate" [innerHTML]="command.name | highlight:query"></div>
+      <div class="text-xs text-3 truncate">{{ command.hint }}</div>
+    </div>
+  </ng-template>
+
+  <ng-template octSearchPanelEmpty let-query>
+    <div class="flex flex-col items-center justify-center py-12 px-4 gap-2">
+      <oct-icon name="SearchX" size="xl" class="text-3"></oct-icon>
+      <oct-text variant="sm" color="3" class="text-center">No command matches "{{ query }}"</oct-text>
+      <oct-button variant="outline" color="neutral" size="sm" class="mt-2" (buttonClick)="commandPanel.clearQuery()">
+        Clear search
+      </oct-button>
+    </div>
+  </ng-template>
+</oct-search-panel>
+
+<!-- Large result set -->
+<oct-search-panel
+  [isOpen]="bulkOpen()"
+  [(query)]="bulkQuery"
+  [items]="bulkResults()"
+  placeholder="Search employees..."
+  ariaLabel="Search a large employee list"
+  (dialogClose)="bulkOpen.set(false)">
+
+  <ng-template octSearchPanelRow let-person let-query="query">
+    <oct-avatar [name]="person.name" size="sm" />
+    <div class="flex-1 min-w-0">
+      <div class="text-sm text-1 truncate" [innerHTML]="person.name | highlight:query"></div>
+      <div class="text-xs text-3 truncate">{{ person.team }}</div>
+    </div>
+  </ng-template>
+</oct-search-panel>
+
+<!-- Flat, asynchronous people search -->
+<oct-search-panel
+  [isOpen]="peopleOpen()"
+  [query]="peopleQuery()"
+  (queryChange)="onPeopleQueryChange($event)"
+  [items]="peopleResults()"
+  [loading]="peopleLoading()"
+  [showHints]="true"
+  placeholder="Search people by name..."
+  ariaLabel="Search people"
+  (itemSelected)="onPersonSelected($event)"
+  (dialogClose)="peopleOpen.set(false)">
+
+  <ng-template octSearchPanelRow let-person let-query="query">
+    <oct-avatar [name]="person.name" size="sm" />
+    <div class="flex-1 min-w-0">
+      <div class="text-sm text-1 truncate" [innerHTML]="person.name | highlight:query"></div>
+      <div class="text-xs text-3 truncate">{{ person.team }}</div>
+    </div>
+  </ng-template>
+
+  <ng-template octSearchPanelEmpty let-query>
+    <div class="flex flex-col items-center justify-center py-12 px-4 gap-2">
+      @if (query.length < MIN_PEOPLE_QUERY_LENGTH) {
+        <oct-icon name="Users" size="xl" class="text-3"></oct-icon>
+        <oct-text variant="sm" color="3" class="text-center">Search for people</oct-text>
+        <oct-text variant="xs" color="3" class="text-center">Enter at least {{ MIN_PEOPLE_QUERY_LENGTH }} characters</oct-text>
+      } @else {
+        <oct-icon name="SearchX" size="xl" class="text-3"></oct-icon>
+        <oct-text variant="sm" color="3" class="text-center">No one found for "{{ query }}"</oct-text>
+      }
+    </div>
+  </ng-template>
+</oct-search-panel>

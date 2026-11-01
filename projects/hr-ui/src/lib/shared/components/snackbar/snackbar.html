@@ -1,0 +1,60 @@
+@if (isVisible()) {
+  <div
+    [class]="snackbarClasses()"
+    [style]="snackbarStyle()"
+    [@slideIn]="{ value: animationState(), params: { slideDirection: slideDirection() } }"
+    (@slideIn.done)="onAnimationDone($event)"
+    (click)="onSnackbarClick()"
+    title="Click to copy"
+    role="alert"
+    [attr.aria-live]="type() === 'error' ? 'assertive' : 'polite'"
+    aria-atomic="true">
+
+    <div class="flex items-center gap-3 flex-1 min-w-0">
+      @if (defaultIcon()) {
+        <oct-icon
+          [name]="defaultIcon()"
+          [size]="size() === 'sm' ? 16 : size() === 'lg' ? 24 : 20"
+          [class]="iconClasses()"
+          color="currentColor"
+          aria-hidden="true"
+        />
+      }
+
+      <div class="flex-1 min-w-0">
+          <div [class]="textClasses()">{{ message() }}</div>
+          @if (description()) {
+            <div [class]="descriptionClasses()">{{ description() }}</div>
+          }
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 ml-3">
+      @if (actionText()) {
+        <oct-button
+          type="button"
+          variant="outline"
+          shape="square"
+          size="sm"
+          [color]="buttonColor()"
+          [ariaLabel]="'Action: ' + actionText()"
+          (buttonClick)="onActionClick($event)">
+          {{ actionText() }}
+        </oct-button>
+      }
+
+      @if (dismissible()) {
+        <oct-button
+          type="button"
+          variant="ghost"
+          size="sm"
+          [color]="buttonColor()"
+          shape="round"
+          icon="X"
+          ariaLabel="Dismiss notification"
+          (buttonClick)="onDismiss($event)">
+        </oct-button>
+      }
+    </div>
+  </div>
+}

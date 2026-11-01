@@ -1,0 +1,31 @@
+<label [class]="labelClass()">
+  <input
+    #radioInput
+    type="radio"
+    [id]="computedId()"
+    [name]="name()"
+    [value]="htmlValue()"
+    [checked]="checked()"
+    [disabled]="disabled()"
+    [attr.aria-label]="ariaLabel() || null"
+    [class]="inputClass()"
+    (change)="onRadioChange($event)"
+  />
+
+  @if (label()) {
+    @if (description()) {
+      <span class="flex flex-col gap-0.5 select-none">
+        <oct-text [color]="disabled() ? 'disabled' : '2'" variant="sm" class="leading-5">
+          {{ label() }}
+        </oct-text>
+        <oct-text [color]="disabled() ? 'disabled' : '3'" variant="xs" class="leading-4">
+          {{ description() }}
+        </oct-text>
+      </span>
+    } @else {
+      <oct-text [color]="disabled() ? 'disabled' : '2'" variant="sm" class="select-none leading-5">
+        {{ label() }}
+      </oct-text>
+    }
+  }
+</label>

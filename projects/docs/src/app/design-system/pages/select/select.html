@@ -1,0 +1,817 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Select</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Dropdown select component with clear and keyboard navigation. Supports Angular Signal Forms.
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Interactive Playground Section -->
+  <div class="container mx-auto !px-0 sm:!px-6 py-12 flex flex-col gap-6">
+    <!-- Quick Presets -->
+    <div class="mb-6 flex flex-wrap gap-2">
+      <oct-text color="2" variant="sm" weight="medium" class="mr-4 self-center">Quick presets:</oct-text>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('default')">
+        Default
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('withError')">
+        With Error
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('disabled')">
+        Disabled
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('loading')">
+        Loading
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="success"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('signalForms')">
+        Signal Forms
+      </oct-button>
+    </div>
+
+    <!-- Split Layout: Playground + Code -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+      <!-- Left Side: Live Preview (40% for interactive, 100% for signalForms) -->
+      <div [class]="playgroundMode() === 'interactive' ? 'lg:col-span-2' : 'lg:col-span-5'">
+        @switch (playgroundMode()) {
+
+          @case ('interactive') {
+            <oct-card customClass="h-full">
+              <oct-card-content class="w-full">
+                <oct-select
+                  [options]="fruitOptions"
+                  [value]="config().value"
+                  [placeholder]="config().placeholder"
+                  [label]="config().label"
+                  [size]="config().size"
+                  [clearable]="config().clearable"
+                  [disabled]="config().disabled"
+                  [error]="config().error"
+                  [errorText]="config().errorMessage"
+                  [showIcon]="config().showIcon"
+                  [required]="config().required"
+                  [multiple]="config().multiple"
+                  [loading]="config().loading"
+                  [maxHeight]="config().maxHeight"
+                  [virtualScrolling]="config().virtualScrolling"
+                  [fullWidth]="true"
+                  (selectChange)="onInteractiveValueChange($event)"
+                />
+              </oct-card-content>
+            </oct-card>
+          }
+
+          @case ('signalForms') {
+            <oct-card>
+              <oct-card-header>
+                <oct-text color="1" variant="xl" weight="semibold">Signal Forms</oct-text>
+                <oct-text color="3" variant="sm" weight="regular">
+                  Direct signal bindings with FormValueControl&lt;T&gt; interface. No FormControl needed!
+                </oct-text>
+              </oct-card-header>
+              <oct-card-content>
+                <div class="space-y-4">
+                  <oct-select
+                    [options]="fruitOptions"
+                    [value]="signalFormsValue()"
+                    [touched]="signalFormsTouched()"
+                    [errors]="signalFormsErrors()"
+                    [invalid]="signalFormsHasError()"
+                    label="Select a Fruit"
+                    placeholder="Choose your favorite fruit"
+                    helperText="This uses Signal Forms - no FormControl required"
+                    [required]="true"
+                    [fullWidth]="true"
+                    (selectChange)="onSignalFormsChange($event)"
+                    (selectBlur)="onSignalFormsTouchedChange(true)"
+                  />
+
+                  <div class="flex items-center gap-4 text-sm">
+                    <span class="text-2">Value: <code class="text-1">{{ signalFormsValue() ?? 'null' }}</code></span>
+                    <span class="text-2">Touched: <code class="text-1">{{ signalFormsTouched() }}</code></span>
+                    <span class="text-2">Valid: <code class="text-1">{{ !signalFormsHasError() }}</code></span>
+                  </div>
+                </div>
+              </oct-card-content>
+              <oct-card-footer>
+                <oct-button
+                  variant="outline"
+                  color="neutral"
+                  size="md"
+                  (buttonClick)="signalFormsValue.set(null); signalFormsTouched.set(false); signalFormsErrors.set([])">
+                  Reset
+                </oct-button>
+                <oct-button
+                  variant="solid"
+                  size="md"
+                  (buttonClick)="validateSignalForms()">
+                  Validate
+                </oct-button>
+              </oct-card-footer>
+            </oct-card>
+          }
+        }
+      </div>
+
+      <!-- Right Side: Controls Panel (60%) -->
+      @if (playgroundMode() === 'interactive') {
+        <div class="lg:col-span-3">
+          <oct-card>
+            <oct-card-content class="flex flex-col gap-4">
+              <!-- Text Inputs -->
+              <oct-input
+                label="Placeholder"
+                placeholder="Enter placeholder text"
+                [value]="config().placeholder"
+                (inputChange)="updateConfig('placeholder', $event)"
+                type="text"
+                size="md"
+                hideHelper="true"
+              />
+              <oct-input
+                label="Label"
+                placeholder="Enter label text"
+                [value]="config().label"
+                (inputChange)="updateConfig('label', $event)"
+                type="text"
+                size="md"
+                hideHelper="true"
+              />
+              <!-- Size Selection -->
+              <div>
+                <oct-text color="1" variant="sm" weight="semibold" class="mb-1.5">Size</oct-text>
+                <div class="flex gap-2">
+                  @for (size of ['sm', 'md', 'lg']; track size) {
+                    <oct-button
+                      [variant]="config().size === size ? 'solid' : 'outline'"
+                      [color]="config().size === size ? 'primary' : 'neutral'"
+                      size="sm"
+                      shape="square"
+                      (buttonClick)="updateSize(size)">
+                      {{ size | uppercase }}
+                    </oct-button>
+                  }
+                </div>
+              </div>
+
+              <!-- Boolean Options -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <oct-checkbox
+                  [checked]="config().clearable"
+                  (checkboxChange)="updateConfig('clearable', $event)"
+                  label="Clearable">
+                </oct-checkbox>
+                <oct-checkbox
+                  [checked]="config().disabled"
+                  (checkboxChange)="updateConfig('disabled', $event)"
+                  label="Disabled">
+                </oct-checkbox>
+                <oct-checkbox
+                  [checked]="config().error"
+                  (checkboxChange)="updateConfig('error', $event)"
+                  label="Error State">
+                </oct-checkbox>
+                <oct-checkbox
+                  [checked]="config().showIcon"
+                  (checkboxChange)="updateConfig('showIcon', $event)"
+                  label="Show Icons">
+                </oct-checkbox>
+                <oct-checkbox
+                  [checked]="config().required"
+                  (checkboxChange)="updateConfig('required', $event)"
+                  label="Required">
+                </oct-checkbox>
+                <oct-checkbox
+                  [checked]="config().multiple"
+                  (checkboxChange)="updateConfig('multiple', $event)"
+                  label="Multiple Selection">
+                </oct-checkbox>
+                <oct-checkbox
+                  [checked]="config().loading"
+                  (checkboxChange)="updateConfig('loading', $event)"
+                  label="Loading State">
+                </oct-checkbox>
+                <oct-checkbox
+                  [checked]="config().virtualScrolling"
+                  (checkboxChange)="updateConfig('virtualScrolling', $event)"
+                  label="Virtual Scrolling">
+                </oct-checkbox>
+              </div>
+
+              <!-- Max Height Input -->
+              <oct-input
+                label="Max Height"
+                placeholder="Enter max height (e.g., 240px)"
+                [value]="config().maxHeight"
+                (inputChange)="updateConfig('maxHeight', $event)"
+                type="text"
+                size="md"
+                hideHelper="true"
+              />
+
+              <!-- Error Message (shown when error is true) -->
+              @if (config().error) {
+          <div>
+            <oct-input
+              label="Error Message"
+              placeholder="Enter error message"
+              [value]="config().errorMessage"
+              (inputChange)="updateConfig('errorMessage', $event)"
+              type="text"
+              size="md">
+            </oct-input>
+          </div>
+              }
+            </oct-card-content>
+          </oct-card>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Examples Section -->
+  <div class="container mx-auto !px-0 sm:!px-6 py-12 flex flex-col gap-6">
+
+      <oct-text color="1" variant="2xl" weight="semibold">Examples</oct-text>
+
+      <!-- Basic Select -->
+      <oct-card>
+        <oct-card-header>
+          <oct-text color="1" variant="lg" weight="semibold">Basic Select</oct-text>
+        </oct-card-header>
+        <oct-card-content class="flex justify-center">
+          <oct-select
+            [options]="fruitOptions"
+            [value]="selectedFruit()"
+            placeholder="Select a fruit"
+            label="Fruits"
+            class="w-40"
+            (selectChange)="onFruitChange($event)"
+          />
+        </oct-card-content>
+      </oct-card>
+
+      <!-- States -->
+      <oct-card>
+        <oct-card-header>
+          <oct-text color="1" variant="lg" weight="semibold" class="mb-4">States</oct-text>
+        </oct-card-header>
+        <oct-card-content class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
+          <oct-select
+            [options]="fruitOptions"
+            placeholder="Select an option"
+            class="w-full sm:w-40"
+          />
+          <oct-select
+            [options]="fruitOptions"
+            placeholder="Select an option"
+            [error]="true"
+            errorText="This field is required"
+            class="w-full sm:w-40"
+          />
+          <oct-select
+            [options]="fruitOptions"
+            value="apple"
+            placeholder="Select an option"
+            [disabled]="true"
+            class="w-full sm:w-40"
+          />
+        </oct-card-content>
+      </oct-card>
+
+      <!-- Disabled Options -->
+      <oct-card>
+        <oct-card-header>
+          <oct-text color="1" variant="lg" weight="semibold">Disabled Options</oct-text>
+          <oct-text color="3" variant="sm" weight="regular">
+            Disabled options remain visible in the dropdown and cannot be selected.
+          </oct-text>
+        </oct-card-header>
+        <oct-card-content class="flex justify-center">
+          <oct-select
+            [options]="statusOptions"
+            [value]="selectedStatus()"
+            placeholder="Select status"
+            label="Status"
+            class="w-60"
+            (selectChange)="onStatusChange($event)"
+          />
+        </oct-card-content>
+      </oct-card>
+
+      <!-- Loading States -->
+      <oct-card>
+        <oct-card-header>
+          <oct-text color="1" variant="lg" weight="semibold">Loading States</oct-text>
+          <oct-text color="3" variant="sm" weight="regular">
+            Show loading spinner while fetching options from an API
+          </oct-text>
+        </oct-card-header>
+        <oct-card-content class="flex flex-col items-center gap-4">
+          <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+            <oct-select
+              [options]="loadingDemoLoading() ? [] : fruitOptions"
+              [value]="loadingDemoValue()"
+              [loading]="loadingDemoLoading()"
+              placeholder="Select a fruit"
+              label="Dynamic Loading"
+              class="w-full sm:w-60"
+              (selectChange)="loadingDemoValue.set($event)"
+            />
+            <oct-select
+              [options]="fruitOptions"
+              placeholder="Always loading"
+              label="Static Loading"
+              [loading]="true"
+              class="w-full sm:w-60"
+            />
+          </div>
+          <oct-button
+            variant="outline"
+            color="primary"
+            size="sm"
+            (buttonClick)="simulateLoading()">
+            Simulate API Loading (2s)
+          </oct-button>
+        </oct-card-content>
+      </oct-card>
+
+      <!-- Virtual Scrolling -->
+      <oct-card>
+        <oct-card-header>
+          <oct-text color="1" variant="lg" weight="semibold">Virtual Scrolling</oct-text>
+          <oct-text color="3" variant="sm" weight="regular">
+            Efficiently render large datasets (1000+ items) with CDK Virtual Scroll
+          </oct-text>
+        </oct-card-header>
+        <oct-card-content class="flex flex-col items-center gap-4">
+          <oct-select
+            [options]="largeDataset"
+            [value]="selectedLargeItem()"
+            [virtualScrolling]="true"
+            [itemSize]="40"
+            placeholder="Search 1000 items..."
+            label="Large Dataset (1000 items)"
+            class="w-80"
+            (selectChange)="onLargeItemChange($event)"
+          />
+          <oct-text color="3" variant="sm">
+            Selected: {{ selectedLargeItem() ?? 'None' }}
+          </oct-text>
+        </oct-card-content>
+      </oct-card>
+
+      <!-- Typeahead Navigation -->
+      <oct-card>
+        <oct-card-header>
+          <oct-text color="1" variant="lg" weight="semibold" class="mb-4">Typeahead Navigation</oct-text>
+        </oct-card-header>
+        <oct-card-content class="flex justify-center">
+          <oct-select
+            [options]="countryOptions"
+            [value]="selectedCountry()"
+            placeholder="Select a country"
+            label="Country"
+            [clearable]="true"
+            class="w-80"
+            (selectChange)="onCountryChange($event)"
+          />
+        </oct-card-content>
+      </oct-card>
+
+      <!-- Multiple Selection -->
+      <oct-card>
+        <oct-card-header>
+          <oct-text color="1" variant="lg" weight="semibold">Multiple Selection</oct-text>
+          <oct-text color="3" variant="sm" weight="regular">
+            Select multiple items with badge display and overflow indicator
+          </oct-text>
+        </oct-card-header>
+        <oct-card-content class="flex flex-col gap-6">
+          <!-- Basic Multiple Select -->
+          <div class="flex flex-col gap-2">
+            <oct-text color="2" variant="sm" weight="medium">Basic Multiple Select</oct-text>
+            <div class="flex justify-center">
+              <oct-select
+                [options]="fruitOptions"
+                [multiple]="true"
+                [clearable]="true"
+                [value]="basicMultipleFruits()"
+                placeholder="Select fruits"
+                label="Favorite Fruits"
+                class="w-80"
+                (selectChange)="onMultipleFruitsChange($event)"
+              />
+            </div>
+          </div>
+
+          <!-- Multiple Select with maxDisplay -->
+          <div class="flex flex-col gap-2">
+            <oct-text color="2" variant="sm" weight="medium">With maxDisplay (shows "+N more" when exceeding limit)</oct-text>
+            <div class="flex justify-center">
+              <oct-select
+                [options]="countryOptions"
+                [multiple]="true"
+                [clearable]="true"
+                [maxDisplay]="2"
+                [value]="basicMultipleCountries()"
+                placeholder="Select countries"
+                label="Countries (max 2 badges)"
+                class="w-80"
+                (selectChange)="onMultipleCountriesChange($event)"
+              />
+            </div>
+          </div>
+
+          <!-- Multiple Select with Pre-selected Values -->
+          <div class="flex flex-col gap-2">
+            <oct-text color="2" variant="sm" weight="medium">Pre-selected Values</oct-text>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
+              <oct-select
+                [options]="fruitOptions"
+                [multiple]="true"
+                [clearable]="true"
+                [value]="selectedFruits()"
+                placeholder="Select fruits"
+                label="With 2 pre-selected"
+                class="w-full sm:w-60"
+              />
+              <oct-select
+                [options]="countryOptions"
+                [multiple]="true"
+                [clearable]="true"
+                [maxDisplay]="3"
+                [value]="selectedCountries()"
+                placeholder="Select countries"
+                label="With 4 pre-selected (overflow)"
+                class="w-full sm:w-60"
+              />
+            </div>
+          </div>
+        </oct-card-content>
+      </oct-card>
+
+  </div>
+
+  <!-- Props Table -->
+  <div class="container mx-auto !px-0 sm:!px-6 py-12 flex flex-col gap-6">
+        <oct-text color="1" variant="2xl" weight="semibold">Component Props</oct-text>
+
+        <!-- Core Props -->
+        <oct-text color="1" variant="lg" weight="semibold" class="mt-4">Core Properties</oct-text>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+            <thead>
+              <tr class="border-b border-primary bg-secondary transition-all duration-300">
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">options</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">SelectOption[]</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">[]</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Array of options to display. Set option.disabled to show as disabled and non-selectable.</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">value</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">string | number | null</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">null</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Currently selected value (two-way bindable with model())</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">placeholder</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">'Select an option'</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Placeholder text when no value is selected</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">label</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Label text above the select</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">description</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Description text below label</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">helperText</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Helper text below the select (when no error)</oct-text></td>
+              </tr>
+              <tr>
+                <td class="p-4"><code class="text-1 font-mono text-sm">errorText</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Manual error message override</oct-text></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Signal Forms Props -->
+        <oct-text color="1" variant="lg" weight="semibold" class="mt-6">Signal Forms Integration (FormValueControl&lt;T&gt;)</oct-text>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+            <thead>
+              <tr class="border-b border-primary bg-secondary transition-all duration-300">
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">errors</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">readonly ValidationError[]</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">[]</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Validation errors array from Signal Forms</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">touched</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Whether the field has been touched (input; the control emits (touch) when the user leaves it)</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">dirty</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Whether value has been modified</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">pending</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Whether async validation is pending</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">invalid</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Whether field is invalid</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">disabled</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Disable the select component</oct-text></td>
+              </tr>
+              <tr>
+                <td class="p-4"><code class="text-1 font-mono text-sm">required</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Whether field is required</oct-text></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Appearance Props -->
+        <oct-text color="1" variant="lg" weight="semibold" class="mt-6">Appearance</oct-text>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+            <thead>
+              <tr class="border-b border-primary bg-secondary transition-all duration-300">
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">size</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">'sm' | 'md' | 'lg'</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">'md'</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Size of the select component</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">fullWidth</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Make select take full width of container</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">showIcon</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">true</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Show option icons in dropdown</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">hideHelper</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Hide helper/error text area</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">error</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Manual error state override</oct-text></td>
+              </tr>
+              <tr>
+                <td class="p-4"><code class="text-1 font-mono text-sm">showScrollIndicators</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">true</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Show scroll indicators when list is scrollable</oct-text></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Behavior Props -->
+        <oct-text color="1" variant="lg" weight="semibold" class="mt-6">Behavior</oct-text>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+            <thead>
+              <tr class="border-b border-primary bg-secondary transition-all duration-300">
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">clearable</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Show clear button when value is selected</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">multiple</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Enable multiple selection mode with badge display</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">maxDisplay</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">number | undefined</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Maximum badges to display before showing "+N more" (multiple mode only)</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">loading</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Show loading spinner</oct-text></td>
+              </tr>
+              <tr>
+                <td class="p-4"><code class="text-1 font-mono text-sm">maxHeight</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">'240px'</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Maximum height of dropdown menu</oct-text></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Performance Props -->
+        <oct-text color="1" variant="lg" weight="semibold" class="mt-6">Performance</oct-text>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+            <thead>
+              <tr class="border-b border-primary bg-secondary transition-all duration-300">
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">virtualScrolling</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Enable virtual scrolling for large datasets (1000+ items)</oct-text></td>
+              </tr>
+              <tr>
+                <td class="p-4"><code class="text-1 font-mono text-sm">itemSize</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">number</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">40</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Item height in pixels (for virtual scrolling)</oct-text></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Events -->
+        <oct-text color="1" variant="lg" weight="semibold" class="mt-6">Events</oct-text>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+            <thead>
+              <tr class="border-b border-primary bg-secondary transition-all duration-300">
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Event</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+                </th>
+                <th class="text-left p-4">
+                  <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">selectChange</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">string | number | null | (string | number)[]</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Emitted when selection changes (value only)</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">selectionChange</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">SelectOption | SelectOption[] | null</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Emitted when selection changes (full option object)</oct-text></td>
+              </tr>
+              <tr class="border-b border-primary">
+                <td class="p-4"><code class="text-1 font-mono text-sm">selectFocus</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">FocusEvent</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Emitted when select receives focus</oct-text></td>
+              </tr>
+              <tr>
+                <td class="p-4"><code class="text-1 font-mono text-sm">selectBlur</code></td>
+                <td class="p-4"><code class="text-2 font-mono text-sm">FocusEvent</code></td>
+                <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Emitted when select loses focus</oct-text></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+  </div>
+</div>

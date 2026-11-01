@@ -1,0 +1,31 @@
+
+<div class="flex flex-wrap items-center gap-2 p-1 bg-neutral-900 rounded-lg">
+  @if (showIcon()) {
+    <oct-icon color="neutral" class="p-1" [name]="iconName()" [size]="'lg'" />
+  }
+  
+  @for (filter of filters(); track filter.key) {
+    <oct-filter
+      [label]="filter.label"
+      [size]="'sm'"
+      [width]="filter.width"
+      [options]="getFilterOptions(filter)"
+      [(selectedValues)]="filter.selectedValues"
+      [searchable]="filter.searchable || false"
+      [searchPlaceholder]="filter.searchPlaceholder"
+      [icon]="filter.icon"
+    />
+  }
+
+  @if (hasActiveFilters() && showClearAll()) {
+    <oct-button
+      variant="outline"
+      color="neutral"
+      size="sm"
+      shape="square"
+      (buttonClick)="onClearAll()">
+      {{ clearAllLabel() | translate }}
+    </oct-button>
+  }
+</div>
+

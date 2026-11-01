@@ -1,0 +1,285 @@
+import { Directive, ElementRef, EmbeddedViewRef, OnDestroy, Renderer2, TemplateRef, ViewContainerRef, inject, input } from '@angular/core';
+
+export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
+export type TooltipColor = 'default' | 'primary' | 'blue' | 'red' | 'purple' | 'amber';
+
+const GAP = 8;
+
+// Text bubble surface (HeroUI feel): compact padding, rounded-md, 12px/16px
+// centred text. No shadow or border — they drew a seam at the arrow join that
+// made the bubble and tip read as separate shapes. `relative z-10` keeps the
+// body painting over the arrow's inner half so only the outward tip shows.
+// text-pretty keeps wrapped multi-line tooltips from leaving orphan words.
+const TOOLTIP_BODY =
+  'relative z-10 max-w-60 whitespace-pre-line flex items-center justify-center px-2.5 py-1 rounded-md overflow-hidden text-xs leading-5 font-normal text-center text-pretty';
+
+// Theme-aware color classes — neutral scale is inverted in this project
+// (neutral-50 = dark in light mode, neutral-950 = dark in dark mode)
+const COLOR_CLASSES: Record<TooltipColor, string> = {
+  default: 'bg-neutral-50 text-neutral-950',
+  primary: 'bg-primary-600 text-white',
+  blue: 'bg-blue-400 text-white',
+  red: 'bg-red-400 text-white',
+  purple: 'bg-violet-400 text-white',
+  amber: 'bg-orange-400 text-white'
+};
+
+// Scale-pop enter (HeroUI feel): the panel scales up from the edge nearest the
+// trigger. transition-[opacity,scale] only — never transition-all.
+// drop-shadow (on the wrapper, not the body) follows the body+arrow silhouette
+// as one shape, so depth returns without a seam at the arrow join.
+const WRAPPER_BASE =
+  'fixed z-[10000] pointer-events-none transition-[opacity,scale] duration-200 ease-[cubic-bezier(0.2,0,0,1)] [filter:drop-shadow(0_1px_1px_rgb(0_0_0_/_0.10))_drop-shadow(0_2px_6px_rgb(0_0_0_/_0.12))]';
+
+// Rich-content panel surface — matches the card surface (bg-secondary +
+// border-primary); same scale-pop enter.
+const RICH_WRAPPER_BASE =
+  'fixed z-[10000] pointer-events-none max-w-xs rounded-lg border border-primary bg-secondary p-3 shadow-lg transition-[opacity,scale] duration-200 ease-[cubic-bezier(0.2,0,0,1)]';
+
+// transform-origin tracks placement so the panel pops out of the trigger edge.
+const ORIGIN_CLASSES: Record<TooltipPosition, string> = {
+  top: 'origin-bottom',
+  bottom: 'origin-top',
+  left: 'origin-right',
+  right: 'origin-left'
+};
+
+// Enter (hidden) state. Scale-pop; reduced-motion drops scale to a plain fade.
+const ENTER = 'opacity-0 scale-95';
+const ENTER_REDUCED = 'opacity-0';
+const VISIBLE = 'opacity-100 scale-100';
+
+const ARROW_SIZE = 8; // px — keep in sync with the w-2 h-2 below
+
+// Arrow surfaces per color — bg only, matching each bubble (no border).
+const ARROW_COLOR_CLASSES: Record<TooltipColor, string> = {
+  default: 'bg-neutral-50',
+  primary: 'bg-primary-600',
+  blue: 'bg-blue-400',
+  red: 'bg-red-400',
+  purple: 'bg-violet-400',
+  amber: 'bg-orange-400'
+};
+
+const isTouchPointer = (): boolean =>
+  typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(hover: none)').matches;
+
+const prefersReducedMotion = (): boolean =>
+  typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/**
+ * Hover/focus tooltip. Two modes:
+ *
+ * - **Text** (`[octTooltip]="'...'"`): a small centred bubble with an arrow pointing at
+ *   the trigger, a scale-pop enter, and a drop-shadow over the body+arrow silhouette.
+ * - **Rich** (`[octTooltipContent]="tpl"` where `tpl` is an `<ng-template>`): floats a panel
+ *   with arbitrary projected content beside the trigger (no arrow). The rich path is skipped
+ *   on touch pointers (no hover), so provide an inline fallback there if the content matters.
+ *
+ * Both render to `document.body`, share the scale-pop enter, and clamp into the viewport.
+ */
+@Directive({
+  selector: '[octTooltip], [octTooltipContent]',
+  host: {
+    '(mouseenter)': 'onMouseEnter()',
+    '(mouseleave)': 'onMouseLeave()',
+    '(focus)': 'onMouseEnter()',
+    '(blur)': 'onMouseLeave()'
+  }
+})
+export class TooltipDirective implements OnDestroy {
+  readonly octTooltip = input<string>('');
+  readonly octTooltipContent = input<TemplateRef<unknown> | null>(null);
+  readonly octTooltipPosition = input<TooltipPosition>('top');
+  readonly octTooltipColor = input<TooltipColor>('primary');
+  readonly octTooltipShowDelay = input<number>(200);
+  readonly octTooltipDisabled = input<boolean>(false);
+
+  private readonly el = inject(ElementRef);
+  private readonly renderer = inject(Renderer2);
+  private readonly vcr = inject(ViewContainerRef);
+
+  private wrapperEl: HTMLElement | null = null;
+  private arrowEl: HTMLElement | null = null;
+  private embeddedView: EmbeddedViewRef<unknown> | null = null;
+  private delayTimer: ReturnType<typeof setTimeout> | null = null;
+  private visibleBaseClass = '';
+  private static nextId = 0;
+
+  private get isRich(): boolean {
+    return !!this.octTooltipContent();
+  }
+
+  onMouseEnter(): void {
+    if (this.octTooltipDisabled()) return;
+    // Rich content has no hover affordance on touch — bail and let the consumer
+    // show an inline fallback. (Text path keeps its legacy behaviour.)
+    if (this.isRich && isTouchPointer()) return;
+    if (!this.isRich && !this.octTooltip()) return;
+
+    this.clearTimer();
+    const delay = this.octTooltipShowDelay();
+    if (delay > 0) {
+      this.delayTimer = setTimeout(() => this.create(), delay);
+    } else {
+      this.create();
+    }
+  }
+
+  onMouseLeave(): void {
+    this.clearTimer();
+    this.remove();
+  }
+
+  ngOnDestroy(): void {
+    this.clearTimer();
+    this.remove();
+  }
+
+  private clearTimer(): void {
+    if (this.delayTimer) {
+      clearTimeout(this.delayTimer);
+      this.delayTimer = null;
+    }
+  }
+
+  private create(): void {
+    this.remove();
+    const position = this.octTooltipPosition();
+    const id = `oct-tooltip-${TooltipDirective.nextId++}`;
+
+    const reduced = prefersReducedMotion();
+    const enter = reduced ? ENTER_REDUCED : ENTER;
+    const base = this.isRich ? RICH_WRAPPER_BASE : WRAPPER_BASE;
+    // origin only matters while the scale tween plays; skip it when reduced.
+    this.visibleBaseClass = reduced ? base : `${base} ${ORIGIN_CLASSES[position]}`;
+
+    const wrapper = this.renderer.createElement('div') as HTMLElement;
+    wrapper.id = id;
+    wrapper.setAttribute('role', 'tooltip');
+    wrapper.className = `${this.visibleBaseClass} ${enter}`;
+
+    if (this.isRich) {
+      this.embeddedView = this.vcr.createEmbeddedView(this.octTooltipContent()!);
+      this.embeddedView.detectChanges();
+      for (const node of this.embeddedView.rootNodes) {
+        this.renderer.appendChild(wrapper, node);
+      }
+    } else {
+      // Arrow first so the opaque body paints over its inner half — only the
+      // sharp outward tip stays visible.
+      const arrow = this.renderer.createElement('div') as HTMLElement;
+      arrow.className = `absolute w-2 h-2 rotate-45 ${ARROW_COLOR_CLASSES[this.octTooltipColor()]}`;
+      this.renderer.appendChild(wrapper, arrow);
+      this.arrowEl = arrow;
+
+      const body = this.renderer.createElement('div') as HTMLElement;
+      body.className = `${TOOLTIP_BODY} ${COLOR_CLASSES[this.octTooltipColor()]}`;
+      body.textContent = this.octTooltip();
+      this.renderer.appendChild(wrapper, body);
+    }
+
+    this.renderer.appendChild(document.body, wrapper);
+    this.wrapperEl = wrapper;
+
+    this.renderer.setAttribute(this.el.nativeElement, 'aria-describedby', id);
+    this.positionTooltip(wrapper, position);
+
+    requestAnimationFrame(() => {
+      if (!this.wrapperEl) return;
+      this.wrapperEl.className = `${this.visibleBaseClass} ${VISIBLE}`;
+    });
+  }
+
+  /**
+   * The box to point at. A `display: contents` host (`oct-badge`, `oct-settings-item`) renders no box of
+   * its own, so its own rect is all zeros and the tooltip lands in the viewport corner. What it renders
+   * is the thing the pointer is actually over, so measure that.
+   */
+  private triggerRect(): DOMRect {
+    const host = this.el.nativeElement as HTMLElement;
+    const rect = host.getBoundingClientRect();
+    if (rect.width || rect.height || !host.firstElementChild) {
+      return rect;
+    }
+    return host.firstElementChild.getBoundingClientRect();
+  }
+
+  private positionTooltip(wrapper: HTMLElement, pos: TooltipPosition): void {
+    const host = this.triggerRect();
+    // offsetWidth/Height ignore the enter-state scale transform, so the panel
+    // is measured at its true size (getBoundingClientRect would report 95%).
+    const tipW = wrapper.offsetWidth;
+    const tipH = wrapper.offsetHeight;
+
+    let top: number;
+    let left: number;
+
+    switch (pos) {
+      case 'top':
+        top = host.top - tipH - GAP;
+        left = host.left + host.width / 2 - tipW / 2;
+        break;
+      case 'bottom':
+        top = host.bottom + GAP;
+        left = host.left + host.width / 2 - tipW / 2;
+        break;
+      case 'left':
+        top = host.top + host.height / 2 - tipH / 2;
+        left = host.left - tipW - GAP;
+        break;
+      case 'right':
+        top = host.top + host.height / 2 - tipH / 2;
+        left = host.right + GAP;
+        break;
+    }
+
+    left = Math.max(8, Math.min(left, window.innerWidth - tipW - 8));
+    top = Math.max(8, Math.min(top, window.innerHeight - tipH - 8));
+
+    this.renderer.setStyle(wrapper, 'top', `${top}px`);
+    this.renderer.setStyle(wrapper, 'left', `${left}px`);
+
+    // Arrow stays pointed at the trigger's centre even if the panel was
+    // clamped into the viewport, mirroring HeroUI's behaviour.
+    if (this.arrowEl) {
+      this.positionArrow(this.arrowEl, host, { left, top, width: tipW, height: tipH }, pos);
+    }
+  }
+
+  private positionArrow(
+    arrow: HTMLElement,
+    host: DOMRect,
+    rect: { left: number; top: number; width: number; height: number },
+    pos: TooltipPosition
+  ): void {
+    const half = ARROW_SIZE / 2;
+    // Keep the arrow clear of the rounded corners.
+    const clamp = (v: number, max: number): number => Math.max(6, Math.min(v, max));
+
+    if (pos === 'top' || pos === 'bottom') {
+      const hostCx = host.left + host.width / 2;
+      const x = clamp(hostCx - rect.left - half, rect.width - ARROW_SIZE - 6);
+      this.renderer.setStyle(arrow, 'left', `${x}px`);
+      this.renderer.setStyle(arrow, pos === 'top' ? 'bottom' : 'top', `-${half}px`);
+    } else {
+      const hostCy = host.top + host.height / 2;
+      const y = clamp(hostCy - rect.top - half, rect.height - ARROW_SIZE - 6);
+      this.renderer.setStyle(arrow, 'top', `${y}px`);
+      this.renderer.setStyle(arrow, pos === 'left' ? 'right' : 'left', `-${half}px`);
+    }
+  }
+
+  private remove(): void {
+    if (this.wrapperEl) {
+      this.renderer.removeAttribute(this.el.nativeElement, 'aria-describedby');
+      this.wrapperEl.remove();
+      this.wrapperEl = null;
+      this.arrowEl = null;
+    }
+    if (this.embeddedView) {
+      this.embeddedView.destroy();
+      this.embeddedView = null;
+    }
+  }
+}

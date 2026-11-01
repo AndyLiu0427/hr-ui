@@ -1,0 +1,324 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Avatar</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Display user profile pictures, initials, or icons with multiple size variants and status indicators
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Interactive Playground Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <!-- Quick Presets -->
+    <div class="flex flex-wrap gap-2">
+      <oct-text color="2" variant="sm" weight="medium" class="mr-4 self-center">Quick presets:</oct-text>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('default')">
+        Default
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('withImage')">
+        With Image
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('initials')">
+        Initials Only
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('status')">
+        With Status
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('clickable')">
+        Clickable
+      </oct-button>
+    </div>
+
+    <!-- Playground Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+      <!-- Live Preview Area (Left - 2 cols) -->
+      <div class="lg:col-span-2">
+        <oct-card customClass="h-full">
+          <oct-card-content class="w-full flex items-center justify-center py-8">
+            <oct-avatar
+              [src]="config().src"
+              [name]="config().name"
+              [size]="config().size"
+              [status]="config().status"
+              [clickable]="config().clickable"
+              [showTooltip]="config().showTooltip"
+              (avatarClick)="onPlaygroundClick($event)">
+            </oct-avatar>
+          </oct-card-content>
+        </oct-card>
+      </div>
+
+      <!-- Controls Panel (Right - 3 cols) -->
+      <div class="lg:col-span-3">
+        <oct-card>
+          <oct-card-content class="flex flex-col gap-4">
+
+            <!-- Name Input -->
+            <oct-input
+              label="Name"
+              placeholder="Enter user name"
+              [value]="config().name"
+              (inputChange)="updateConfig('name', $event)"
+              type="text"
+              size="md"
+              hideHelper="true"
+            />
+
+            <!-- Image URL Input -->
+            <oct-input
+              label="Image URL"
+              placeholder="Enter avatar image URL"
+              [value]="config().src"
+              (inputChange)="updateConfig('src', $event)"
+              type="url"
+              size="md"
+              hideHelper="true"
+            />
+
+            <div class="flex gap-6">
+              <!-- Size Selection -->
+              <div>
+                <oct-text color="1" variant="sm" weight="semibold" class="mb-1.5">Size</oct-text>
+                <div class="flex flex-wrap gap-2">
+                  @for (size of avatarSizes; track size) {
+                    <oct-button
+                      [variant]="config().size === size ? 'solid' : 'outline'"
+                      [color]="config().size === size ? 'primary' : 'neutral'"
+                      size="sm"
+                      shape="square"
+                      (buttonClick)="updateConfig('size', size)">
+                      {{ size | uppercase }}
+                    </oct-button>
+                  }
+                </div>
+              </div>
+
+              <!-- Status Selection -->
+              <div>
+                <oct-text color="1" variant="sm" weight="semibold" class="mb-1.5">Status</oct-text>
+                <div class="flex flex-wrap gap-2">
+                  @for (status of avatarStatuses; track status) {
+                    <oct-button
+                      [variant]="config().status === status ? 'solid' : 'outline'"
+                      [color]="config().status === status ? 'primary' : 'neutral'"
+                      size="sm"
+                      shape="square"
+                      (buttonClick)="updateConfig('status', status)">
+                      {{ status | titlecase }}
+                    </oct-button>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Boolean Options -->
+            <div class="flex gap-6">
+              <oct-checkbox
+                [checked]="config().clickable"
+                (checkboxChange)="updateConfig('clickable', $event)"
+                label="Clickable" />
+              <oct-checkbox
+                [checked]="config().showTooltip"
+                (checkboxChange)="updateConfig('showTooltip', $event)"
+                label="Show Tooltip" />
+            </div>
+
+            <!-- Alt Text Input -->
+            <oct-input
+              label="Alt Text"
+              placeholder="Enter accessibility description"
+              [value]="config().alt"
+              (inputChange)="updateConfig('alt', $event)"
+              type="text"
+              size="md"
+              hideHelper="true"
+            />
+          </oct-card-content>
+        </oct-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Examples Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+
+    <oct-text color="1" variant="2xl" weight="semibold">Examples</oct-text>
+
+    <!-- Sizes -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-4">Sizes</oct-text>
+        <div class="flex items-end gap-4 justify-center flex-wrap">
+          @for (example of avatarSizeExamples; track example.size) {
+            <div class="flex flex-col items-center gap-2">
+              <oct-avatar name="John Doe" [size]="example.size" />
+              <oct-text color="2" variant="xs" weight="medium">{{ example.size | uppercase }}</oct-text>
+            </div>
+          }
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Fallback Scenarios -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-4">Fallback Scenarios</oct-text>
+        <div class="flex items-center gap-6 justify-center">
+          <oct-avatar
+            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+            name="John Smith"
+            size="lg"
+          />
+          <oct-avatar name="Jane Doe" size="lg" />
+          <oct-avatar size="lg" />
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Group Usage -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-4">Group Usage</oct-text>
+        <div class="flex items-start gap-6 justify-center">
+          <!-- User List -->
+          <div class="flex-1 max-w-md">
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <oct-avatar name="Alice Johnson" size="md" status="online"></oct-avatar>
+                <div>
+                  <oct-text color="1" variant="sm" weight="medium" class="block">Alice Johnson</oct-text>
+                  <oct-text color="2" variant="xs" weight="regular">Online now</oct-text>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <oct-avatar name="Bob Smith" size="md" status="away"></oct-avatar>
+                <div>
+                  <oct-text color="1" variant="sm" weight="medium" class="block">Bob Smith</oct-text>
+                  <oct-text color="2" variant="xs" weight="regular">Away</oct-text>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <oct-avatar name="Carol Wilson" size="md" status="busy"></oct-avatar>
+                <div>
+                  <oct-text color="1" variant="sm" weight="medium" class="block">Carol Wilson</oct-text>
+                  <oct-text color="2" variant="xs" weight="regular">Busy</oct-text>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Avatar Stack -->
+          <div class="flex-1 max-w-md">
+            <div class="flex items-center">
+              <div class="flex -space-x-2">
+                <oct-avatar name="User 1" size="md"></oct-avatar>
+                <oct-avatar name="User 2" size="md"></oct-avatar>
+                <oct-avatar name="User 3" size="md"></oct-avatar>
+                <oct-avatar name="User 4" size="md"></oct-avatar>
+                <oct-avatar name="User 5" size="md"></oct-avatar>
+              </div>
+              <oct-text color="2" variant="sm" weight="regular" class="ml-3">+12 more</oct-text>
+            </div>
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+  </div>
+
+  <!-- Props Table -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Component Props</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary transition-all duration-300">
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">src</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">''</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">URL of the user's profile image</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">name</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">''</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">User's name for generating initials</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">size</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">AvatarSize</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'md'</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Size variant: xs, sm, md, lg, xl, 2xl</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">status</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'online' | 'offline' | 'busy' | 'away' | 'none'</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'none'</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Status indicator display</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">clickable</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Makes avatar interactive with hover effects</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">showTooltip</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Shows tooltip on hover</oct-text></td>
+          </tr>
+          <tr>
+            <td class="p-4"><code class="text-1 font-mono text-sm">alt</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">''</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Alt text for accessibility</oct-text></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

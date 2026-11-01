@@ -1,0 +1,121 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <span class="sr-only" aria-live="polite">{{ announcement() }}</span>
+
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Colors</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Design tokens and the full color palette. Click any swatch to copy.
+      </oct-text>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-12">
+    <section>
+      <oct-text color="1" variant="2xl" weight="bold" class="mb-2 flex items-center">
+        <oct-icon name="SwatchBook" size="xl" class="mr-3" />
+        Semantic tokens
+      </oct-text>
+      <oct-text color="3" variant="sm" class="mb-6 block">
+        Use these for everyday work. Copies a <code>var(--token)</code> reference that follows light / dark theme.
+      </oct-text>
+
+      <oct-card>
+        <div class="flex flex-col gap-6">
+          @for (group of semanticGroups(); track group.group) {
+            <div class="space-y-4">
+              <oct-text color="1" variant="xl" weight="semibold">{{ group.group }}</oct-text>
+
+              <div class="flex flex-wrap gap-3">
+                @for (row of group.rows; track row.token) {
+                  <button
+                    type="button"
+                    (click)="copy(swatchFill(row.token))"
+                    [attr.aria-label]="'Copy var(' + row.token + ')'"
+                    class="group flex w-full items-center gap-4 text-left rounded-lg p-2 transition-colors sm:w-72
+                           hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2
+                           focus-visible:ring-inset focus-visible:ring-primary-200">
+                    <span
+                      class="relative flex items-center justify-center w-12 h-12 shrink-0 rounded-lg border border-primary
+                             transition-transform duration-300 group-hover:scale-105"
+                      [style.background]="swatchFill(row.token)">
+                      @if (copied() === swatchFill(row.token)) {
+                        <oct-icon name="Check" size="sm" class="text-white drop-shadow" />
+                      }
+                    </span>
+
+                    <span class="min-w-0">
+                      <oct-text color="1" variant="md" weight="semibold">{{ row.label }}</oct-text>
+                      <oct-text color="3" variant="xs" class="mt-0.5 block" [truncate]="false">
+                        @if (copied() === swatchFill(row.token)) {
+                          Copied!
+                        } @else {
+                          var({{ row.token }})
+                        }
+                      </oct-text>
+                      <oct-text color="3" variant="xs" class="mt-0.5 block" [truncate]="false">{{ row.usage }}</oct-text>
+                    </span>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </oct-card>
+    </section>
+
+    <section>
+      <oct-text color="1" variant="2xl" weight="bold" class="mb-2 flex items-center">
+        <oct-icon name="Palette" size="xl" class="mr-3" />
+        Color palette
+      </oct-text>
+      <oct-text color="3" variant="sm" class="mb-6 block">
+        The full color palette, a collection of Tailwind CSS colors. Copies the Tailwind utility class; the hex
+        below each swatch is for reference (light theme).
+      </oct-text>
+
+      <oct-card>
+        <div class="flex flex-col gap-8">
+          @for (palette of palettes(); track palette.name) {
+            <div class="space-y-4">
+              <div>
+                <oct-text color="1" variant="xl" weight="semibold">{{ palette.name }}</oct-text>
+                <oct-text color="3" variant="sm">{{ palette.note }}</oct-text>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-11 gap-3">
+                @for (shade of palette.shades; track shade.class) {
+                  <button
+                    type="button"
+                    (click)="copy(shade.class)"
+                    [attr.aria-label]="'Copy ' + shade.class"
+                    class="group text-left rounded-lg p-1 transition-colors
+                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-200">
+                    <span
+                      class="relative flex items-center justify-center w-full h-16 rounded-lg mb-2 border border-primary
+                             transition-transform duration-300 group-hover:scale-105"
+                      [style.background]="shade.value">
+                      @if (copied() === shade.class) {
+                        <oct-icon name="Check" size="md" class="text-white drop-shadow" />
+                      }
+                    </span>
+                    <div class="text-center">
+                      <oct-text color="1" variant="xs" weight="medium">{{ shade.name }}</oct-text>
+                      <oct-text color="3" variant="xs" class="mt-1 block" [truncate]="false">
+                        @if (copied() === shade.class) {
+                          Copied!
+                        } @else {
+                          {{ shade.value }}
+                        }
+                      </oct-text>
+                    </div>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </oct-card>
+    </section>
+  </div>
+</div>

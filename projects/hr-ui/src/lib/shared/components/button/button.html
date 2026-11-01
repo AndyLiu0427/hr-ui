@@ -1,0 +1,38 @@
+<button
+  [type]="type()"
+  [disabled]="disabled() || loading()"
+  [class]="buttonClasses()"
+  [attr.aria-label]="ariaLabel()"
+  [attr.aria-describedby]="ariaDescribedBy()"
+  [attr.aria-disabled]="disabled() || loading()"
+  (click)="onButtonClick($event)"
+  (mousedown)="onMouseDown($event)"
+  (mouseup)="onMouseUp()"
+  (mouseleave)="onMouseLeave()"
+  (keydown)="onKeyDown($event)"
+  (keyup)="onKeyUp($event)"
+  (focus)="onFocus()"
+  (blur)="onBlur()"
+  [attr.tabindex]="disabled() || loading() ? -1 : 0"
+  #buttonRef>
+
+
+  <!-- Loading spinner -->
+  @if (loading()) {
+    <oct-icon name="LoaderCircle" size="sm" [class]="'animate-spin ' + iconBoxClass()" aria-hidden="true" />
+  }
+
+  <!-- Left icon -->
+  @if (icon() && iconPosition() === 'left' && !loading()) {
+    <oct-icon [name]="icon()" size="sm" aria-hidden="true" [class]="iconBoxClass()" />
+  }
+
+  @if (!isForcedIconOnly()) {
+    <span #contentRef class="button-content" [class.flex-1]="fullWidth()" [class.min-w-0]="fullWidth()"><ng-content /></span>
+  }
+
+  <!-- Right icon -->
+  @if (icon() && iconPosition() === 'right' && !loading()) {
+    <oct-icon [name]="icon()" size="sm" aria-hidden="true" [class]="iconBoxClass()" />
+  }
+</button>

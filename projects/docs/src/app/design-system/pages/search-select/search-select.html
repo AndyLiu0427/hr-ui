@@ -1,0 +1,444 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Search Select</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Advanced searchable select with API integration, debounce, and custom value creation
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Interactive Playground Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <!-- Quick Presets -->
+    <div class="mb-6 flex flex-wrap gap-2">
+      <oct-text color="2" variant="sm" weight="medium" class="mr-4 self-center">Quick presets:</oct-text>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('default')">
+        Default
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="success"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('apiSearch')">
+        API Search
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('withError')">
+        With Error
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('disabled')">
+        Disabled
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('loading')">
+        Loading
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="info"
+        size="sm"
+        shape="square"
+        (buttonClick)="applyPreset('signalForms')">
+        Signal Forms
+      </oct-button>
+    </div>
+
+    <!-- Playground Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+      <!-- Live Preview Area (dynamic width based on mode) -->
+      <div [class]="playgroundMode() === 'interactive' || playgroundMode() === 'apiSearch' ? 'lg:col-span-2' : 'lg:col-span-5'">
+        @switch (playgroundMode()) {
+
+        @case ('interactive') {
+          <oct-card customClass="h-full">
+            <oct-card-content class="w-full flex items-center justify-center">
+              <div class="w-full max-w-sm">
+                <oct-search-select
+                  [options]="frameworkOptions"
+                  [value]="config().value"
+                  [placeholder]="config().placeholder"
+                  [label]="config().label"
+                  [size]="config().size"
+                  [clearable]="config().clearable"
+                  [disabled]="config().disabled"
+                  [error]="config().error"
+                  [errorText]="config().errorMessage"
+                  [required]="config().required"
+                  [multiple]="config().multiple"
+                  [fullWidth]="true"
+                  (valueChange)="onInteractiveValueChange($event)">
+                </oct-search-select>
+              </div>
+            </oct-card-content>
+          </oct-card>
+        }
+
+        @case ('apiSearch') {
+          <oct-card customClass="h-full">
+            <oct-card-content class="w-full flex items-center justify-center">
+              <div class="w-full max-w-sm">
+                <oct-search-select
+                  [searchConfig]="apiSearchConfig()"
+                  [preloadConfig]="apiPreloadConfig()"
+                  [value]="config().value"
+                  [placeholder]="config().placeholder"
+                  [label]="config().label"
+                  [size]="config().size"
+                  [clearable]="config().clearable"
+                  [disabled]="config().disabled"
+                  [errorText]="config().errorMessage"
+                  [required]="config().required"
+                  [fullWidth]="true"
+                  (valueChange)="onInteractiveValueChange($event)">
+                </oct-search-select>
+              </div>
+            </oct-card-content>
+          </oct-card>
+        }
+
+        @case ('signalForms') {
+          <oct-card>
+            <oct-card-content>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Signal Forms: form controls error/touched/invalid state -->
+                <oct-search-select
+                  [options]="frameworkOptions"
+                  [(value)]="signalFormsValue"
+                  [touched]="signalFormsTouched()"
+                  [errors]="signalFormsErrors()"
+                  [invalid]="signalFormsHasError()"
+                  label="Technology"
+                  placeholder="Select technology"
+                  [required]="true"
+                  [clearable]="true"
+                  [fullWidth]="true"
+                  (valueChange)="onSignalFormsValueChange($event)"
+                  (touch)="onSignalFormsTouchedChange(true)">
+                </oct-search-select>
+
+                <div class="text-sm text-2 self-center">
+                  <p><strong>Value:</strong> {{ signalFormsValue() ?? 'null' }}</p>
+                  <p><strong>Touched:</strong> {{ signalFormsTouched() }}</p>
+                  <p><strong>Has Error:</strong> {{ signalFormsHasError() }}</p>
+                  <p><strong>Errors:</strong> {{ signalFormsErrors().length > 0 ? signalFormsErrors()[0].message : 'none' }}</p>
+                </div>
+              </div>
+            </oct-card-content>
+            <oct-card-footer>
+              <oct-button
+                variant="outline"
+                color="neutral"
+                size="md"
+                type="button"
+                icon="RefreshCw"
+                (buttonClick)="onResetSignalForms()">
+                Reset
+              </oct-button>
+              <oct-button
+                variant="solid"
+                color="primary"
+                size="md"
+                type="button"
+                icon="Send"
+                [disabled]="signalFormsHasError() || !signalFormsValue()"
+                (buttonClick)="onSubmitSignalForms()">
+                {{ signalFormsSubmitted() ? 'Submitted!' : 'Submit' }}
+              </oct-button>
+            </oct-card-footer>
+          </oct-card>
+        }
+
+      }
+      </div>
+
+      <!-- Configuration Panel (Right - 3 cols) -->
+      <div class="lg:col-span-3">
+        @if (playgroundMode() === 'interactive' || playgroundMode() === 'apiSearch') {
+          <oct-card>
+          <oct-card-content class="space-y-4">
+            <!-- Size Selection -->
+            <oct-text color="2" variant="sm" weight="medium" class="mb-2 block">Size</oct-text>
+            <div class="flex gap-2">
+              @for (size of ['sm', 'md', 'lg']; track size) {
+                <oct-button
+                  variant="outline"
+                  [color]="config().size === size ? 'primary' : 'neutral'"
+                  size="sm"
+                  shape="square"
+                  (buttonClick)="updateSize(size)">
+                  {{ size.toUpperCase() }}
+                </oct-button>
+              }
+            </div>
+
+            <!-- API Search Info (only for apiSearch mode) -->
+            @if (playgroundMode() === 'apiSearch') {
+              <div class="space-y-2 border-t border-primary pt-4">
+                <oct-text color="1" variant="md" weight="medium">API Search Mode</oct-text>
+                <oct-text color="2" variant="sm">
+                  Using searchConfig and preloadConfig objects for cleaner API
+                </oct-text>
+              </div>
+            }
+
+            <!-- Boolean Properties -->
+            <div class="grid grid-cols-3 gap-4">
+              <oct-checkbox
+                label="Clearable"
+                [checked]="config().clearable"
+                (checkboxChange)="updateConfig('clearable', $event)">
+              </oct-checkbox>
+
+              <oct-checkbox
+                label="Disabled"
+                [checked]="config().disabled"
+                (checkboxChange)="updateConfig('disabled', $event)">
+              </oct-checkbox>
+
+              <oct-checkbox
+                label="Error"
+                [checked]="config().error"
+                (checkboxChange)="updateConfig('error', $event)">
+              </oct-checkbox>
+
+              <oct-checkbox
+                label="Required"
+                [checked]="config().required"
+                (checkboxChange)="updateConfig('required', $event)">
+              </oct-checkbox>
+
+              <oct-checkbox
+                label="Multiple Selection"
+                [checked]="config().multiple"
+                (checkboxChange)="updateConfig('multiple', $event)">
+              </oct-checkbox>
+            </div>
+          </oct-card-content>
+          </oct-card>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Examples Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="bold">Examples</oct-text>
+    <!-- Basic Examples -->
+    <!-- Basic Search Select -->
+    <oct-card>
+      <oct-card-header>
+        <oct-text color="1" variant="lg" weight="semibold">Basic Search Select</oct-text>
+      </oct-card-header>
+      <oct-card-content>
+        <div class="flex items-center gap-6 justify-center">
+          <oct-search-select
+            [options]="frameworkOptions"
+            [value]="selectedFramework()"
+            placeholder="Search frameworks..."
+            label="Framework"
+            [clearable]="true"
+            (valueChange)="onFrameworkChange($event)">
+          </oct-search-select>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- API Search -->
+    <oct-card>
+      <oct-card-header>
+        <oct-text color="1" variant="lg" weight="semibold">API Search with Config Objects</oct-text>
+      </oct-card-header>
+      <oct-card-content>
+        <div class="flex items-center gap-6 justify-center">
+          <oct-search-select
+            [searchConfig]="frameworkSearchConfig"
+            [value]="selectedTechnology()"
+            placeholder="Search technologies..."
+            label="Technology"
+            (valueChange)="onTechnologyChange($event)">
+          </oct-search-select>
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Multi-Select -->
+    <oct-card>
+      <oct-card-header>
+        <oct-text color="1" variant="lg" weight="semibold">Multi-Select</oct-text>
+        <oct-text color="2" variant="sm" weight="regular" class="mt-1 block">
+          Set [multiple]="true" to select several options. The value is an array and the trigger shows a count summary.
+        </oct-text>
+      </oct-card-header>
+      <oct-card-content>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <oct-search-select
+            [options]="frameworkOptions"
+            [value]="selectedFrameworksMulti()"
+            [multiple]="true"
+            [clearable]="true"
+            placeholder="Select frameworks..."
+            label="Frameworks"
+            [fullWidth]="true"
+            (valueChange)="onFrameworksMultiChange($event)">
+          </oct-search-select>
+
+          <div class="text-sm text-2 self-center">
+            <p class="mb-2"><strong>Selected ({{ selectedFrameworksMulti().length }}):</strong></p>
+            @if (selectedFrameworksMulti().length > 0) {
+              <div class="flex flex-wrap gap-1.5">
+                @for (val of selectedFrameworksMulti(); track val) {
+                  <span class="inline-flex items-center rounded-md bg-neutral-800 px-2 py-0.5 text-xs text-1">{{ val }}</span>
+                }
+              </div>
+            } @else {
+              <oct-text color="3" variant="sm">Nothing selected yet</oct-text>
+            }
+          </div>
+        </div>
+      </oct-card-content>
+    </oct-card>
+  </div>
+
+  <!-- Component Props -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Component Props</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary transition-all duration-300">
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Prop</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Type</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Default</oct-text>
+            </th>
+            <th class="text-left p-4">
+              <oct-text color="1" variant="sm" weight="semibold">Description</oct-text>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Core Properties -->
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">options</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">SearchSelectOption[]</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">[]</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Array of selectable options (for static options)</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">value</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string | number | (string | number)[] | null</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">null</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Currently selected value (supports two-way binding with model()). Holds an array when multiple is enabled.</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">placeholder</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">''</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Placeholder text when no value is selected</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">label</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">''</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Label text above the search select</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">size</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'sm' | 'md' | 'lg'</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'md'</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Size of the search select component</oct-text></td>
+          </tr>
+
+          <!-- State Properties -->
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">disabled</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Disable the search select component</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">error</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Show error state</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">errorText</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Error message to display in error state</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">required</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Mark the field as required</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">clearable</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Show clear button when value is selected</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">multiple</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Enable multi-select. Value becomes an array; trigger shows "N selected" and the dropdown stays open while toggling</oct-text></td>
+          </tr>
+
+          <!-- Config Objects (New Simplified API) -->
+          <tr class="border-b border-primary bg-secondary/30">
+            <td class="p-4" colspan="4">
+              <oct-text color="1" variant="sm" weight="semibold">Config Objects (Simplified API)</oct-text>
+            </td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">searchConfig</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">SearchSelectSearchConfig</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Config for API search: {{ '{' }} searchFn, debounceMs?, minLength?, emptyText?, placeholder? {{ '}' }}</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">preloadConfig</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">SearchSelectPreloadConfig</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Config for preloading: {{ '{' }} loadFn, trigger?: 'focus'|'init' {{ '}' }}</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">virtualScrollConfig</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">SearchSelectVirtualScrollConfig</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Config for virtual scroll: {{ '{' }} itemSize?, threshold? {{ '}' }}</oct-text></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

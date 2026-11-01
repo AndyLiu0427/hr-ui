@@ -1,0 +1,68 @@
+/* Theme Controller Component Styles */
+.theme-controller {
+  /* Icon container styles */
+  .icon-container,
+  .toggle-icon-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Performance optimizations */
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+
+    /* Icon positioning */
+    oct-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      line-height: 1;
+
+      /* Animation optimizations */
+      will-change: transform, opacity;
+      backface-visibility: hidden;
+      transition: color 0.2s ease-in-out;
+    }
+  }
+
+  /* Toggle-specific container styling */
+  .toggle-icon-container {
+    oct-icon {
+      width: 0.75rem;
+      height: 0.75rem;
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Button hover states */
+  button:hover .icon-container {
+    transform: translateZ(0) scale(1.05);
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  button:active .icon-container {
+    transform: translateZ(0) scale(0.95);
+    transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* Accessibility: Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .icon-container oct-icon {
+      transition-duration: 0.1s !important;
+    }
+
+    button:hover .icon-container {
+      transform: translateZ(0) !important;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .icon-container oct-icon {
+      filter: contrast(1.2);
+    }
+  }
+}

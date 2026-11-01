@@ -1,0 +1,37 @@
+<div [class]="containerClass()">
+  <button
+    #switchButton
+    type="button"
+    role="switch"
+    [id]="computedId()"
+    [name]="name()"
+    [class]="switchTrackClass()"
+    [attr.aria-checked]="computedChecked()"
+    [attr.aria-disabled]="computedDisabled()"
+    [attr.aria-label]="label() || 'Toggle switch'"
+    [attr.aria-required]="isRequired() || null"
+    [attr.aria-invalid]="hasError() || null"
+    [disabled]="computedDisabled()"
+    (click)="onSwitchClick()"
+    (keydown)="onKeyDown($event)"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+  >
+    <span [class]="switchHandleClass()" aria-hidden="true"></span>
+  </button>
+
+  @if (label()) {
+    <label [for]="computedId()" [class]="labelClass()">
+      {{ label() }}
+      @if (isRequired()) {
+        <span class="text-error ml-0.5">*</span>
+      }
+    </label>
+  }
+</div>
+
+@if (hasError() && effectiveErrorMessage()) {
+  <oct-text color="error" variant="sm" class="mt-1 block">
+    {{ effectiveErrorMessage() }}
+  </oct-text>
+}

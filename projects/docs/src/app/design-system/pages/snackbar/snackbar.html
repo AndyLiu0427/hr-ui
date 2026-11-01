@@ -1,0 +1,351 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Snackbar</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Display temporary notifications and alerts to users with support for actions, different types, and positions.
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Interactive Playground Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <!-- Quick Presets -->
+    <div class="mb-6 flex flex-wrap gap-2">
+      <oct-text color="2" variant="sm" weight="medium" class="mr-4 self-center">Quick presets:</oct-text>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="showSuccess()">
+        Success
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="showError()">
+        Error
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="showWarning()">
+        Warning
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="showInfo()">
+        Info
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="showWithAction()">
+        With Action
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="showWithDescription()">
+        With Description
+      </oct-button>
+      <oct-button
+        variant="outline"
+        color="neutral"
+        size="sm"
+        shape="square"
+        (buttonClick)="dismissAll()">
+        Dismiss All
+      </oct-button>
+    </div>
+
+    <!-- Playground Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+      <!-- Live Preview Area (Left - 2 cols) -->
+      <div class="lg:col-span-2">
+        <oct-card customClass="h-full">
+          <oct-card-content class="w-full flex items-center justify-center py-8">
+            <oct-button
+              variant="solid"
+              color="primary"
+              size="md"
+              (buttonClick)="showSnackbar()">
+              Show Snackbar
+            </oct-button>
+          </oct-card-content>
+        </oct-card>
+      </div>
+
+      <!-- Controls Panel (Right - 3 cols) -->
+      <div class="lg:col-span-3">
+        <oct-card>
+          <oct-card-content class="flex flex-col gap-4">
+
+            <!-- Message -->
+            <oct-input
+              label="Message"
+              placeholder="Enter snackbar message"
+              [value]="config().message"
+              type="text"
+              size="sm"
+              hideHelper="true"
+              (inputChange)="updateConfig('message', $event)"
+            />
+
+            <!-- Description -->
+            <oct-input
+              label="Description (optional)"
+              placeholder="Enter optional description"
+              [value]="config().description || ''"
+              type="text"
+              size="sm"
+              hideHelper="true"
+              (inputChange)="updateConfig('description', $event)"
+            />
+
+            <div class="flex gap-6">
+              <!-- Type Selection -->
+              <div>
+                <oct-text color="1" variant="sm" weight="semibold" class="mb-1.5">Type</oct-text>
+                <div class="flex flex-wrap gap-1.5">
+                  @for (type of snackbarTypes; track type.type) {
+                    <oct-button
+                      [variant]="config().type === type.type ? 'solid' : 'outline'"
+                      [color]="config().type === type.type ? 'primary' : 'neutral'"
+                      size="sm"
+                      shape="square"
+                      (buttonClick)="updateConfig('type', type.type)">
+                      {{ type.type | titlecase }}
+                    </oct-button>
+                  }
+                </div>
+              </div>
+
+              <!-- Size Selection -->
+              <div>
+                <oct-text color="1" variant="sm" weight="semibold" class="mb-1.5">Size</oct-text>
+                <div class="flex gap-1.5">
+                  @for (size of snackbarSizes; track size.size) {
+                    <oct-button
+                      [variant]="config().size === size.size ? 'solid' : 'outline'"
+                      [color]="config().size === size.size ? 'primary' : 'neutral'"
+                      size="sm"
+                      shape="square"
+                      (buttonClick)="updateConfig('size', size.size)">
+                      {{ size.size | uppercase }}
+                    </oct-button>
+                  }
+                </div>
+              </div>
+            </div>
+
+
+            <div class="flex flex-wrap gap-6">
+              <!-- Position Selection -->
+              <oct-select
+                label="Position"
+                [options]="positionOptions()"
+                [value]="config().position"
+                (selectChange)="updateConfig('position', $event)"
+                size="sm"
+                hideHelper="true"
+              />
+              <!-- Duration -->
+              <oct-input
+                label="Duration (ms)"
+                placeholder="5000"
+                [value]="config().duration.toString()"
+                [disabled]="config().persistent"
+                (inputChange)="updateConfig('duration', +$event)"
+                type="number"
+                size="sm"
+                hideHelper="true"
+              />
+
+              <!-- Action Text -->
+              <oct-input
+                label="Action Text (optional)"
+                placeholder="e.g., Undo, Retry"
+                [value]="config().actionText"
+                (inputChange)="updateConfig('actionText', $event)"
+                type="text"
+                size="sm"
+                hideHelper="true"
+              />
+            </div>
+
+            <!-- Boolean Options -->
+            <div class="flex gap-6">
+              <oct-checkbox
+                label="Dismissible"
+                [checked]="config().dismissible"
+                (checkboxChange)="updateConfig('dismissible', $event)">
+              </oct-checkbox>
+              <oct-checkbox
+                label="Persistent (no auto-dismiss)"
+                [checked]="config().persistent"
+                (checkboxChange)="updateConfig('persistent', $event)">
+              </oct-checkbox>
+            </div>
+          </oct-card-content>
+        </oct-card>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Examples Section -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold" class="mb-6 block">Examples</oct-text>
+
+    <!-- Types -->
+    <oct-card>
+      <oct-card-header>
+        <oct-text color="1" variant="lg" weight="medium">Types</oct-text>
+      </oct-card-header>
+      <oct-card-content>
+        <div class="flex flex-wrap justify-center gap-6">
+          @for (typeConfig of snackbarTypes; track typeConfig.type) {
+            <oct-button
+              size="sm"
+              variant="outline"
+              [color]="typeConfig.type === 'neutral' ? 'neutral' : typeConfig.type"
+              (buttonClick)="snackbarService.show({ message: typeConfig.description, type: typeConfig.type })">
+              Show {{ typeConfig.type | titlecase }}
+            </oct-button>
+          }
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Positions -->
+    <oct-card>
+      <oct-card-header>
+        <oct-text color="1" variant="lg" weight="medium">Positions</oct-text>
+      </oct-card-header>
+      <oct-card-content>
+        <div class="flex justify-center gap-6">
+          @for (positionConfig of snackbarPositions; track positionConfig.position) {
+            <oct-button
+              size="sm"
+              variant="outline"
+              (buttonClick)="snackbarService.info('Positioned at ' + positionConfig.label, { position: positionConfig.position })">
+              {{ positionConfig.label }}
+            </oct-button>
+          }
+        </div>
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Sizes -->
+    <oct-card>
+      <oct-card-header>
+        <oct-text color="1" variant="lg" weight="medium">Sizes</oct-text>
+      </oct-card-header>
+      <oct-card-content>
+        <div class="flex justify-center gap-6">
+          @for (sizeConfig of snackbarSizes; track sizeConfig.size) {
+            <oct-button
+              size="sm"
+              variant="outline"
+              (buttonClick)="snackbarService.info('This is a ' + sizeConfig.size + ' sized snackbar', { size: sizeConfig.size })">
+              Show {{ sizeConfig.size | uppercase }}
+            </oct-button>
+          }
+        </div>
+      </oct-card-content>
+    </oct-card>
+  </div>
+
+  <!-- Component Props Table -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Component Props</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary">
+            <th class="text-left p-4 bg-bg-secondary"><oct-text color="1" variant="sm" weight="semibold">Prop</oct-text></th>
+            <th class="text-left p-4 bg-bg-secondary"><oct-text color="1" variant="sm" weight="semibold">Type</oct-text></th>
+            <th class="text-left p-4 bg-bg-secondary"><oct-text color="1" variant="sm" weight="semibold">Default</oct-text></th>
+            <th class="text-left p-4 bg-bg-secondary"><oct-text color="1" variant="sm" weight="semibold">Description</oct-text></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">message</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">required</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">The notification message to display</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">description</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Optional additional descriptive text below the main message</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">type</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'success' | 'error' | 'warning' | 'info' | 'neutral'</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'neutral'</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Visual style and semantic meaning</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">position</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'bottom-center'</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Screen position for the snackbar</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">size</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'sm' | 'md' | 'lg'</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">'md'</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Size of the snackbar component</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">duration</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">number</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">5000</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Auto-dismiss duration in milliseconds (0 for manual dismiss)</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">dismissible</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">true</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Whether the snackbar can be manually dismissed</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">persistent</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">boolean</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">false</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Disable auto-dismiss (overrides duration)</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">actionText</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Optional action button text</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">icon</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">undefined</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Custom icon name (Material Icons)</oct-text></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

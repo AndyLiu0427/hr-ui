@@ -1,0 +1,238 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Tooltip</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        Short informational message that appears on hover with configurable position and color variants
+      </oct-text>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-12">
+
+    <!-- Interactive Playground -->
+    <section>
+      <oct-text color="1" variant="xl" weight="semibold" class="mb-6 block">Playground</oct-text>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Preview -->
+        <div class="lg:col-span-2">
+          <oct-card customClass="h-full">
+            <oct-card-content class="w-full flex items-center justify-center p-16">
+              <oct-button
+                variant="solid"
+                color="primary"
+                [octTooltip]="text()"
+                [octTooltipPosition]="position()"
+                [octTooltipColor]="color()"
+                [octTooltipShowDelay]="showDelay()"
+                [octTooltipDisabled]="disabled()"
+              >
+                Hover me
+              </oct-button>
+            </oct-card-content>
+          </oct-card>
+        </div>
+
+        <!-- Controls -->
+        <oct-card>
+          <oct-card-content class="flex flex-col gap-5">
+            <!-- Position -->
+            <div class="flex flex-col gap-2">
+              <oct-text color="1" variant="sm" weight="semibold">Position</oct-text>
+              <div class="flex flex-wrap gap-2">
+                @for (pos of positions; track pos) {
+                  <oct-button
+                    [variant]="position() === pos ? 'solid' : 'outline'"
+                    [color]="position() === pos ? 'primary' : 'neutral'"
+                    size="sm"
+                    shape="square"
+                    (buttonClick)="position.set(pos)"
+                  >
+                    {{ pos }}
+                  </oct-button>
+                }
+              </div>
+            </div>
+
+            <!-- Color -->
+            <div class="flex flex-col gap-2">
+              <oct-text color="1" variant="sm" weight="semibold">Color</oct-text>
+              <div class="flex flex-wrap gap-2">
+                @for (c of colors; track c) {
+                  <oct-button
+                    [variant]="color() === c ? 'solid' : 'outline'"
+                    [color]="color() === c ? 'primary' : 'neutral'"
+                    size="sm"
+                    shape="square"
+                    (buttonClick)="color.set(c)"
+                  >
+                    {{ c }}
+                  </oct-button>
+                }
+              </div>
+            </div>
+
+            <!-- Tooltip Text -->
+            <oct-input
+              label="Text"
+              [value]="text()"
+              (valueChange)="text.set($event)"
+              size="sm"
+              [hideHelper]="true"
+            />
+
+            <!-- Show Delay -->
+            <div class="flex flex-col gap-2">
+              <oct-text color="1" variant="sm" weight="semibold">Show delay: {{ showDelay() }}ms</oct-text>
+              <input
+                type="range"
+                min="0"
+                max="1000"
+                step="50"
+                class="w-full"
+                [value]="showDelay()"
+                (input)="showDelay.set(+$any($event.target).value)"
+              />
+            </div>
+
+            <!-- Disabled -->
+            <oct-checkbox
+              [checked]="disabled()"
+              (checkboxChange)="disabled.set($event)"
+              label="Disabled"
+            />
+          </oct-card-content>
+        </oct-card>
+      </div>
+    </section>
+
+    <!-- Color Variants -->
+    <section>
+      <oct-text color="1" variant="xl" weight="semibold" class="mb-6 block">Color Variants</oct-text>
+
+      <oct-card>
+        <oct-card-content class="flex items-center justify-center gap-8 p-16">
+          @for (c of colors; track c) {
+            <div class="flex flex-col items-center gap-3">
+              <oct-button
+                variant="outline"
+                color="neutral"
+                shape="square"
+                [octTooltip]="'Add to library'"
+                [octTooltipColor]="c"
+                octTooltipPosition="top"
+                [octTooltipShowDelay]="0"
+              >
+                Hover me
+              </oct-button>
+              <oct-text color="3" variant="xs">{{ c }}</oct-text>
+            </div>
+          }
+        </oct-card-content>
+      </oct-card>
+    </section>
+
+    <!-- All Positions -->
+    <section>
+      <oct-text color="1" variant="xl" weight="semibold" class="mb-6 block">Positions</oct-text>
+
+      <oct-card>
+        <oct-card-content class="flex items-center justify-center gap-12 p-16">
+          @for (pos of positions; track pos) {
+            <div class="flex flex-col items-center gap-3">
+              <oct-button
+                variant="ghost"
+                color="neutral"
+                size="sm"
+                icon="Info"
+                [ariaLabel]="'Tooltip on ' + pos"
+                [octTooltip]="'Tooltip on ' + pos"
+                [octTooltipPosition]="pos"
+                [octTooltipShowDelay]="0"
+              />
+              <oct-text color="3" variant="xs">{{ pos }}</oct-text>
+            </div>
+          }
+        </oct-card-content>
+      </oct-card>
+    </section>
+
+    <!-- Real-world Examples -->
+    <section>
+      <oct-text color="1" variant="xl" weight="semibold" class="mb-6 block">Examples</oct-text>
+
+      <oct-card>
+        <oct-card-content class="flex flex-wrap items-center gap-4">
+          <oct-button variant="ghost" color="neutral" size="sm" icon="Settings" ariaLabel="Settings"
+            octTooltip="Settings" octTooltipPosition="bottom" [octTooltipShowDelay]="0" />
+          <oct-button variant="ghost" color="neutral" size="sm" icon="Download" ariaLabel="Download"
+            octTooltip="Download" octTooltipPosition="bottom" [octTooltipShowDelay]="0" />
+          <oct-button variant="ghost" color="neutral" size="sm" icon="Share2" ariaLabel="Share"
+            octTooltip="Share" octTooltipPosition="bottom" [octTooltipShowDelay]="0" />
+          <oct-button variant="ghost" color="neutral" size="sm" icon="Trash2" ariaLabel="Delete"
+            octTooltip="Delete" octTooltipColor="red" octTooltipPosition="bottom" [octTooltipShowDelay]="0" />
+          <oct-button variant="ghost" color="neutral" size="sm" icon="Bell" ariaLabel="Notifications"
+            octTooltip="Notifications" octTooltipPosition="bottom" [octTooltipShowDelay]="0" />
+        </oct-card-content>
+      </oct-card>
+    </section>
+
+    <!-- Rich content -->
+    <section>
+      <oct-text color="1" variant="xl" weight="semibold" class="mb-2 block">Rich content</oct-text>
+      <oct-text color="2" variant="sm" weight="regular" class="mb-6 block">
+        Pass an <code class="bg-secondary rounded px-1.5 py-0.5 text-xs text-1 font-mono">&lt;ng-template&gt;</code> via
+        <code class="bg-secondary rounded px-1.5 py-0.5 text-xs text-1 font-mono">octTooltipContent</code> to float a panel of
+        arbitrary content instead of a single line. The rich path is skipped on touch — provide an inline fallback there.
+      </oct-text>
+
+      <oct-card>
+        <oct-card-content class="flex items-center justify-center p-16">
+          <oct-button variant="solid" color="primary" [octTooltipContent]="richTpl" octTooltipPosition="right">
+            Hover for details
+          </oct-button>
+          <ng-template #richTpl>
+            <oct-text color="1" variant="sm" weight="semibold" class="block">Payroll Listing Summary</oct-text>
+            <oct-text color="2" variant="sm" [truncate]="false" class="mt-1 block">
+              Review payroll runs and export the listing summary for a pay period.
+            </oct-text>
+          </ng-template>
+        </oct-card-content>
+      </oct-card>
+    </section>
+
+    <!-- Usage -->
+    <section>
+      <oct-text color="1" variant="xl" weight="semibold" class="mb-6 block">Usage</oct-text>
+
+      <oct-card>
+        <oct-card-content>
+          <pre class="text-sm text-neutral-300 font-mono leading-relaxed"><code>&lt;!-- Basic --&gt;
+&lt;button octTooltip="Save changes"&gt;Save&lt;/button&gt;
+
+&lt;!-- With position --&gt;
+&lt;button octTooltip="Settings" octTooltipPosition="bottom"&gt;
+  &lt;oct-icon name="Settings" /&gt;
+&lt;/button&gt;
+
+&lt;!-- With color variant --&gt;
+&lt;button octTooltip="Delete item" octTooltipColor="red"&gt;Delete&lt;/button&gt;
+
+&lt;!-- With delay --&gt;
+&lt;button octTooltip="Help" [octTooltipShowDelay]="500"&gt;?&lt;/button&gt;
+
+&lt;!-- Disabled --&gt;
+&lt;button octTooltip="Hidden" [octTooltipDisabled]="true"&gt;No tooltip&lt;/button&gt;
+
+&lt;!-- Rich content (floats an ng-template panel; skipped on touch) --&gt;
+&lt;button [octTooltipContent]="tpl" octTooltipPosition="right"&gt;Details&lt;/button&gt;
+&lt;ng-template #tpl&gt;…rich content…&lt;/ng-template&gt;</code></pre>
+        </oct-card-content>
+      </oct-card>
+    </section>
+
+  </div>
+</div>

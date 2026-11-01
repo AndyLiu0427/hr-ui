@@ -1,0 +1,55 @@
+<div [class]="containerClass()">
+  <!-- One label, pointed at the amount: it is what the operator types into, and the unit carries
+       its own aria-label so a screen reader does not announce it as "Select an option". -->
+  @if (label()) {
+    <label [for]="amountId()" [class]="labelClass()">
+      {{ label() }}
+      @if (isRequired()) {
+        <oct-text color="error" variant="sm" class="ml-0.5">*</oct-text>
+      }
+    </label>
+  }
+
+  <!-- One shell for both halves, so one border and one focus ring cover the pair. -->
+  <div [class]="shellClass()">
+    <oct-input
+      [formField]="amountField()"
+      [id]="amountId()"
+      [bare]="true"
+      [hideHelper]="true"
+      [type]="amountType"
+      [inputMode]="amountInputMode"
+      [inputPattern]="amountPattern"
+      [placeholder]="placeholder()"
+      [size]="size()"
+    />
+
+    <div [class]="dividerClass" aria-hidden="true"></div>
+
+    <oct-select
+      [formField]="unitField()"
+      [bare]="true"
+      [hideHelper]="true"
+      [showScrollIndicators]="false"
+      [options]="unitOptions()"
+      [placeholder]="unitPlaceholder()"
+      [ariaLabel]="unitAriaLabel()"
+      [maxHeight]="unitMaxHeight()"
+      [overlayMinWidth]="unitOverlayMinWidth"
+      [size]="size()"
+      class="shrink-0"
+      (selectFocus)="unitFocused.set(true)"
+      (selectBlur)="unitFocused.set(false)"
+    />
+  </div>
+
+  <!-- Exactly one helper row, matching what a plain oct-input reserves, so this control lines up
+       with its neighbours in a form grid. -->
+  @if (!hideHelper()) {
+    <div class="h-5">
+      <oct-text [color]="hasError() ? 'error' : '2'" variant="sm">
+        {{ displayHelperText() }}
+      </oct-text>
+    </div>
+  }
+</div>

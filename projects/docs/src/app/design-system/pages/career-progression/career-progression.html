@@ -1,0 +1,137 @@
+<div class="min-h-screen bg-secondary duration-300 transition-all">
+  <!-- Header -->
+  <div class="border-b border-primary bg-secondary duration-300 transition-all">
+    <div class="container mx-auto px-6 py-8">
+      <oct-text color="1" variant="4xl" weight="bold">Career Progression</oct-text>
+      <oct-text color="2" variant="lg" weight="regular" class="mt-2 block">
+        A career read as a tree: each contract is a period, the clients served during it hang beneath it, and each
+        client's assignments hang beneath that.
+      </oct-text>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <!-- One contract spanning several clients -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-4">Contracts, clients and assignments</oct-text>
+        <oct-text color="2" variant="sm" class="mb-4 block">
+          A contract carries dates only, because one contract can cover several clients. The topmost contract's node
+          is green while it has not ended.
+        </oct-text>
+        <oct-career-progression [contracts]="sampleContracts" (assignmentClick)="onAssignmentClick($event)" />
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Smallest useful shape -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-4">One client, one assignment</oct-text>
+        <oct-text color="2" variant="sm" class="mb-4 block">
+          Job title is optional: an assignment without one shows its department and dates.
+        </oct-text>
+        <oct-career-progression [contracts]="singleClientContract" (assignmentClick)="onAssignmentClick($event)" />
+      </oct-card-content>
+    </oct-card>
+
+    <!-- Empty State -->
+    <oct-card>
+      <oct-card-content>
+        <oct-text color="1" variant="lg" weight="semibold" class="mb-4">Empty State</oct-text>
+        <oct-text color="2" variant="sm" class="mb-4 block">
+          When no contracts are provided, the tree shows an empty state message.
+        </oct-text>
+        <oct-career-progression [contracts]="[]" [config]="{ emptyMessage: 'No events to display' }" />
+      </oct-card-content>
+    </oct-card>
+  </div>
+
+  <!-- Props Table -->
+  <div class="container mx-auto px-6 py-12 flex flex-col gap-6">
+    <oct-text color="1" variant="2xl" weight="semibold">Component Props</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary transition-all duration-300">
+            <th class="p-4 text-left"><oct-text color="1" variant="sm" weight="semibold">Prop</oct-text></th>
+            <th class="p-4 text-left"><oct-text color="1" variant="sm" weight="semibold">Type</oct-text></th>
+            <th class="p-4 text-left"><oct-text color="1" variant="sm" weight="semibold">Default</oct-text></th>
+            <th class="p-4 text-left"><oct-text color="1" variant="sm" weight="semibold">Description</oct-text></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">contracts</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">CareerProgressionContract[]</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">required</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Contracts to display, most recent first</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">config</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">CareerProgressionConfig</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">&#123;&#125;</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Empty state icon and message</oct-text></td>
+          </tr>
+          <tr>
+            <td class="p-4"><code class="text-1 font-mono text-sm">(assignmentClick)</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">EventEmitter&lt;CareerProgressionAssignment&gt;</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">&ndash;</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Emitted when an assignment leaf is clicked</oct-text></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <oct-text color="1" variant="2xl" weight="semibold">Interfaces</oct-text>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-bg-primary rounded-lg overflow-hidden">
+        <thead>
+          <tr class="border-b border-primary bg-secondary transition-all duration-300">
+            <th class="p-4 text-left"><oct-text color="1" variant="sm" weight="semibold">Property</oct-text></th>
+            <th class="p-4 text-left"><oct-text color="1" variant="sm" weight="semibold">Type</oct-text></th>
+            <th class="p-4 text-left"><oct-text color="1" variant="sm" weight="semibold">Required</oct-text></th>
+            <th class="p-4 text-left"><oct-text color="1" variant="sm" weight="semibold">Description</oct-text></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-primary bg-secondary">
+            <td class="p-4" colspan="4"><oct-text color="1" variant="sm" weight="semibold">CareerProgressionContract</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">id</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">Yes</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Unique identifier</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">startDate</code> / <code class="text-1 font-mono text-sm">endDate</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">start only</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">An absent end date reads as Present and keeps the contract green</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">clients</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">CareerProgressionClient[]</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">Yes</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Clients served under the contract, in the order they happened</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary bg-secondary">
+            <td class="p-4" colspan="4"><oct-text color="1" variant="sm" weight="semibold">CareerProgressionAssignment</oct-text></td>
+          </tr>
+          <tr class="border-b border-primary">
+            <td class="p-4"><code class="text-1 font-mono text-sm">department</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">Yes</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Client department the assignment sits in</oct-text></td>
+          </tr>
+          <tr>
+            <td class="p-4"><code class="text-1 font-mono text-sm">jobTitle</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">string</code></td>
+            <td class="p-4"><code class="text-2 font-mono text-sm">No</code></td>
+            <td class="p-4"><oct-text color="2" variant="sm" weight="regular">Shown after the department</oct-text></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

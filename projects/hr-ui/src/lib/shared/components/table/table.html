@@ -1,0 +1,506 @@
+<div class="w-full flex flex-col gap-4">
+  <div class="relative">
+    <div
+      #tableContainer
+      class="hide-scrollbars relative border border-primary rounded-lg bg-secondary transition-all duration-300"
+      [class.overflow-auto]="!loading() && paginatedData().length > 0"
+      [class.overflow-x-auto]="!loading() && paginatedData().length === 0"
+      [class.overflow-y-hidden]="!loading() && paginatedData().length === 0"
+      [class.overflow-hidden]="loading()"
+      [style.max-height]="maxHeight()"
+      [style.height]="loading() ? '500px' : 'auto'"
+      [style.min-height]="!loading() && paginatedData().length === 0 ? (hideEmptyIcon() ? '96px' : '200px') : null"
+    >
+      @if (loading()) {
+      <!-- Anchored to #tableContainer (visible box), not <table> (full column width),
+           so the spinner stays centred on screen even when the table scrolls horizontally. -->
+      <div
+        class="absolute inset-x-0 bottom-0 bg-secondary/90 backdrop-blur-sm flex items-center justify-center z-10 animate-fade-in py-3"
+        [class.top-10]="!dense()"
+        [class.top-8]="dense()"
+      >
+        <oct-loading />
+      </div>
+      }
+      <table
+        #tableElement
+        class="w-full table-fixed relative h-full tabular-nums"
+        [style.min-width.px]="tableMinWidth()"
+      >
+        <thead
+          class="sticky top-0 z-5 transition-color duration-300 bg-secondary shadow-[inset_0_-1px_0_theme(colors.neutral.800)]"
+          [class.min-h-10]="!dense()"
+          [class.min-h-8]="dense()"
+        >
+          <tr>
+            @for (column of enhancedColumns(); track trackByColumn($index, column); let isLastColumn = $last) {
+            <th
+              class="text-left border-primary relative group align-top whitespace-normal min-w-0"
+              [class.px-3]="!dense()"
+              [class.py-2]="!dense()"
+              [class.px-2]="dense()"
+              [class.py-1]="dense()"
+              [class.sticky]="column.fixed"
+              [class.left-0]="column.fixed && column.fixedPosition === 'left'"
+              [class.right-0]="column.fixed && column.fixedPosition === 'right'"
+              [class.bg-secondary]="column.fixed"
+              [class.border-r]="cellLines() && !isLastColumn"
+              [class.border-neutral-800]="cellLines() && !isLastColumn"
+              [style.box-shadow]="column.fixed ? 'inset 0 -1px 0 var(--color-neutral-800)' : null"
+              [style.width]="getColumnWidth(column)"
+              [style.min-width]="column.minWidth"
+              [style.max-width]="column.maxWidth"
+              [style.text-align]="column.align || 'left'"
+              [style.z-index]="column.zIndex || (column.fixed ? 1 : 'auto')"
+              [class]="getHeaderClass(column)"
+              [title]="!isSelectionColumn(column) ? (column.label | translate) : ''"
+            >
+              @if (isSelectionColumn(column)) {
+              <div class="flex items-center justify-center">
+                @if (isMultipleSelection()) {
+                <oct-checkbox
+                  [checked]="isAllSelected()"
+                  (checkboxChange)="toggleAllSelection()"
+                  class="[&>label]:!mb-0 [&>label]:!gap-0 inline-flex"
+                >
+                </oct-checkbox>
+                }
+              </div>
+              } @else {
+              <div
+                class="flex min-w-0 items-start gap-2"
+                [class.justify-start]="!column.align || column.align === 'left'"
+                [class.justify-center]="column.align === 'center'"
+                [class.justify-end]="column.align === 'right'"
+              >
+                <oct-text color="2" variant="xs" weight="medium" [truncate]="false" [attr.data-header-label]="column.key"
+                  >{{ column.label | translate }}</oct-text
+                >
+
+                @if (sortable() && column.sortable !== false) {
+                <!-- The arrow is drawn only where it says something: on the column actually being
+                     sorted, or on the one under the pointer. A per-column pair of chevrons at rest
+                     is one piece of furniture per column and says nothing about the current sort. -->
+                <oct-icon
+                  [name]="getSortIcon(column.key)"
+                  size="sm"
+                  class="shrink-0 cursor-pointer transition-opacity duration-150 group-hover:opacity-100 hover:text-primary"
+                  [class.opacity-0]="getSortDirection(column.key) === null"
+                  (click)="sort(column.key)"
+                />
+                }
+              </div>
+              }
+              <!-- Column resize handle -->
+              @if (isColumnResizable(column) && !isLastColumn) {
+              <div
+                class="absolute top-0 -right-2 w-4 h-full cursor-col-resize z-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                [class.opacity-100]="isColumnBeingResized(column.key)"
+                (mousedown)="onResizeStart($event, column)"
+                (click)="$event.stopPropagation()"
+              >
+                <oct-icon name="UnfoldHorizontal" [size]="14" class="text-neutral-500" />
+              </div>
+              }
+            </th>
+            }
+          </tr>
+        </thead>
+
+        <tbody class="transition-all duration-300">
+          @for (row of paginatedData(); track trackByRow($index, row); let
+          isEven = $even; let isLast = $last; let rowIndex = $index) {
+          <tr
+            class="group/row border-primary transition-all duration-300"
+            [class.border-b]="!isLast"
+            [class.bg-neutral-900]="striped() && isEven"
+            [class.cursor-pointer]="clickableRows()"
+            [class.cursor-default]="!clickableRows()"
+            (click)="clickableRows() ? onRowClick(row) : null"
+            (keydown)="clickableRows() && ($event.key === 'Enter' || $event.key === ' ') ? onRowClick(row) : null"
+          >
+            @for (column of enhancedColumns(); track trackByColumn($index, column); let isLastColumn = $last) {
+            <td
+              class="text-sm transition-[background-color] duration-100 group-hover/row:bg-neutral-900"
+              [class.whitespace-nowrap]="!column.multiline"
+              [class.whitespace-normal]="column.multiline === true"
+              [class.px-3]="!dense()"
+              [class.py-2]="!dense()"
+              [class.px-2]="dense()"
+              [class.py-1]="dense()"
+              [class.overflow-hidden]="!isStatusColumn(column) && !column.fixed && !column.multiline"
+              [class.text-ellipsis]="!isStatusColumn(column) && !column.fixed && !column.multiline"
+              [class.sticky]="column.fixed"
+              [class.border-r]="cellLines() && !isLastColumn"
+              [class.border-r-neutral-800]="cellLines() && !isLastColumn"
+              [class.left-0]="column.fixed && column.fixedPosition === 'left'"
+              [class.right-0]="column.fixed && column.fixedPosition === 'right'"
+              [class.bg-secondary]="column.fixed && !(striped() && isEven)"
+              [class.bg-neutral-900]="column.fixed && striped() && isEven"
+              [class.relative]="(isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())"
+              [class.after:absolute]="((isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())) && hasHorizontalScroll() && paginatedData().length > 0"
+              [class.after:right-[-24px]]="isLastNonFixedColumn(column) && !hasFixedActionColumn() && hasHorizontalScroll() && paginatedData().length > 0"
+              [class.after:left-[-24px]]="(isActionsColumn(column) && column.fixed) && hasHorizontalScroll() && paginatedData().length > 0"
+              [class.after:top-0]="((isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())) && hasHorizontalScroll() && paginatedData().length > 0"
+              [class.after:bottom-0]="((isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())) && hasHorizontalScroll() && paginatedData().length > 0"
+              [class.after:w-6]="((isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())) && hasHorizontalScroll() && paginatedData().length > 0"
+              [class.after:bg-gradient-to-l]="((isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())) && hasHorizontalScroll() && paginatedData().length > 0"
+              [class.after:from-black]="((isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())) && hasHorizontalScroll() && paginatedData().length > 0"
+              [class.after:opacity-5]="((isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())) && hasHorizontalScroll() && paginatedData().length > 0"
+              [class.after:to-transparent]="((isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())) && hasHorizontalScroll() && paginatedData().length > 0"
+              [class.after:pointer-events-none]="((isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())) && hasHorizontalScroll() && paginatedData().length > 0"
+              [class.after:z-5]="((isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())) && hasHorizontalScroll() && paginatedData().length > 0"
+              [style.width]="getColumnWidth(column)"
+              [style.min-width]="column.minWidth"
+              [style.max-width]="column.maxWidth"
+              [style.text-align]="column.align || 'left'"
+              [style.z-index]="column.zIndex || (column.fixed ? 1 : 'auto')"
+              [class]="getCellClass(column, row)"
+            >
+              @if (isSelectionColumn(column)) {
+              <div class="flex items-center justify-center">
+                <oct-checkbox
+                  [checked]="isRowSelected(row)"
+                  (checkboxChange)="toggleRowSelection(row)"
+                  (click)="$event.stopPropagation()"
+                  (keydown)="$event.stopPropagation()"
+                  class="[&>label]:!mb-0 [&>label]:!gap-0 inline-flex"
+                >
+                </oct-checkbox>
+              </div>
+              } @else if (isActionsColumn(column)) {
+              <div
+                data-row-actions
+                class="flex w-max mx-auto items-center gap-2"
+                (click)="$event.stopPropagation()"
+                (keydown)="$event.stopPropagation()"
+              >
+                @if (rowActions(); as getActions) {
+                  @if (isMobile()) {
+                    <oct-button
+                      variant="ghost"
+                      color="neutral"
+                      size="sm"
+                      icon="Ellipsis"
+                      [ariaLabel]="(rowActionsTitle() || 'TABLE_COMPONENT.ACTIONS') | translate"
+                      (buttonClick)="openRowActionsSheet(row, $event)"
+                    />
+                  } @else {
+                    @for (action of getActions(row); track action.key) {
+                      @if (action.href) {
+                        <a
+                          [href]="action.href"
+                          (click)="$event.preventDefault(); onRowActionTrigger(action, row, $event)"
+                        >
+                          <oct-button
+                            [variant]="action.variant ?? 'ghost'"
+                            [color]="action.color ?? 'primary'"
+                            size="sm"
+                            [icon]="action.icon"
+                            [disabled]="action.disabled ?? false"
+                            [loading]="action.loading ?? false"
+                            [title]="action.label | translate"
+                            [ariaLabel]="action.label | translate"
+                          >
+                            @if (action.showLabel) {
+                              {{ action.label | translate }}
+                            }
+                          </oct-button>
+                        </a>
+                      } @else {
+                        <oct-button
+                          [variant]="action.variant ?? 'ghost'"
+                          [color]="action.color ?? 'primary'"
+                          size="sm"
+                          [icon]="action.icon"
+                          [disabled]="action.disabled ?? false"
+                          [loading]="action.loading ?? false"
+                          [title]="action.label | translate"
+                          [ariaLabel]="action.label | translate"
+                          (buttonClick)="onRowActionTrigger(action, row, $event)"
+                        >
+                          @if (action.showLabel) {
+                            {{ action.label | translate }}
+                          }
+                        </oct-button>
+                      }
+                    }
+                  }
+                } @else if (actionTemplate(); as template) {
+                  <ng-container
+                    [ngTemplateOutlet]="template"
+                    [ngTemplateOutletContext]="{ $implicit: row, row: row }"
+                  ></ng-container>
+                }
+              </div>
+              } @else if (column.template) {
+              <ng-container
+                [ngTemplateOutlet]="column.template"
+                [ngTemplateOutletContext]="{ $implicit: row, row: row, column: column }"
+              ></ng-container>
+              } @else if (isStatusColumn(column)) {
+              <oct-badge
+                [color]="getStatusBadgeColor(row, column)"
+                [text]="getStatusBadgeText(row, column)"
+                size="sm"
+              >
+              </oct-badge>
+              } @else if (isCellEditable(column, row)) {
+              @if (isCellEditing(rowIndex, column)) {
+              <div
+                class="flex items-center gap-0.5 -my-0.5 pl-1 pr-0.5 rounded-md bg-secondary ring-1 ring-primary/40 focus-within:ring-2 focus-within:ring-primary transition-[box-shadow] duration-150"
+              >
+                @if (isNumberEdit(column)) {
+                <input
+                  #editInput
+                  type="number"
+                  [value]="editDraft()"
+                  (input)="onEditInput($event)"
+                  (blur)="commitEdit(rowIndex, column, row)"
+                  (keydown)="onEditKeydown($event, rowIndex, column, row)"
+                  (click)="$event.stopPropagation()"
+                  [attr.inputmode]="column.editInteger ? 'numeric' : 'decimal'"
+                  [attr.min]="column.editMin"
+                  [attr.step]="column.editStep ?? (column.editInteger ? '1' : 'any')"
+                  class="w-full min-w-0 bg-transparent border-none outline-none text-1 text-sm tabular-nums py-0.5 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                  [class.text-right]="column.align === 'right'"
+                  [class.text-center]="column.align === 'center'"
+                />
+                <!-- Custom stepper (native spinners hidden above): keeps the field focused via
+                     mousedown.preventDefault so stepping never blur-commits or closes the editor. -->
+                <div class="flex shrink-0 flex-col text-3">
+                  <button
+                    type="button"
+                    tabindex="-1"
+                    aria-label="Increment"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="$event.stopPropagation(); stepEdit(1, column)"
+                    class="flex h-[13px] w-4 items-center justify-center rounded-t-[4px] hover:bg-neutral-800/70 hover:text-1 active:scale-[0.96] transition-[background-color,color,transform] duration-100"
+                  >
+                    <oct-icon name="ChevronUp" [size]="11" />
+                  </button>
+                  <button
+                    type="button"
+                    tabindex="-1"
+                    aria-label="Decrement"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="$event.stopPropagation(); stepEdit(-1, column)"
+                    class="flex h-[13px] w-4 items-center justify-center rounded-b-[4px] hover:bg-neutral-800/70 hover:text-1 active:scale-[0.96] transition-[background-color,color,transform] duration-100"
+                  >
+                    <oct-icon name="ChevronDown" [size]="11" />
+                  </button>
+                </div>
+                } @else {
+                <input
+                  #editInput
+                  type="text"
+                  [value]="editDraft()"
+                  (input)="onEditInput($event)"
+                  (blur)="commitEdit(rowIndex, column, row)"
+                  (keydown)="onEditKeydown($event, rowIndex, column, row)"
+                  (click)="$event.stopPropagation()"
+                  class="w-full min-w-0 bg-transparent border-none outline-none text-1 text-sm py-0.5"
+                  [class.text-right]="column.align === 'right'"
+                  [class.text-center]="column.align === 'center'"
+                />
+                }
+              </div>
+              } @else {
+              <button
+                type="button"
+                (click)="startEdit(rowIndex, column, row, $event)"
+                class="group/edit flex w-full items-center gap-1 -mx-1 px-1 py-0.5 rounded-sm cursor-pointer hover:bg-neutral-800/60 transition-[background-color] duration-150"
+                [class.justify-end]="column.align === 'right'"
+                [class.justify-center]="column.align === 'center'"
+                [title]="getColumnValue(row, column)"
+              >
+                <oct-text [color]="getCellTextColor(column, row)" variant="sm" class="tabular-nums truncate">{{
+                  getColumnValue(row, column)
+                }}</oct-text>
+                <!-- Persistent low-opacity pencil so the cell reads as editable at rest; brightens on hover. -->
+                <oct-icon
+                  name="Pencil"
+                  [size]="12"
+                  class="shrink-0 text-3 opacity-40 group-hover/edit:opacity-100 transition-opacity duration-150"
+                />
+              </button>
+              }
+              } @else {
+              <span [octCopyOnRightClick]="getColumnValue(row, column)">
+                <oct-text
+                  [color]="getCellTextColor(column, row)"
+                  variant="sm"
+                  [innerHTML]="getColumnValue(row, column)"
+                  [title]="getColumnValue(row, column)"
+                ></oct-text>
+              </span>
+              }
+            </td>
+            }
+          </tr>
+          }
+        </tbody>
+
+        @if (footerTemplate(); as template) {
+        <tfoot class="sticky bottom-0 z-5 outline outline-neutral-800 transition-color duration-300">
+          <tr>
+            <td [attr.colspan]="enhancedColumns().length" class="p-2 bg-secondary transition-color duration-300">
+              <ng-container
+                [ngTemplateOutlet]="template"
+                [ngTemplateOutletContext]="{
+                  $implicit: {
+                    selectedRows: selectedRows(),
+                    selectedIds: selectedIds(),
+                    filteredData: filteredData(),
+                    paginatedData: paginatedData(),
+                    totalRows: filteredData().length,
+                    currentPage: activePagination()?.page || 1
+                  }
+                }"
+              ></ng-container>
+            </td>
+          </tr>
+        </tfoot>
+        }
+      </table>
+
+      @if (paginatedData().length === 0 && !loading() && !footerTemplate()) {
+      <!-- Sticky, so the message stays in view when the headers scroll sideways. -->
+      <div class="sticky left-0 w-full flex items-center justify-center">
+        <div
+          class="flex flex-col items-center justify-center text-center"
+          [class.p-8]="!hideEmptyIcon()"
+          [class.p-3]="hideEmptyIcon()"
+        >
+          @if (!hideEmptyIcon()) {
+            <div class="w-16 h-16 flex items-center justify-center">
+              <oct-icon name="Inbox" [size]="40" class="!text-3" />
+            </div>
+          }
+          <oct-text color="3" variant="sm" fontWeight="medium" [class.mb-2]="!hideEmptyIcon()"
+            >{{ emptyMessage() }}</oct-text
+          >
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  @if (activePagination() && filteredData().length > 0) {
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <oct-text color="2" variant="sm" weight="medium" class="hidden sm:block">Show</oct-text>
+      <oct-select
+        [options]="pageSizeOptions()"
+        [value]="$safeNavigationMigration(activePagination()?.pageSize)"
+        (selectionChange)="onPageSizeSelectChange($event)"
+        size="sm"
+        class="w-20"
+        hideHelper="true"
+      />
+      <oct-text color="2" variant="sm" weight="medium" class="hidden sm:block">entries</oct-text>
+    </div>
+
+    <oct-text color="2" variant="sm" weight="medium">
+      @if (activePagination(); as p) { @let isServerSide =
+      isServerSidePagination(); @let filteredLength = filteredData().length;
+      @let totalRecords = isServerSide ? p.totalNums : filteredLength; @let
+      currentPageEnd = Math.min(p.page * p.pageSize, totalRecords); {{ (p.page -
+      1) * p.pageSize + 1 }}-{{ currentPageEnd }} of {{ totalRecords }} }
+    </oct-text>
+
+    <div class="flex items-center gap-1">
+      <!-- Previous Button -->
+      <oct-button
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        icon="ChevronLeft"
+        iconPosition="left"
+        [disabled]="!activePagination() || activePagination()!.page <= 1"
+        (buttonClick)="onPageChange(activePagination()!.page - 1)"
+      >
+        <span class="hidden sm:inline">Previous</span>
+      </oct-button>
+
+      <!-- Page Numbers -->
+      @for (page of paginationPages(); track page) { @if
+      (ELLIPSIS_PAGES.includes(page)) {
+      <oct-text color="2" variant="sm" weight="medium" class="px-2 hidden sm:block"
+        >...</oct-text
+      >
+      } @else {
+      <oct-button
+        [variant]="activePagination()?.page === page ? 'outline' : 'ghost'"
+        [color]="activePagination()?.page === page ? 'neutral' : 'neutral'"
+        size="sm"
+        shape="square"
+        class="!w-8 rounded-lg"
+        [class.hidden]="activePagination()?.page !== page"
+        [class.sm:flex]="activePagination()?.page !== page"
+        [style.background-color]="activePagination()?.page === page ? 'var(--color-neutral-950)' : 'transparent'  "
+        (buttonClick)="onPageChange(page)"
+      >
+        {{ page }}
+      </oct-button>
+      } }
+
+      <!-- Next Button -->
+      <oct-button
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        icon="ChevronRight"
+        iconPosition="right"
+        [disabled]="!activePagination() || activePagination()!.page >= totalPages()"
+        (buttonClick)="onPageChange(activePagination()!.page + 1)"
+      >
+        <span class="hidden sm:inline">Next</span>
+      </oct-button>
+    </div>
+  </div>
+  }
+</div>
+
+@if (rowActions() && isMobile()) {
+  <oct-bottom-sheet
+    [isOpen]="!!activeActionRow()"
+    [title]="(rowActionsTitle() || 'TABLE_COMPONENT.ACTIONS') | translate"
+    (closed)="closeRowActionsSheet()"
+  >
+    @if (activeActionRow(); as row) {
+      <div role="menu" class="py-1">
+        @for (action of activeRowActions(); track action.key) {
+          <button
+            type="button"
+            role="menuitem"
+            class="w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors active:bg-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="action.disabled || action.loading"
+            (click)="onRowActionTrigger(action, row, $event)"
+          >
+            @if (action.icon) {
+              <oct-icon
+                [name]="action.icon"
+                [class]="action.color === 'error' ? 'text-red-500' : action.color === 'success' ? 'text-green-500' : action.color === 'warning' ? 'text-orange-500' : 'text-1'"
+              />
+            }
+            <span
+              class="flex-1 text-base"
+              [class]="action.color === 'error' ? 'text-red-500' : action.color === 'success' ? 'text-green-500' : action.color === 'warning' ? 'text-orange-500' : 'text-1'"
+            >
+              {{ action.label | translate }}
+            </span>
+            @if (action.loading) {
+              <oct-icon name="LoaderCircle" class="animate-spin text-3" />
+            }
+          </button>
+        }
+        @if (activeRowActions().length === 0) {
+          <div class="flex items-center justify-center py-8 px-4">
+            <oct-text color="3" variant="sm">{{ 'TABLE_COMPONENT.NO_ACTIONS' | translate }}</oct-text>
+          </div>
+        }
+      </div>
+    }
+  </oct-bottom-sheet>
+}

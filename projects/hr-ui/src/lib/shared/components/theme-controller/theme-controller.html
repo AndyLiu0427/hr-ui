@@ -1,0 +1,75 @@
+@switch (variant()) {
+  @case ('list') {
+    <button (click)="toggleTheme($event)"
+            class="flex items-center gap-3 w-full px-4 py-4 hover:bg-neutral-800 transition-colors"
+            [attr.aria-label]="getAriaLabel()"
+            [disabled]="disabled()">
+      <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-neutral-800">
+        <oct-icon [name]="themeIcon()" size="sm"
+                  class="text-neutral-400 transition-transform duration-500 ease-out"
+                  [style.transform]="iconRotation()" />
+      </div>
+      <oct-text color="1" variant="md" class="flex-1 text-left">{{ themeLabel() }}</oct-text>
+    </button>
+  }
+  @case ('button') {
+    <div [class]="containerClasses">
+      <oct-button
+        [color]="'neutral'"
+        [variant]="'outline'"
+        [size]="'sm'"
+        [shape]="iconOnly() ? 'round' : 'square'"
+        [disabled]="disabled()"
+        [icon]="themeIcon()"
+        [ariaLabel]="getAriaLabel()"
+        [attr.aria-pressed]="effectiveTheme() === 'dark'"
+        [attr.title]="themeLabel()"
+        (buttonClick)="cycleTheme($event)"
+      >
+        @if (!iconOnly() && showLabel()) {
+          <span class="truncate">
+            {{ themeLabel() }}
+          </span>
+        }
+      </oct-button>
+    </div>
+  }
+  @case ('toggle') {
+    <div [class]="containerClasses">
+      <div class="flex items-center gap-3">
+        @if (showLabel()) {
+          <label class="text-sm font-medium text-foreground">
+            Theme
+          </label>
+        }
+
+        <oct-button
+          [color]="'neutral'"
+          [variant]="'outline'"
+          [size]="'sm'"
+          [shape]="'round'"
+          [disabled]="disabled()"
+          [icon]="themeIcon()"
+          [ariaLabel]="getAriaLabel()"
+          [attr.aria-checked]="effectiveTheme() === 'dark'"
+          [attr.title]="themeLabel()"
+          [attr.role]="'switch'"
+          (buttonClick)="toggleTheme($event)">
+
+          <!-- Screen reader text -->
+          <span class="sr-only">{{ themeLabel() }}</span>
+        </oct-button>
+      </div>
+    </div>
+  }
+}
+
+<!-- Accessibility-only live region for screen readers -->
+<div
+  class="sr-only"
+  aria-live="polite"
+  aria-atomic="true">
+  @if (isTransitioning()) {
+    Switching to {{ themeLabel().toLowerCase() }}
+  }
+</div>

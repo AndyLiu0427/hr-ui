@@ -1,0 +1,42 @@
+{
+  "COMMON": {
+    "SELECT_ALL": "Select All"
+  },
+  "FILTER_COMPONENT": {
+    "CLEAR": "Clear",
+    "CLEAR_ALL_FILTERS": "Clear All Filters",
+    "DONE": "Done",
+    "NO_OPTIONS": "No options available",
+    "NO_RESULTS": "No results found"
+  },
+  "GENERAL": {
+    "LOADING": "Loading...",
+    "NODATAFOUND": "No data found",
+    "NO_OPTIONS_FOUND": "No options found",
+    "RETRY": "Retry",
+    "SELECTED_COUNT": "{{count}} selected"
+  },
+  "MULTIUSED_POPUP": {
+    "CANCEL": "Cancel",
+    "CONFIRM": "Confirm",
+    "CONFIRMDELETEDATA": "Once it's deleted, it cannot be undone.",
+    "CONTINUE": "Continue",
+    "DELETE": "Delete",
+    "ERROR": "Error",
+    "INFO": "Information",
+    "OK": "OK",
+    "SUCCESS": "Success",
+    "WARNING": "Warning"
+  },
+  "SIDEBAR": {
+    "PINNED_ANNOUNCE": "{{page}} pinned to top",
+    "PIN_PAGE": "Pin {{page}}",
+    "PIN_TO_TOP": "Pin to top",
+    "UNPIN": "Unpin",
+    "UNPINNED_ANNOUNCE": "{{page}} unpinned"
+  },
+  "TABLE_COMPONENT": {
+    "ACTIONS": "Actions",
+    "NO_ACTIONS": "No actions available"
+  }
+}
