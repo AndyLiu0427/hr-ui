@@ -52,7 +52,7 @@ import { NotFoundPage } from './not-found';
                   </tr>
                 </thead>
                 <tbody>
-                  @for (row of d.keyboard; track row.action) {
+                  @for (row of d.keyboard; track $index) {
                     <tr class="border-t border-docs-border align-top">
                       <td class="px-4 py-3">
                         <span class="inline-flex flex-wrap items-center gap-1">

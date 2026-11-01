@@ -92,7 +92,7 @@ export class DocsHeadingDirective {
               <a
                 [routerLink]="[]"
                 [fragment]="entry.id"
-                class="-ml-px block border-l py-0.5 leading-5 transition-colors duration-150 hover:text-docs-fg"
+                class="-ml-px block border-l py-0.5 leading-5 [overflow-wrap:anywhere] transition-colors duration-150 hover:text-docs-fg"
                 [class.pl-4]="entry.level === 2"
                 [class.pl-7]="entry.level === 3"
                 [class.border-docs-fg]="active() === entry.id"
