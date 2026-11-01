@@ -7,6 +7,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 
 export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
 
+/** An inline message in the flow of the page. Its content is the text. */
 @Component({
   selector: 'oct-notice',
   template: `
@@ -82,19 +83,29 @@ export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
 })
 export class NoticeComponent {
   // Inputs
+  /** Sets the colour, the icon, and how urgently screen readers announce it. */
   readonly variant = input<NoticeVariant>('info');
+  /** Extra classes for the notice box. */
   readonly class = input<string>('');
+  /** Shows a close button that hides the notice and emits dismiss. */
   readonly dismissible = input<boolean>(false);
+  /** A Lucide icon name that replaces the icon of the variant. */
   readonly icon = input<keyof typeof icons | null>(null);
+  /** Shows the icon of the variant when icon is not set. */
   readonly showDefaultIcon = input<boolean>(true);
+  /** Shows a link-style action button after the text. */
   readonly showAction = input<boolean>(false);
+  /** The text of the action button. */
   readonly actionLabel = input<string>('View');
   /** Spinner on the action itself, for a notice whose action starts the write. */
   readonly actionLoading = input<boolean>(false);
+  /** Disables the action button. */
   readonly actionDisabled = input<boolean>(false);
 
   // Outputs
+  /** Emits after the notice has hidden itself. */
   readonly dismiss = output<void>();
+  /** Emits when the action button is clicked. */
   readonly actionClick = output<void>();
 
   // Internal state
