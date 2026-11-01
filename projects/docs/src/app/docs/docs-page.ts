@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Title } from '@angular/platform-browser';
+import { Meta, Title } from '@angular/platform-browser';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { IconComponent } from 'ngx-hr-ui';
@@ -73,6 +73,11 @@ export class DocsPageComponent {
 
   constructor() {
     const title = inject(Title);
-    effect(() => title.setTitle(`${this.title()} · hr-ui`));
+    const meta = inject(Meta);
+    effect(() => {
+      title.setTitle(`${this.title()} · hr-ui`);
+      const description = this.description();
+      if (description) meta.updateTag({ name: 'description', content: description });
+    });
   }
 }

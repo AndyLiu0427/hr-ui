@@ -38,7 +38,7 @@ import { DocsHeadingDirective } from '../docs/toc';
       <h2 docsHeading>4. Use a component</h2>
       <docs-code title="src/app/app.ts" [code]="usage" />
       <p>
-        That's it. Next, <a routerLink="/docs/theming">set your brand colour</a> or
+        That's it. Next, <a routerLink="/docs/theming">set your brand color</a> or
         <a routerLink="/docs/components">browse the components</a>.
       </p>
     </docs-page>

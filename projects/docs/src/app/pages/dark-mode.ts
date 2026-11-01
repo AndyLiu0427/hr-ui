@@ -11,7 +11,7 @@ import { DocsHeadingDirective } from '../docs/toc';
   template: `
     <docs-page title="Dark mode" description="One class on the html element switches every component, and ThemeService keeps the reader's choice.">
       <p>
-        hr-ui reads the theme from a <code>dark</code> class on <code>&lt;html&gt;</code>. Its colour scales
+        hr-ui reads the theme from a <code>dark</code> class on <code>&lt;html&gt;</code>. Its color scales
         flip under that class, so components need no <code>dark:</code> variants of their own. The same
         class also drives Tailwind's <code>dark:</code> variant in your app, the setup shadcn/ui uses.
       </p>
@@ -32,10 +32,10 @@ import { DocsHeadingDirective } from '../docs/toc';
       </p>
       <docs-code lang="angular-html" title="src/index.html" [code]="script" />
 
-      <h2 docsHeading>Your own colours</h2>
+      <h2 docsHeading>Your own colors</h2>
       <p>
-        Give your page a background and text colour that follow the theme. hr-ui's tokens work well
-        for this, and components that inherit text colour pick it up:
+        Give your page a background and text color that follow the theme. hr-ui's tokens work well
+        for this, and components that inherit text color pick it up:
       </p>
       <docs-code lang="css" title="src/styles.css" [code]="base" />
     </docs-page>

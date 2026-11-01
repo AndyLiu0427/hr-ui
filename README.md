@@ -60,9 +60,9 @@ Requires Angular 22 and Tailwind 4.
    This is the ngx-translate 17 setup. Versions 15 and 16 use `TranslateModule.forRoot` with the same loader.
    If your app already uses ngx-translate, merge the keys from `ngx-hr-ui/i18n/en.json` into your own files.
 
-## Choose your colours
+## Choose your colors
 
-The primary colour comes from 2 variables. Set them after the hr-ui import:
+The primary color comes from 2 variables. Set them after the hr-ui import:
 
 ```css
 :root {
@@ -74,7 +74,7 @@ The primary colour comes from 2 variables. Set them after the hr-ui import:
 Every shade from `primary-50` to `primary-950` follows, in light and dark mode.
 To change one shade only, set its variable, for example `--color-primary-600`.
 
-hr-ui's other colour scales use an `hr-` prefix, for example `bg-hr-red-900`.
+hr-ui's other color scales use an `hr-` prefix, for example `bg-hr-red-900`.
 They are reversed so dark mode can flip them: `hr-red-900` is light, `hr-red-100` is dark.
 
 hr-ui does not change any Tailwind default. Its own text sizes, shadows, and animations

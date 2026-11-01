@@ -20,7 +20,7 @@ import { DocsHeadingDirective } from '../docs/toc';
       <ul>
         <li><strong>Over 40 components</strong>, all standalone, written with signals and ready for signal forms.</li>
         <li><strong>Accessible by default.</strong> Text meets WCAG AA contrast in both themes, controls show a focus ring for keyboard users, and menus and dialogs manage focus.</li>
-        <li><strong>Your brand colour in one line.</strong> Two CSS variables recolour every primary shade, in light and dark mode. See <a routerLink="/docs/theming">Theming</a>.</li>
+        <li><strong>Your brand color in one line.</strong> Two CSS variables recolor every primary shade, in light and dark mode. See <a routerLink="/docs/theming">Theming</a>.</li>
         <li><strong>Dark mode</strong> through one class on the page, with a ready-made toggle.</li>
         <li><strong>Tailwind CSS 4 tokens</strong> that sit next to yours. hr-ui adds its own names and never changes Tailwind's defaults or your global styles.</li>
       </ul>
@@ -35,7 +35,7 @@ import { DocsHeadingDirective } from '../docs/toc';
       <h2 docsHeading>Next steps</h2>
       <ul>
         <li><a routerLink="/docs/installation">Install hr-ui</a> in an Angular 22 app.</li>
-        <li><a routerLink="/docs/theming">Pick your colours</a>.</li>
+        <li><a routerLink="/docs/theming">Pick your colors</a>.</li>
         <li><a routerLink="/docs/components">Browse the components</a>.</li>
       </ul>
     </docs-page>

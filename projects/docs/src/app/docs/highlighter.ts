@@ -1,6 +1,6 @@
 import type { HighlighterCore } from 'shiki/core';
 
-/** The languages the docs show. `angular-ts` also colours the HTML inside `template:` strings. */
+/** The languages the docs show. `angular-ts` also colors the HTML inside `template:` strings. */
 export type CodeLang = 'angular-ts' | 'angular-html' | 'css' | 'shellscript' | 'json';
 
 let highlighter: Promise<HighlighterCore> | undefined;

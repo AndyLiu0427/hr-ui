@@ -24,6 +24,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # The docs read examples, API data and page index generated from source.
+      - run: npm run docs:gen
       - run: npx ng build docs --base-href /hr-ui/
       # GitHub Pages has no SPA fallback. Its 404 page loads the app, so deep links work.
       - run: cp dist/docs/browser/index.html dist/docs/browser/404.html

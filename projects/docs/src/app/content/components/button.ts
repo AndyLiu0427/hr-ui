@@ -9,7 +9,7 @@ export const doc: ComponentDoc = {
   examples: [
     { name: 'button-demo' },
     { name: 'button-variants', title: 'Variants', description: 'Solid for the main action on a screen, outline and ghost for the rest, link for actions inside text.' },
-    { name: 'button-colors', title: 'Colors', description: 'Primary follows your brand colour. Use success, warning and error for actions with that meaning, and neutral for everything quiet.' },
+    { name: 'button-colors', title: 'Colors', description: 'Primary follows your brand color. Use success, warning and error for actions with that meaning, and neutral for everything quiet.' },
     { name: 'button-sizes', title: 'Sizes' },
     { name: 'button-shapes', title: 'Shapes' },
     { name: 'button-icons', title: 'With an icon', description: 'An icon-only button needs ariaLabel, so screen readers can name it.' },

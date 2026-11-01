@@ -10,9 +10,9 @@ import { DocsHeadingDirective } from '../../docs/toc';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DocsPageComponent, DocsCodeComponent, DocsApiComponent, DocsHeadingDirective, TextComponent],
   template: `
-    <docs-page title="Typography" description="One text component sets size, weight and colour from the design scale.">
+    <docs-page title="Typography" description="One text component sets size, weight and color from the design scale.">
       <p>
-        <code>&lt;oct-text&gt;</code> renders text at a size from the scale, in one of the text colours.
+        <code>&lt;oct-text&gt;</code> renders text at a size from the scale, in one of the text colors.
         Long text is cut with an ellipsis unless you set <code>[truncate]="false"</code>.
       </p>
       <docs-code [code]="usage" />
@@ -39,8 +39,8 @@ import { DocsHeadingDirective } from '../../docs/toc';
         }
       </div>
 
-      <h2 docsHeading>Colours</h2>
-      <p>Each colour meets WCAG AA contrast on hr-ui surfaces in both themes. <code>disabled</code> is for disabled controls only.</p>
+      <h2 docsHeading>Colors</h2>
+      <p>Each color meets WCAG AA contrast on hr-ui surfaces in both themes. <code>disabled</code> is for disabled controls only.</p>
       <div class="mt-4 grid gap-3 sm:grid-cols-2">
         @for (color of colors; track color.value) {
           <div class="rounded-xl border border-docs-border px-4 py-3">

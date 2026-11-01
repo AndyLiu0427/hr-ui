@@ -17,7 +17,7 @@ const DEFAULT: Preset = { name: 'Teal', hue: 189.8, chroma: 1 };
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DocsPageComponent, DocsCodeComponent, DocsHeadingDirective, ButtonComponent, BadgeComponent, SwitchComponent, CheckboxComponent, ProgressBarComponent],
   template: `
-    <docs-page title="Theming" description="Set your brand colour with two CSS variables. Every primary shade follows, in light and dark mode.">
+    <docs-page title="Theming" description="Set your brand color with two CSS variables. Every primary shade follows, in light and dark mode.">
       <p>
         hr-ui builds its primary scale in OKLCH from a hue and a strength. Change those two values and
         buttons, focus rings, switches, links and progress bars all move together. Try it: the whole
@@ -71,7 +71,7 @@ const DEFAULT: Preset = { name: 'Teal', hue: 189.8, chroma: 1 };
       </p>
       <ul>
         <li><code>bg-primary-solid</code> fills a button behind white text. It measures 5:1 or more for every hue at a strength up to 2.</li>
-        <li><code>text-primary</code> colours links, outline and ghost buttons, and the focus ring.</li>
+        <li><code>text-primary</code> colors links, outline and ghost buttons, and the focus ring.</li>
         <li><code>bg-primary-solid-hover</code> is one step darker for hover.</li>
       </ul>
       <p>
@@ -86,7 +86,7 @@ const DEFAULT: Preset = { name: 'Teal', hue: 189.8, chroma: 1 };
       </p>
       <docs-code lang="css" [code]="singleShade" />
 
-      <h2 docsHeading>Status colours</h2>
+      <h2 docsHeading>Status colors</h2>
       <p>
         Success, warning, error and info use their own scales (<code>--color-success-*</code> and so on)
         and roles (<code>bg-success-solid</code>, <code>text-success</code>). Override them the same way.
@@ -128,7 +128,7 @@ export class ThemingPage {
       root.style.setProperty('--hr-primary-hue', String(this.hue()));
       root.style.setProperty('--hr-primary-chroma', String(this.chroma()));
     });
-    // The site goes back to its own colours when you leave the page.
+    // The site goes back to its own colors when you leave the page.
     inject(DestroyRef).onDestroy(() => {
       root.style.removeProperty('--hr-primary-hue');
       root.style.removeProperty('--hr-primary-chroma');

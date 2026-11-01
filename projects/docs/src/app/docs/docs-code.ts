@@ -3,7 +3,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ButtonComponent } from 'ngx-hr-ui';
 import { CodeLang, highlight } from './highlighter';
 
-/** A code block with syntax colours and a copy button. Plain text shows until the colours load. */
+/** A code block with syntax colors and a copy button. Plain text shows until the colors load. */
 @Component({
   selector: 'docs-code',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,8 +16,8 @@ import { CodeLang, highlight } from './highlighter';
           {{ title() }}
         </figcaption>
       }
-      @if (html(); as coloured) {
-        <div class="code-scroll max-h-[32rem] overflow-auto" [innerHTML]="coloured"></div>
+      @if (html(); as colored) {
+        <div class="code-scroll max-h-[32rem] overflow-auto" [innerHTML]="colored"></div>
       } @else {
         <div class="code-scroll max-h-[32rem] overflow-auto"><pre><code>{{ trimmed() }}</code></pre></div>
       }
@@ -64,7 +64,7 @@ export class DocsCodeComponent {
       const code = this.trimmed();
       const lang = this.lang();
       this.html.set(null);
-      // Shiki escapes the code; the markup is ours, so trusting it keeps the colour variables.
+      // Shiki escapes the code; the markup is ours, so trusting it keeps the color variables.
       highlight(code, lang).then(markup => {
         if (code === this.trimmed()) this.html.set(this.sanitizer.bypassSecurityTrustHtml(markup));
       });

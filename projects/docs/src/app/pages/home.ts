@@ -25,7 +25,7 @@ const SHOWCASE = [
           class="oct-focus-ring mb-6 inline-flex items-center gap-2 rounded-full border border-docs-border bg-docs-bg px-3 py-1 text-xs font-medium text-docs-muted transition-colors duration-150 hover:text-docs-fg"
         >
           <span class="size-1.5 rounded-full bg-primary-solid"></span>
-          New: pick your brand colour in one line
+          New: pick your brand color in one line
           <oct-icon name="ArrowRight" [size]="12" />
         </a>
         <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-6xl">Components for HR and payroll apps</h1>
@@ -84,7 +84,7 @@ export class HomePage {
 
   protected readonly features = [
     { icon: 'Accessibility', title: 'Accessible', text: 'WCAG AA contrast in both themes, focus rings for keyboard users, and dialogs and menus that manage focus.' },
-    { icon: 'Palette', title: 'Themeable', text: 'Two CSS variables set your brand colour. Every shade and every role follows, in light and dark mode.' },
+    { icon: 'Palette', title: 'Themeable', text: 'Two CSS variables set your brand color. Every shade and every role follows, in light and dark mode.' },
     { icon: 'Moon', title: 'Dark mode', text: 'One class on the page flips every component. A toggle and a service come with it.' },
     { icon: 'Zap', title: 'Angular 22', text: 'Standalone components, signals and signal forms, with strict types for templates.' }
   ];
