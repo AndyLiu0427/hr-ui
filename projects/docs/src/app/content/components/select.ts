@@ -29,6 +29,7 @@ export const doc: ComponentDoc = {
   ],
   accessibility: [
     'The trigger is a native button with role="combobox". It sets aria-expanded, and aria-required and aria-invalid when they apply.',
+    'The open list has role="listbox". The trigger keeps focus, and aria-activedescendant names the highlighted option.',
     'The label is linked to the trigger. Without a visible label, set ariaLabel, or the select is announced by its placeholder.'
   ],
   api: ['SelectComponent']

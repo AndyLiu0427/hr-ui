@@ -47,7 +47,10 @@ export interface SelectOption {
   colorTag?: ColorTagColor;
 }
 
-/** A dropdown for picking one option, or several with multiple. Bind it with [formField] or [(value)]. */
+/**
+ * A dropdown for picking one option, or several with multiple. Bind it with [formField] or [(value)].
+ * T is the bound value: a value or null for one option, an array with multiple.
+ */
 @Component({
   selector: 'oct-select',
   templateUrl: './select.html',
@@ -73,7 +76,7 @@ export interface SelectOption {
     '[class.self-stretch]': 'bare()'
   }
 })
-export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
+export class SelectComponent<T extends SelectChangeValue = SelectChangeValue> implements FormValueControl<T>, OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly translateService = inject(TranslateService);
   private readonly viewportRuler = inject(ViewportRuler);
@@ -87,6 +90,8 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
   private readonly wasEverOpened = signal(false);
 
   readonly selectId = signal(`oct-select-${Math.random().toString(36).substring(2, 9)}`);
+  /** The open panel. The trigger points at it, and its options carry the ids that aria-activedescendant names. */
+  readonly listboxId = computed(() => `${this.selectId()}-listbox`);
 
   /** Options in the list. */
   readonly options = input<SelectOption[]>([]);
@@ -132,7 +137,7 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
   readonly itemSize = input<number>(40);
 
   /** Selected value. In multiple mode, an array of values. */
-  readonly value: ModelSignal<SelectValue> = model<SelectValue>(null);
+  readonly value: ModelSignal<T> = model<T>(null as T);
   /** Validation errors from the form field. The first message shows after the select is touched. */
   readonly errors = input<readonly WithOptionalFieldTree<ValidationError>[]>([]);
   /** Disables the select. */
@@ -187,12 +192,13 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
         }
       } else if (modelValue !== null && modelValue !== undefined) {
         const currentValues = this.selectedValues();
-        if (!currentValues.includes(modelValue)) {
-          this.selectedValues.set([...currentValues, modelValue]);
+        const single = modelValue as string | number;
+        if (!currentValues.includes(single)) {
+          this.selectedValues.set([...currentValues, single]);
         }
       }
     } else if (this.selectValue() !== modelValue) {
-      this.selectValue.set(modelValue);
+      this.selectValue.set(modelValue as SelectValue);
     }
   });
 
@@ -246,6 +252,9 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
   readonly canScrollDown = signal(false);
 
   readonly isDisabled = computed(() => this.loading() || this.disabled());
+
+  /** Names the trigger and the list it opens. */
+  readonly accessibleName = computed(() => this.ariaLabel() || this.label() || this.placeholder() || 'Select an option');
 
   /** Determines if component should show error state. Priority: explicit > errorText > Signal Forms */
   readonly hasError = computed(() => {
@@ -479,14 +488,14 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
       }
 
       this.selectedValues.set(currentValues);
-      this.value.set(currentValues as unknown as SelectValue);
+      this.value.set(currentValues as T);
       this.markTouched();
       this.selectChange.emit(currentValues);
       this.selectionChange.emit(this.selectedOptions());
       this.cdr.markForCheck();
     } else {
       this.selectValue.set(option.value);
-      this.value.set(option.value);
+      this.value.set(option.value as T);
       this.markTouched();
       this.selectChange.emit(option.value);
       this.selectionChange.emit(option);
@@ -503,7 +512,7 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
 
     const currentValues = this.selectedValues().filter(v => v !== option.value);
     this.selectedValues.set(currentValues);
-    this.value.set(currentValues as unknown as SelectValue);
+    this.value.set(currentValues as T);
     this.markTouched();
     this.selectChange.emit(currentValues);
     this.selectionChange.emit(this.selectedOptions());
@@ -515,14 +524,15 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
     if (this.isDisabled()) return;
 
     if (this.multiple()) {
+      // An empty array, not null, so a value typed as an array stays one.
       this.selectedValues.set([]);
-      this.value.set(null);
+      this.value.set([] as SelectValues as T);
       this.markTouched();
       this.selectChange.emit([]);
       this.selectionChange.emit([]);
     } else {
       this.selectValue.set(null);
-      this.value.set(null);
+      this.value.set(null as T);
       this.markTouched();
       this.selectChange.emit(null);
       this.selectionChange.emit(null);
@@ -535,14 +545,14 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
 
     if (this.isAllSelected()) {
       this.selectedValues.set([]);
-      this.value.set([] as unknown as SelectValue);
+      this.value.set([] as SelectValues as T);
       this.markTouched();
       this.selectChange.emit([]);
       this.selectionChange.emit([]);
     } else {
       const allValues = this.enabledOptions().map(opt => opt.value);
       this.selectedValues.set(allValues);
-      this.value.set(allValues as unknown as SelectValue);
+      this.value.set(allValues as T);
       this.markTouched();
       this.selectChange.emit(allValues);
       this.selectionChange.emit(this.selectedOptions());
@@ -647,7 +657,7 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
 
   clear(): void {
     this.selectValue.set(null);
-    this.value.set(null);
+    this.value.set(null as T);
     this.selectChange.emit(null);
   }
 
