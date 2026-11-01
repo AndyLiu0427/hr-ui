@@ -43,7 +43,7 @@ import { DocsHeadingDirective } from '../../docs/toc';
       <p>Each color meets WCAG AA contrast on hr-ui surfaces in both themes. <code>disabled</code> is for disabled controls only.</p>
       <div class="mt-4 grid gap-3 sm:grid-cols-2">
         @for (color of colors; track color.value) {
-          <div class="rounded-xl border border-docs-border px-4 py-3">
+          <div class="rounded-xl border border-docs-border px-4 py-3" [attr.aria-disabled]="color.value === 'disabled' ? 'true' : null">
             <oct-text variant="md" [color]="color.value" weight="medium">{{ color.label }}</oct-text>
             <code class="mt-1 block font-mono text-xs text-docs-muted">color="{{ color.value }}"</code>
           </div>
