@@ -181,7 +181,9 @@ export class BaseOverlayService {
 
     const overlayConfig = new OverlayConfig({
       ...defaultConfig,
-      ...customConfig
+      ...customConfig,
+      // Marks the pane as hr-ui's, so hr-ui.css styles it and leaves the app's other overlays alone.
+      panelClass: ['oct-overlay-pane', ...[customConfig.panelClass ?? []].flat()]
     });
 
     return this.overlay.create(overlayConfig);

@@ -150,7 +150,8 @@ export class TooltipDirective implements OnDestroy {
 
     const reduced = prefersReducedMotion();
     const enter = reduced ? ENTER_REDUCED : ENTER;
-    const base = this.isRich ? RICH_WRAPPER_BASE : WRAPPER_BASE;
+    // oct-tooltip lets hr-ui.css style the wrapper, which lives outside any hr-ui element.
+    const base = `oct-tooltip ${this.isRich ? RICH_WRAPPER_BASE : WRAPPER_BASE}`;
     // origin only matters while the scale tween plays; skip it when reduced.
     this.visibleBaseClass = reduced ? base : `${base} ${ORIGIN_CLASSES[position]}`;
 

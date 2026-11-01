@@ -111,6 +111,7 @@ export class BottomSheetComponent {
       scrollStrategy: this.overlay.scrollStrategies.block(),
       hasBackdrop: true,
       backdropClass: 'bg-black/50',
+      panelClass: 'oct-overlay-pane',
       disposeOnNavigation: true,
       width: '100%',
       maxHeight: this.maxHeight()

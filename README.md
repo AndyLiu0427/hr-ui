@@ -100,6 +100,7 @@ export class Example {}
 ```
 
 Dark mode: `ThemeService` puts the `dark` class on `<html>`. Use `<oct-theme-controller />` for a ready-made toggle.
+hr-ui.css makes Tailwind's `dark:` variant follow that class, the same setup shadcn/ui uses.
 
 ## Develop
 

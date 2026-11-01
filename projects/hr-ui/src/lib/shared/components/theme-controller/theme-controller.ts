@@ -84,12 +84,13 @@ export class ThemeControllerComponent {
     };
 
     const doc = this.document as Document & {
-      startViewTransition?: (cb: () => void) => { ready: Promise<void> };
+      startViewTransition?: (cb: () => void) => { ready: Promise<void>; finished: Promise<void> };
     };
 
     const mouseEvent = event instanceof MouseEvent ? event : undefined;
+    const reduceMotion = this.document.defaultView?.matchMedia('(prefers-reduced-motion: reduce)').matches ?? false;
 
-    if (!doc.startViewTransition || !mouseEvent) {
+    if (!doc.startViewTransition || !mouseEvent || reduceMotion) {
       applyTheme();
       return;
     }
@@ -97,7 +98,11 @@ export class ThemeControllerComponent {
     const { clientX: x, clientY: y } = mouseEvent;
     const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
 
+    // The class scopes hr-ui.css's view-transition rules to this reveal only.
+    const root = this.document.documentElement;
+    root.classList.add('oct-theme-transition');
     const transition = doc.startViewTransition(() => applyTheme());
+    transition.finished.finally(() => root.classList.remove('oct-theme-transition'));
 
     transition.ready.then(() => {
       this.document.documentElement.animate(

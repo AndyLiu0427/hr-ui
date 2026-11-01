@@ -825,8 +825,8 @@
 /* ============================================
     Custom Variants
    ============================================ */
+/* Dark mode follows the .dark class on <html> (set by ThemeService), not the OS setting. */
 @custom-variant dark (&:is(.dark *));
-@custom-variant fixed (&:is(.layout-fixed *));
 
 /* ============================================
     Utility Classes
@@ -850,66 +850,8 @@
   .btn-primary {
     background-color: var(--primary);
   }
-  .outline-2 {
-    outline-style: var(--tw-outline-style);
-    outline-width: 2px;
-  }
-  .rounded-full {
-    border-radius: 100px;
-  }
-
-  .container {
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  @media (width >= 640px) {
-    .container {
-      max-width: 640px;
-    }
-  }
-
-  @media (width >= 768px) {
-    .container {
-      max-width: 768px;
-    }
-  }
-
-  @media (width >= 1024px) {
-    .container {
-      max-width: 1024px;
-    }
-  }
-
-  @media (width >= 1280px) {
-    .container {
-      max-width: 1280px;
-    }
-  }
-
-  @media (width >= 1536px) {
-    .container {
-      max-width: 1536px;
-    }
-  }
 }
 
-@utility text-error {
-  color: #dc2626 !important;
-}
-
-@layer base {
-  html,
-  :host {
-    line-height: 1 !important;
-  }
-
-  :focus-visible {
-    outline: none;
-  }
-}
 
 /* ============================================
     Component Styles
@@ -918,9 +860,23 @@
 /* ============================================
     CDK Overlay Fixes
    ============================================ */
-/* Fix CDK overlay pane width issue by removing flex display */
-.cdk-overlay-pane {
-  display: block !important;
+/* hr-ui's controls were designed on a 1 line-height. Set it on their own elements only, at zero
+   specificity, so the app's text keeps its normal line-height and a leading-* class still wins.
+   Containers that hold app content (card, dialog, bottom sheet, notice, table) are left out on purpose. */
+:where(
+  oct-avatar, oct-badge, oct-button, oct-career-progression, oct-checkbox, oct-chip, oct-code-copy,
+  oct-color-tag, oct-date-timeline, oct-divider, oct-dropdown-menu, oct-file-input, oct-filter,
+  oct-formula, oct-ichoice, oct-icon, oct-input, oct-input-select, oct-kbd, oct-loading,
+  oct-progress-bar, oct-radio, oct-search-panel, oct-search-select, oct-search-select-option,
+  oct-select, oct-select-option, oct-slider, oct-snackbar, oct-switch, oct-table-filters, oct-tabs,
+  oct-text, oct-textarea, oct-theme-controller, oct-unified-sidebar, .oct-overlay-pane, .oct-tooltip
+) {
+  line-height: 1;
+}
+
+/* hr-ui's own overlay panes size to their content. Other overlays in the app keep CDK's defaults. */
+.cdk-overlay-pane.oct-overlay-pane {
+  display: block;
 }
 
 /* ============================================
@@ -997,15 +953,9 @@
 /* ============================================
     View Transitions (Theme Toggle)
    ============================================ */
-::view-transition-old(root),
-::view-transition-new(root) {
+/* Only while the theme toggle runs its reveal. The app's own view transitions keep their defaults. */
+html.oct-theme-transition::view-transition-old(root),
+html.oct-theme-transition::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
-}
-
-/* ============================================
-    Global Styles
-   ============================================ */
-:host {
-  line-height: 1;
 }

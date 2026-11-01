@@ -151,6 +151,7 @@ export class DropdownMenuComponent {
       scrollStrategy: isCustomContentMode ? this.overlay.scrollStrategies.noop() : this.overlay.scrollStrategies.reposition(),
       hasBackdrop: !isCustomContentMode,
       backdropClass: '',
+      panelClass: 'oct-overlay-pane',
       disposeOnNavigation: true,
       width: this.width(),
       maxHeight: '90vh'

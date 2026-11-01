@@ -288,6 +288,7 @@ export class FilterComponent<T> {
       positionStrategy,
       scrollStrategy: this.overlay.scrollStrategies.reposition(),
       hasBackdrop: false,
+      panelClass: 'oct-overlay-pane',
       disposeOnNavigation: true,
       width: this.width(),
       maxHeight: '400px'
