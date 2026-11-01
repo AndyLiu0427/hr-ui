@@ -5,18 +5,20 @@
     [attr.aria-label]="ariaLabel()">
 
     <!-- Sliding Background Indicator (works on both mobile and desktop) -->
+    <!-- Moved with transform, so the slide needs no layout per frame. -->
     <div
       #indicator
-      class="absolute bg-secondary rounded-sm shadow-hr-sm motion-reduce:transition-none"
+      class="absolute bg-secondary rounded-sm shadow-hr-sm"
       [class.inset-y-1]="!indicatorStyle().isVertical"
       [class.inset-x-1]="indicatorStyle().isVertical"
-      [style.left]="indicatorStyle().isVertical ? '4px' : indicatorStyle().left"
+      [style.left]="indicatorStyle().isVertical ? '4px' : '0px'"
       [style.right]="indicatorStyle().isVertical ? '4px' : 'auto'"
       [style.width]="indicatorStyle().isVertical ? 'auto' : indicatorStyle().width"
-      [style.top]="indicatorStyle().isVertical ? indicatorStyle().top : '4px'"
+      [style.top]="indicatorStyle().isVertical ? '0px' : '4px'"
       [style.height]="indicatorStyle().isVertical ? indicatorStyle().height : 'auto'"
       [style.bottom]="indicatorStyle().isVertical ? 'auto' : '4px'"
-      [style.transition]="indicatorPlaced() ? 'all 300ms cubic-bezier(0.4, 0.0, 0.2, 1)' : 'none'"
+      [style.transform]="indicatorStyle().isVertical ? 'translateY(' + indicatorStyle().top + ')' : 'translateX(' + indicatorStyle().left + ')'"
+      [style.transition]="indicatorTransition()"
       aria-hidden="true">
     </div>
 

@@ -158,7 +158,8 @@ export class DropdownMenuComponent {
       .withPositions(positions)
       .withPush(false)
       .withViewportMargin(8)
-      .withFlexibleDimensions(true);
+      .withFlexibleDimensions(true)
+      .withTransformOriginOn('.oct-overlay-enter');
 
     this.overlayRef = this.overlay.create({
       positionStrategy,

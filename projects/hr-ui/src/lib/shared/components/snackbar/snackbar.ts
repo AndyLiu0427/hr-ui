@@ -18,6 +18,10 @@ import { IconComponent } from '../icon/icon';
 import { SnackbarType, SnackbarPosition, SnackbarSize } from './snackbar.interface';
 import { trigger, transition, style, animate, state, AnimationEvent } from '@angular/animations';
 import { ButtonComponent } from '../button/button';
+import { prefersReducedMotion } from '../../../utils/reduced-motion';
+
+/** --ease-smooth-out. The animations package cannot read CSS variables, so the curve is spelled out. */
+const SMOOTH_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
 @Component({
   selector: 'oct-snackbar',
@@ -41,10 +45,10 @@ import { ButtonComponent } from '../button/button';
           opacity: 1
         })
       ),
-      transition('void => in', [animate('300ms cubic-bezier(0.4, 0, 0.2, 1)')]),
+      transition('void => in', [animate(`250ms ${SMOOTH_OUT}`)]),
       transition('in => void', [
         animate(
-          '200ms cubic-bezier(0.4, 0, 1, 1)',
+          `150ms ${SMOOTH_OUT}`,
           style({
             transform: '{{slideDirection}}',
             opacity: 0
@@ -109,8 +113,11 @@ export class SnackbarComponent implements OnInit, OnDestroy {
       'shadow-hr-sm',
       'backdrop-blur-sm',
       'border',
-      'transition-all',
-      'duration-300',
+      // A restack moves the box with translate (see snackbarStyle), so only translate animates.
+      'transition-[translate]',
+      'duration-250',
+      'ease-[var(--ease-smooth-out)]',
+      'motion-reduce:transition-none',
       'cursor-pointer',
       'select-none',
       'min-w-80'
@@ -122,13 +129,13 @@ export class SnackbarComponent implements OnInit, OnDestroy {
       lg: ['px-5', 'py-4', 'gap-4']
     };
 
-    // Base position without offset (offset will be applied via style)
+    // Base position without offset (offset and centring are applied via style)
     const positionClasses = {
       'top-left': ['left-4'],
-      'top-center': ['left-1/2', '-translate-x-1/2'],
+      'top-center': ['left-1/2'],
       'top-right': ['right-4'],
       'bottom-left': ['left-4'],
-      'bottom-center': ['left-1/2', '-translate-x-1/2'],
+      'bottom-center': ['left-1/2'],
       'bottom-right': ['right-4']
     };
 
@@ -145,15 +152,18 @@ export class SnackbarComponent implements OnInit, OnDestroy {
     return classes.join(' ');
   });
 
+  /**
+   * The edge stays fixed; the stack offset is a translate, so a restack animates without layout.
+   * translate also does the centring, which a -translate-x-1/2 class would fight over.
+   */
   readonly snackbarStyle = computed(() => {
     const position = this.position();
-    const offset = this.offset();
+    const x = position.endsWith('center') ? '-50%' : '0px';
 
-    // Apply offset based on position (top or bottom)
     if (position.includes('top')) {
-      return { top: `${16 + offset}px` };
+      return { top: '16px', translate: `${x} ${this.offset()}px` };
     } else {
-      return { bottom: `${16 + offset}px` };
+      return { bottom: '16px', translate: `${x} ${-this.offset()}px` };
     }
   });
 
@@ -223,6 +233,9 @@ export class SnackbarComponent implements OnInit, OnDestroy {
 
   readonly slideDirection = computed(() => {
     const position = this.position();
+    if (prefersReducedMotion()) {
+      return 'none';
+    }
     if (position.includes('top')) {
       return 'translateY(-100%)';
     } else {

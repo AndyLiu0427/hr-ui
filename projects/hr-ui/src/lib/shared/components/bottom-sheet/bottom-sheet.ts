@@ -22,9 +22,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ButtonComponent } from '../button/button';
 import { TextComponent } from '../text/text';
+import { prefersReducedMotion } from '../../../utils/reduced-motion';
 
-const ANIMATION_DURATION_MS = 300;
+const ENTER_MS = 300;
+const EXIT_MS = 200;
+/** The iOS sheet curve: a quick start and a long, soft settle. */
+const SHEET_EASE = 'cubic-bezier(0.32, 0.72, 0, 1)';
 const SWIPE_CLOSE_THRESHOLD_PX = 100;
+/** px per ms. A short, fast flick closes the sheet as surely as a long drag. */
+const SWIPE_CLOSE_VELOCITY = 0.11;
 
 @Component({
   selector: 'oct-bottom-sheet',
@@ -49,13 +55,28 @@ export class BottomSheetComponent {
   readonly isAnimating = signal(false);
   readonly isDragging = signal(false);
   readonly translateY = signal(0);
+  /** Read on open: with reduced motion the sheet fades where it is instead of sliding. */
+  private readonly reducedMotion = signal(false);
+
+  protected readonly panelTransform = computed(() => {
+    if (this.isDragging()) return `translateY(${this.translateY()}px)`;
+    if (this.isAnimating()) return 'translateY(0)';
+    return this.reducedMotion() ? `translateY(${this.translateY()}px)` : 'translateY(100%)';
+  });
+  protected readonly panelOpacity = computed(() => (this.reducedMotion() && !this.isAnimating() ? 0 : null));
+  protected readonly panelTransition = computed(() => {
+    if (this.isDragging()) return 'none';
+    const duration = this.isAnimating() ? ENTER_MS : EXIT_MS;
+    return `${this.reducedMotion() ? 'opacity' : 'transform'} ${duration}ms ${SHEET_EASE}`;
+  });
 
   readonly resolvedAriaLabel = computed(() => this.ariaLabel() ?? this.title());
 
   readonly sheetTemplate = viewChild.required<TemplateRef<unknown>>('sheetTemplate');
   readonly footerTemplate = contentChild<TemplateRef<unknown>>('footer');
 
-  private touchStartY = 0;
+  private dragStartY = 0;
+  private dragStartTime = 0;
 
   constructor() {
     effect(() => {
@@ -74,27 +95,38 @@ export class BottomSheetComponent {
     this.closed.emit();
   }
 
-  onDragStart(event: TouchEvent): void {
-    this.touchStartY = event.touches[0].clientY;
+  /** Pointer events, so a mouse drags the handle as well as a finger; capture keeps the drag past its edge. */
+  onDragStart(event: PointerEvent): void {
+    if (event.button !== 0) return;
+    this.dragStartY = event.clientY;
+    this.dragStartTime = event.timeStamp;
     this.isDragging.set(true);
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
   }
 
-  onDragMove(event: TouchEvent): void {
+  onDragMove(event: PointerEvent): void {
     if (!this.isDragging()) return;
-    const deltaY = event.touches[0].clientY - this.touchStartY;
-    if (deltaY > 0) {
-      this.translateY.set(deltaY);
-    }
+    const deltaY = event.clientY - this.dragStartY;
+    // Down follows the finger. Up resists more the further it goes, then springs back on release.
+    this.translateY.set(deltaY >= 0 ? deltaY : -Math.sqrt(-deltaY) * 4);
   }
 
-  onDragEnd(): void {
+  onDragEnd(event: PointerEvent): void {
     if (!this.isDragging()) return;
     this.isDragging.set(false);
     const dragged = this.translateY();
-    this.translateY.set(0);
-    if (dragged > SWIPE_CLOSE_THRESHOLD_PX) {
+    const elapsedMs = Math.max(1, event.timeStamp - this.dragStartTime);
+    if (dragged > SWIPE_CLOSE_THRESHOLD_PX || dragged / elapsedMs > SWIPE_CLOSE_VELOCITY) {
+      // translateY stays, so a reduced-motion sheet fades out where it was let go.
       this.closed.emit();
+    } else {
+      this.translateY.set(0);
     }
+  }
+
+  onDragCancel(): void {
+    this.isDragging.set(false);
+    this.translateY.set(0);
   }
 
   private openOverlay(): void {
@@ -118,6 +150,7 @@ export class BottomSheetComponent {
       maxHeight: this.maxHeight()
     });
 
+    this.reducedMotion.set(prefersReducedMotion());
     const portal = new TemplatePortal(this.sheetTemplate(), this.viewContainerRef);
     this.overlayRef.attach(portal);
 
@@ -150,7 +183,7 @@ export class BottomSheetComponent {
     this.closeTimer = setTimeout(() => {
       this.disposeOverlay();
       this.translateY.set(0);
-    }, ANIMATION_DURATION_MS);
+    }, EXIT_MS);
   }
 
   private disposeOverlay(): void {

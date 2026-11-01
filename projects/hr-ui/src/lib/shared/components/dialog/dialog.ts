@@ -27,7 +27,12 @@ const SIZE_CLASSES: Record<string, string> = {
   },
   template: `
     @if (isOpen()) {
-      <div class="fixed inset-0 z-50 bg-black/50" (click)="dismiss()"></div>
+      <div
+        class="fixed inset-0 z-50 bg-black/50"
+        animate.enter="dialog-backdrop-enter"
+        animate.leave="dialog-backdrop-leave"
+        (click)="dismiss()"
+      ></div>
 
       <div class="dialog-wrapper fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
         <div
@@ -39,6 +44,8 @@ const SIZE_CLASSES: Record<string, string> = {
           tabindex="-1"
           (keydown.tab)="holdFocus($event)"
           (keydown.shift.tab)="holdFocus($event)"
+          animate.enter="dialog-panel-enter"
+          animate.leave="dialog-panel-leave"
           class="dialog-container relative flex flex-col rounded-lg sm:rounded-xl w-full bg-secondary border border-primary shadow-hr-sm overflow-hidden"
           [class]="containerClass()"
           [style.max-width]="customMaxWidth()"
@@ -73,6 +80,45 @@ const SIZE_CLASSES: Record<string, string> = {
 
       .dialog-container {
         pointer-events: auto;
+      }
+
+      /*
+       * Enter: the backdrop fades in and the panel grows from 96% as it fades in. The exit is
+       * shorter. A leaving dialog takes no clicks, so a second click cannot close it twice.
+       */
+      .dialog-backdrop-enter {
+        animation: dialog-fade-in 200ms var(--ease-smooth-out);
+      }
+
+      .dialog-panel-enter {
+        animation: dialog-panel-in 200ms var(--ease-smooth-out);
+      }
+
+      .dialog-backdrop-leave,
+      .dialog-panel-leave {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 150ms var(--ease-smooth-out);
+      }
+
+      .dialog-panel-leave {
+        transform: scale(0.96);
+        transition:
+          opacity 150ms var(--ease-smooth-out),
+          transform 150ms var(--ease-smooth-out);
+      }
+
+      @keyframes dialog-fade-in {
+        from {
+          opacity: 0;
+        }
+      }
+
+      @keyframes dialog-panel-in {
+        from {
+          opacity: 0;
+          transform: scale(0.96);
+        }
       }
 
       /*
@@ -121,6 +167,14 @@ const SIZE_CLASSES: Record<string, string> = {
       @media (prefers-reduced-motion: reduce) {
         .dialog-container.is-shaking {
           animation: none;
+        }
+
+        .dialog-panel-enter {
+          animation-name: dialog-fade-in;
+        }
+
+        .dialog-panel-leave {
+          transform: none;
         }
       }
     `

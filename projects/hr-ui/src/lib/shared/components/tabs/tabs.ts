@@ -18,6 +18,9 @@ import {
 } from '@angular/core';
 
 import { TextComponent } from '../text/text';
+import { prefersReducedMotion } from '../../../utils/reduced-motion';
+
+const INDICATOR_SLIDE = 'transform 200ms var(--ease-smooth-out), width 200ms var(--ease-smooth-out), height 200ms var(--ease-smooth-out)';
 
 export interface TabItem {
   id: string;
@@ -63,6 +66,11 @@ export class TabsComponent {
   readonly ariaLabel = input<string>('Tabs');
 
   protected readonly indicatorPlaced = signal(false);
+  /** Set by the arrow keys: a keyboard move shows at once instead of sliding. */
+  private readonly keyboardMove = signal(false);
+  protected readonly indicatorTransition = computed(() =>
+    this.indicatorPlaced() && !this.keyboardMove() && !prefersReducedMotion() ? INDICATOR_SLIDE : 'none'
+  );
   private readonly focusedTabIndex = signal(0);
   private readonly tabElements = viewChildren<ElementRef<HTMLButtonElement>>('tabButton');
   private readonly indicator = viewChild<ElementRef<HTMLElement>>('indicator');
@@ -163,6 +171,10 @@ export class TabsComponent {
     if (this.tabs()[index]?.href) {
       event?.preventDefault();
     }
+    // Only the click binding passes an event; the keyboard path calls this without one.
+    if (event) {
+      this.keyboardMove.set(false);
+    }
     if (this.activeTab() === tabId) return;
 
     this.activeTab.set(tabId);
@@ -207,6 +219,7 @@ export class TabsComponent {
         return;
     }
 
+    this.keyboardMove.set(true);
     this.focusedTabIndex.set(newIndex);
     this.activeTab.set(tabsList[newIndex].id);
     this.tabChange.emit(tabsList[newIndex].id);

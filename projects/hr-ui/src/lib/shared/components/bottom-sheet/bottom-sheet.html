@@ -1,10 +1,11 @@
 <ng-template #sheetTemplate>
+  <!-- The shadow is a solid copy of the sheet 100px lower. A pull upwards lifts the sheet off the
+       bottom edge, and the copy fills that gap. (A drop shadow never showed on a sheet pinned there.) -->
   <div
-    class="bg-secondary rounded-t-2xl shadow-hr-2xl overflow-hidden flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
-    [style.transform]="
-      isDragging() ? 'translateY(' + translateY() + 'px)' : isAnimating() ? 'translateY(0)' : 'translateY(100%)'
-    "
-    [style.transition]="isDragging() ? 'none' : null"
+    class="bg-secondary rounded-t-2xl shadow-[0_100px_0_var(--secondary-background)] overflow-hidden flex flex-col"
+    [style.transform]="panelTransform()"
+    [style.opacity]="panelOpacity()"
+    [style.transition]="panelTransition()"
     role="dialog"
     aria-modal="true"
     [attr.aria-label]="resolvedAriaLabel()"
@@ -13,9 +14,10 @@
   >
     <div
       class="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing touch-none"
-      (touchstart)="onDragStart($event)"
-      (touchmove)="onDragMove($event)"
-      (touchend)="onDragEnd()"
+      (pointerdown)="onDragStart($event)"
+      (pointermove)="onDragMove($event)"
+      (pointerup)="onDragEnd($event)"
+      (pointercancel)="onDragCancel()"
     >
       <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
     </div>
