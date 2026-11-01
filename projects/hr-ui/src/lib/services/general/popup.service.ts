@@ -51,6 +51,8 @@ interface DialogRefs {
   subscription: OutputRefSubscription | null;
   buttonSubscriptions: OutputRefSubscription[];
   escapeHandler: ((event: KeyboardEvent) => void) | null;
+  /** Settles the popup's promise. Only the first call counts, so a close after a button's result changes nothing. */
+  resolve: (result: boolean | void) => void;
 }
 
 /**
@@ -110,12 +112,23 @@ export class PopupService {
       const childRefs: ComponentRef<DialogHeaderComponent | DialogContentComponent | DialogFooterComponent>[] = [];
       const buttonRefs: ComponentRef<ButtonComponent>[] = [];
       const buttonSubscriptions: OutputRefSubscription[] = [];
-      let closeSubscription: OutputRefSubscription | null = null;
-      let escapeHandler: ((event: KeyboardEvent) => void) | null = null;
 
       try {
         const dialogRef = this.createDialogComponent();
         const dialogInstance = dialogRef.instance;
+        const refs: DialogRefs = {
+          main: dialogRef,
+          children: childRefs,
+          buttonRefs,
+          subscription: null,
+          buttonSubscriptions,
+          escapeHandler: null,
+          resolve
+        };
+        const close = (result: boolean | void): void => {
+          resolve(result);
+          this.closeDialog(refs);
+        };
 
         dialogRef.setInput('size', config.size || 'md');
 
@@ -124,14 +137,18 @@ export class PopupService {
 
         dialogRef.setInput('isOpen', true);
         dialogRef.changeDetectorRef.detectChanges();
+        // Now, not in the frame below: a close() or a second popup before that frame must find this one.
+        this.currentDialogRef.set(refs);
 
         requestAnimationFrame(() => {
+          // Closed before its first frame.
+          if (this.currentDialogRef() !== refs) return;
+
           const dialogContainer = dialogRef.location.nativeElement.querySelector('.dialog-container');
 
           if (!dialogContainer) {
             console.error('Dialog container not found');
-            resolve(false);
-            this.closeCurrentDialog();
+            close(false);
             return;
           }
 
@@ -149,45 +166,25 @@ export class PopupService {
           targetContainer.appendChild(contentRef.location.nativeElement);
 
           if (config.buttons && config.buttons.length > 0) {
-            const footerResult = this.createFooterComponent(
-              config.buttons,
-              result => {
-                resolve(result);
-                this.closeCurrentDialog();
-              },
-              config.buttonLayout
-            );
+            const footerResult = this.createFooterComponent(config.buttons, close, config.buttonLayout);
             childRefs.push(footerResult.footerRef);
             buttonRefs.push(...footerResult.buttonRefs);
             buttonSubscriptions.push(...footerResult.buttonSubscriptions);
             targetContainer.appendChild(footerResult.footerRef.location.nativeElement);
           }
 
-          closeSubscription = dialogInstance.dialogClose.subscribe(() => {
-            resolve(false);
-            this.closeCurrentDialog();
-          });
+          refs.subscription = dialogInstance.dialogClose.subscribe(() => close(false));
 
           // Add ESC key handler for programmatically created dialogs
           // Use capture phase to ensure handler runs before Angular's host binding
-          escapeHandler = (event: KeyboardEvent) => {
+          refs.escapeHandler = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
               event.preventDefault();
               event.stopPropagation();
-              resolve(false);
-              this.closeCurrentDialog();
+              close(false);
             }
           };
-          document.addEventListener('keydown', escapeHandler, true);
-
-          this.currentDialogRef.set({
-            main: dialogRef,
-            children: childRefs,
-            buttonRefs,
-            subscription: closeSubscription,
-            buttonSubscriptions,
-            escapeHandler
-          });
+          document.addEventListener('keydown', refs.escapeHandler, true);
         });
       } catch (error) {
         console.error('Failed to create dialog:', error);
@@ -350,37 +347,47 @@ export class PopupService {
   }
 
   private closeCurrentDialog(): void {
-    const dialogRef = this.currentDialogRef();
-
-    if (dialogRef) {
-      if (dialogRef.escapeHandler) {
-        document.removeEventListener('keydown', dialogRef.escapeHandler, true);
-      }
-
-      dialogRef.buttonSubscriptions.forEach(sub => {
-        sub?.unsubscribe();
-      });
-
-      dialogRef.subscription?.unsubscribe();
-
-      dialogRef.buttonRefs.forEach(buttonRef => {
-        this.appRef.detachView(buttonRef.hostView);
-        buttonRef.destroy();
-      });
-
-      dialogRef.children.forEach(childRef => {
-        this.appRef.detachView(childRef.hostView);
-        childRef.destroy();
-      });
-
-      this.appRef.detachView(dialogRef.main.hostView);
-      dialogRef.main.destroy();
-
-      this.currentDialogRef.set(null);
+    const current = this.currentDialogRef();
+    if (current) {
+      this.closeDialog(current);
     }
   }
 
-  /** Closes the open popup. Its promise does not resolve. */
+  /** Closes one popup, if it is still the open one, and settles its promise with false unless a button settled it first. */
+  private closeDialog(dialogRef: DialogRefs): void {
+    if (this.currentDialogRef() !== dialogRef) return;
+    this.currentDialogRef.set(null);
+    dialogRef.resolve(false);
+
+    if (dialogRef.escapeHandler) {
+      document.removeEventListener('keydown', dialogRef.escapeHandler, true);
+    }
+
+    dialogRef.buttonSubscriptions.forEach(sub => {
+      sub?.unsubscribe();
+    });
+
+    dialogRef.subscription?.unsubscribe();
+
+    // Closed the way a template closes it, so the dialog hands focus back to the control that opened it.
+    dialogRef.main.setInput('isOpen', false);
+    dialogRef.main.changeDetectorRef.detectChanges();
+
+    dialogRef.buttonRefs.forEach(buttonRef => {
+      this.appRef.detachView(buttonRef.hostView);
+      buttonRef.destroy();
+    });
+
+    dialogRef.children.forEach(childRef => {
+      this.appRef.detachView(childRef.hostView);
+      childRef.destroy();
+    });
+
+    this.appRef.detachView(dialogRef.main.hostView);
+    dialogRef.main.destroy();
+  }
+
+  /** Closes the open popup. Its promise resolves to false, as when the user dismisses it. */
   close(): void {
     this.closeCurrentDialog();
   }
