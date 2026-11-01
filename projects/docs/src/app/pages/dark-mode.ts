@@ -9,7 +9,7 @@ import { DocsHeadingDirective } from '../docs/toc';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DocsPageComponent, DocsCodeComponent, DocsExampleComponent, DocsHeadingDirective],
   template: `
-    <docs-page title="Dark mode" description="One class on the html element switches every component, and ThemeService keeps the reader's choice.">
+    <docs-page source="projects/docs/src/app/pages/dark-mode.ts" title="Dark mode" description="One class on the html element switches every component, and ThemeService keeps the reader's choice.">
       <p>
         hr-ui reads the theme from a <code>dark</code> class on <code>&lt;html&gt;</code>. Its color scales
         flip under that class, so components need no <code>dark:</code> variants of their own. The same

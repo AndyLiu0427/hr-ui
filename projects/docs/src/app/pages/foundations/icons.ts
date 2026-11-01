@@ -14,7 +14,7 @@ const SHOWN = 240;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DocsPageComponent, DocsCodeComponent, DocsApiComponent, DocsHeadingDirective, IconComponent],
   template: `
-    <docs-page title="Icons" description="Every Lucide icon by name, plus HR marks from hr-icons that replace their Lucide namesakes.">
+    <docs-page source="projects/docs/src/app/pages/foundations/icons.ts" title="Icons" description="Every Lucide icon by name, plus HR marks from hr-icons that replace their Lucide namesakes.">
       <docs-code [code]="usage" />
 
       <h2 docsHeading>HR marks</h2>

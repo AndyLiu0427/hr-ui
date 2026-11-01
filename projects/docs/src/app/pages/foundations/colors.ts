@@ -16,7 +16,7 @@ const STEPS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '90
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DocsPageComponent, DocsHeadingDirective],
   template: `
-    <docs-page title="Colors" description="Semantic tokens for everyday use, and the scales behind them. Click a swatch to copy it.">
+    <docs-page source="projects/docs/src/app/pages/foundations/colors.ts" title="Colors" description="Semantic tokens for everyday use, and the scales behind them. Click a swatch to copy it.">
       <p>
         Use the semantic tokens in your own screens. They follow the theme and keep text readable. The
         scales below them are what the tokens point at.

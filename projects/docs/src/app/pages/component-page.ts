@@ -15,7 +15,7 @@ import { NotFoundPage } from './not-found';
   imports: [RouterLink, DocsPageComponent, DocsExampleComponent, DocsCodeComponent, DocsApiComponent, DocsHeadingDirective, NotFoundPage],
   template: `
     @if (entry(); as e) {
-      <docs-page [title]="e.title" [description]="e.description">
+      <docs-page [title]="e.title" [description]="e.description" [source]="'projects/docs/src/app/content/components/' + e.slug + '.ts'">
         @if (doc.value(); as d) {
           @let hero = d.examples[0];
           @if (hero) {

@@ -10,7 +10,7 @@ import { DocsHeadingDirective } from '../../docs/toc';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DocsPageComponent, DocsCodeComponent, DocsApiComponent, DocsHeadingDirective, TextComponent],
   template: `
-    <docs-page title="Typography" description="One text component sets size, weight and color from the design scale.">
+    <docs-page source="projects/docs/src/app/pages/foundations/typography.ts" title="Typography" description="One text component sets size, weight and color from the design scale.">
       <p>
         <code>&lt;oct-text&gt;</code> renders text at a size from the scale, in one of the text colors.
         Long text is cut with an ellipsis unless you set <code>[truncate]="false"</code>.

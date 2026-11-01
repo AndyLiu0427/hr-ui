@@ -25,8 +25,20 @@ import { NAV, NAV_ORDER } from './nav';
         <ng-content />
       </div>
 
+      @if (source()) {
+        <p class="mt-16 text-sm">
+          <a
+            [href]="'https://github.com/AndyLiu0427/hr-ui/edit/main/' + source()"
+            target="_blank"
+            rel="noopener"
+            class="oct-focus-ring inline-flex items-center gap-1.5 rounded-md text-docs-muted underline-offset-4 transition-colors duration-150 hover:text-docs-fg hover:underline"
+            ><oct-icon name="Pencil" [size]="14" />Edit this page on GitHub</a
+          >
+        </p>
+      }
+
       @if (previous() || next()) {
-        <nav aria-label="Pages either side" class="mt-16 flex flex-col gap-3 border-t border-docs-border pt-8 sm:flex-row sm:justify-between">
+        <nav aria-label="Pages either side" class="mt-6 flex flex-col gap-3 border-t border-docs-border pt-8 sm:flex-row sm:justify-between">
           @if (previous(); as page) {
             <a
               [routerLink]="page.href"
@@ -57,6 +69,8 @@ export class DocsPageComponent {
 
   readonly title = input.required<string>();
   readonly description = input<string>();
+  /** The page's source file, relative to the repo root, for the "Edit this page" link. */
+  readonly source = input<string>();
 
   // The same page instance can serve two component pages in a row, so follow the URL.
   private readonly path = toSignal(

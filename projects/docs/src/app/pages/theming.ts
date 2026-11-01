@@ -17,7 +17,7 @@ const DEFAULT: Preset = { name: 'Teal', hue: 189.8, chroma: 1 };
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DocsPageComponent, DocsCodeComponent, DocsHeadingDirective, ButtonComponent, BadgeComponent, SwitchComponent, CheckboxComponent, ProgressBarComponent],
   template: `
-    <docs-page title="Theming" description="Set your brand color with two CSS variables. Every primary shade follows, in light and dark mode.">
+    <docs-page source="projects/docs/src/app/pages/theming.ts" title="Theming" description="Set your brand color with two CSS variables. Every primary shade follows, in light and dark mode.">
       <p>
         hr-ui builds its primary scale in OKLCH from a hue and a strength. Change those two values and
         buttons, focus rings, switches, links and progress bars all move together. Try it: the whole

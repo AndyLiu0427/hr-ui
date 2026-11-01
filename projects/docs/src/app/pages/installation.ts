@@ -9,7 +9,7 @@ import { DocsHeadingDirective } from '../docs/toc';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, DocsPageComponent, DocsCodeComponent, DocsHeadingDirective],
   template: `
-    <docs-page title="Installation" description="Add ngx-hr-ui to an Angular 22 app that uses Tailwind CSS 4.">
+    <docs-page source="projects/docs/src/app/pages/installation.ts" title="Installation" description="Add ngx-hr-ui to an Angular 22 app that uses Tailwind CSS 4.">
       <p>You need Angular 22 and Tailwind CSS 4. The steps below take about five minutes.</p>
 
       <h2 docsHeading>1. Install the packages</h2>

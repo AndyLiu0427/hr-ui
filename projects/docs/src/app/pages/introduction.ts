@@ -8,7 +8,7 @@ import { DocsHeadingDirective } from '../docs/toc';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, DocsPageComponent, DocsHeadingDirective],
   template: `
-    <docs-page title="Introduction" description="Accessible Angular components for HR and payroll apps, styled with Tailwind CSS 4.">
+    <docs-page source="projects/docs/src/app/pages/introduction.ts" title="Introduction" description="Accessible Angular components for HR and payroll apps, styled with Tailwind CSS 4.">
       <p>
         hr-ui is the component set behind a production payroll product, published as the
         <code>ngx-hr-ui</code> package. It covers the screens these apps are made of: forms with
