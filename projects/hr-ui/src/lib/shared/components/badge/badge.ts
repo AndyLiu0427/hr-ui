@@ -26,15 +26,20 @@ export interface BadgeProps {
       @if (icon()) {
         <oct-icon [name]="icon()!" [size]="iconSize()" />
       }
-      @if (text()) {
-        <span [class]="textClasses()">{{ text() }}</span>
-      }
+      <!-- text, or the content between the tags, as in <oct-badge>Approved</oct-badge>. -->
+      <span [class]="textClasses()">
+        @if (text()) {
+          {{ text() }}
+        } @else {
+          <ng-content />
+        }
+      </span>
       @if (dismissible()) {
         <!-- p-1.5 makes the hit area 24px or more; -m-1.5 gives the space back, so the badge keeps its size. -->
         <button
           type="button"
           class="-m-1.5 inline-flex shrink-0 items-center justify-center rounded-full p-1.5 cursor-pointer hover:opacity-70 transition-opacity duration-150 ease-out oct-focus-ring"
-          [attr.aria-label]="'COMMON.REMOVE_LABEL' | translate: { label: text() }"
+          [attr.aria-label]="'COMMON.REMOVE_LABEL' | translate: { label: text() ?? '' }"
           (click)="onDismiss($event)">
           <oct-icon name="X" [size]="iconSize()" aria-hidden="true" />
         </button>
@@ -45,8 +50,8 @@ export interface BadgeProps {
   imports: [TranslateModule, IconComponent]
 })
 export class BadgeComponent {
-  /** The text. The default is a placeholder, so always set it. */
-  readonly text = input<string>('Badge text');
+  /** The text. You can also put it between the tags: `<oct-badge>Approved</oct-badge>`. */
+  readonly text = input<string>();
   /** Icon shown before the text. */
   readonly icon = input<string>();
   /** Size of the badge. */
@@ -56,12 +61,12 @@ export class BadgeComponent {
   /** The meaning of the badge, shown as its colour. */
   readonly color = input<BadgeColor>('neutral');
   /**
-   * Shows a close icon that emits dismiss. It is named "Remove" and the text, from the i18n files.
-   * The icon cannot be reached by keyboard, so use oct-chip for removable values.
+   * Shows a close button that emits dismiss. It is named "Remove" and the text input, from the i18n files.
+   * For values the user adds and removes, oct-chip is usually the better fit.
    */
   readonly dismissible = input<boolean>(false);
 
-  /** Emits when the close icon is clicked. */
+  /** Emits when the close button is clicked. */
   readonly dismiss = output<void>();
 
   readonly badgeClasses = computed(() => {
