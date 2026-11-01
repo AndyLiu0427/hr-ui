@@ -1,64 +1,30 @@
 <div class="group relative inline-flex">
-  <!-- Main avatar container -->
-  <div
-    [class]="containerClasses()"
-    [attr.role]="clickable() ? 'button' : 'img'"
-    [attr.tabindex]="clickable() ? 0 : null"
-    [attr.aria-label]="ariaLabel()">
+  <!-- Main avatar container. A clickable one is a native button, so Enter and Space click it too. -->
+  @if (clickable()) {
+    <button type="button" [class]="containerClasses()" [attr.aria-label]="ariaLabel()">
+      <ng-container [ngTemplateOutlet]="content" />
+    </button>
+  } @else {
+    <div [class]="containerClasses()" role="img" [attr.aria-label]="ariaLabel()">
+      <ng-container [ngTemplateOutlet]="content" />
+    </div>
+  }
 
-    <!-- Image content -->
-    @if (displayContent() === 'image') {
-      <img
-        [src]="src()"
-        [alt]="alt() || name()"
-        (error)="onImageError()"
-        (load)="onImageLoad()"
-        class="size-full object-cover transition-opacity duration-200"
-        [class.opacity-100]="imageLoaded()"
-        [class.opacity-0]="!imageLoaded()"
-        loading="lazy"
-        decoding="async" />
-    }
-
-    <!-- Initials content -->
-    @if (displayContent() === 'initials') {
-      <span
-        [class]="'font-medium leading-none ' + textClasses()"
-        aria-hidden="true">
-        {{ initials() }}
-      </span>
-    }
-
-    <!-- Fallback image -->
-    @if (displayContent() === 'fallback') {
-      <img
-        [src]="fallbackImageSrc"
-        alt=""
-        class="size-full object-cover"
-        loading="lazy"
-        decoding="async" />
-    }
-  </div>
-
-  <!-- Status indicator -->
+  <!-- Status indicator. Not read out: the avatar's name already ends with the status. -->
   @if (status() !== 'none') {
-    <span
-      [class]="statusWrapperClasses()"
-      role="status"
-      [attr.aria-label]="'Status: ' + status()">
+    <span [class]="statusWrapperClasses()" aria-hidden="true">
 
       @if (status() === 'online') {
         <!-- Online: three pings, then still. forwards leaves the ring at the keyframes' end (invisible). -->
         <span [class]="statusClasses()">
           <span
-            class="absolute inline-flex size-full rounded-full bg-emerald-400 opacity-75 motion-safe:animate-[ping_1s_cubic-bezier(0,0,0.2,1)_3_forwards] motion-reduce:hidden"
-            aria-hidden="true">
+            class="absolute inline-flex size-full rounded-full bg-emerald-400 opacity-75 motion-safe:animate-[ping_1s_cubic-bezier(0,0,0.2,1)_3_forwards] motion-reduce:hidden">
           </span>
-          <span [class]="statusInnerClasses()" aria-hidden="true"></span>
+          <span [class]="statusInnerClasses()"></span>
         </span>
       } @else {
         <!-- Other statuses: solid dot -->
-        <span [class]="statusClasses()" aria-hidden="true"></span>
+        <span [class]="statusClasses()"></span>
       }
     </span>
   }
@@ -75,3 +41,33 @@
     </span>
   }
 </div>
+
+<ng-template #content>
+  <!-- Image content -->
+  @if (displayContent() === 'image') {
+    <img
+      [src]="src()"
+      [alt]="alt() || name()"
+      (error)="onImageError()"
+      (load)="onImageLoad()"
+      class="size-full object-cover transition-opacity duration-200"
+      [class.opacity-100]="imageLoaded()"
+      [class.opacity-0]="!imageLoaded()"
+      loading="lazy"
+      decoding="async" />
+  }
+
+  <!-- Initials content -->
+  @if (displayContent() === 'initials') {
+    <span
+      [class]="'font-medium leading-none ' + textClasses()"
+      aria-hidden="true">
+      {{ initials() }}
+    </span>
+  }
+
+  <!-- No photo and no name: a person icon -->
+  @if (displayContent() === 'fallback') {
+    <oct-icon name="UserRound" [size]="sizeClasses().icon" aria-hidden="true" />
+  }
+</ng-template>

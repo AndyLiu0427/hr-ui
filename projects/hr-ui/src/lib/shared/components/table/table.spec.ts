@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { useTablePagination } from '../../../utils/table-url-state';
 import { URL_STATE_ENABLED } from '../../../utils/url-signal';
 import { TableComponent } from './table';
-import { TableColumn } from './table.interface';
+import { TableCellEdit, TableColumn } from './table.interface';
 
 const rows = Array.from({ length: 50 }, (_, index) => ({ name: `Employee ${index}` }));
 
@@ -240,5 +240,149 @@ describe('TableComponent header sort', () => {
 
     expect(dept.querySelector('button')).toBeNull();
     expect(dept.hasAttribute('aria-sort')).toBe(false);
+  });
+});
+
+async function renderTable(inputs: Record<string, unknown>) {
+  TestBed.configureTestingModule({
+    imports: [TranslateModule.forRoot(), TableComponent],
+    providers: [provideNoopAnimations()]
+  });
+  const fixture = TestBed.createComponent(TableComponent);
+  for (const [name, value] of Object.entries(inputs)) {
+    fixture.componentRef.setInput(name, value);
+  }
+  await fixture.whenStable();
+  const element = fixture.nativeElement as HTMLElement;
+  const rows = () => [...element.querySelectorAll<HTMLTableRowElement>('tbody tr')];
+  return { fixture, element, rows, table: fixture.componentInstance };
+}
+
+const CLAIMS = [
+  { id: 'CLM-1', employee: 'Arjun Mehta', amount: 86 },
+  { id: 'CLM-2', employee: 'Siti Rahmah', amount: 120 },
+  { id: 'CLM-3', employee: 'Amelia Wong', amount: 42 }
+];
+const CLAIM_COLUMNS: TableColumn[] = [
+  { key: 'employee', label: 'Employee', sortable: true },
+  { key: 'amount', label: 'Amount', editable: true, editType: 'number' }
+];
+
+describe('TableComponent row selection', () => {
+  const select = (inputs: Record<string, unknown> = {}) =>
+    renderTable({ columns: CLAIM_COLUMNS, data: CLAIMS, selectionConfig: { mode: 'multiple', key: 'id' }, ...inputs });
+  const checkboxes = (element: HTMLElement) => [...element.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')];
+  const nameOf = (checkbox: HTMLInputElement) => checkbox.closest('label')!.textContent!.trim();
+
+  it('names the header checkbox "Select all rows", and each row checkbox after its first column', async () => {
+    const { element } = await select();
+    const [all, first] = checkboxes(element);
+
+    expect(nameOf(all)).toBe('Select all rows');
+    expect(nameOf(first)).toBe('Select Arjun Mehta');
+  });
+
+  it('shows the header checkbox as partly checked while only some rows are selected', async () => {
+    const { fixture, element } = await select();
+    const [all, first, second, third] = checkboxes(element);
+    expect(all.indeterminate).toBe(false);
+
+    first.click();
+    await fixture.whenStable();
+    expect(all.indeterminate).toBe(true);
+    expect(all.checked).toBe(false);
+
+    second.click();
+    third.click();
+    await fixture.whenStable();
+    expect(all.indeterminate).toBe(false);
+    expect(all.checked).toBe(true);
+  });
+
+  it('leaves out the checkbox column when enabled is false', async () => {
+    const { element } = await select({ selectionConfig: { mode: 'multiple', key: 'id', enabled: false } });
+
+    expect(checkboxes(element)).toHaveLength(0);
+  });
+});
+
+describe('TableComponent clickable rows', () => {
+  const enter = () => new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+
+  it('makes each row a tab stop that Enter opens', async () => {
+    const { table, rows } = await renderTable({ columns: CLAIM_COLUMNS, data: CLAIMS, clickableRows: true });
+    const clicked: unknown[] = [];
+    table.rowClick.subscribe(row => clicked.push(row));
+
+    expect(rows()[1].tabIndex).toBe(0);
+    rows()[1].dispatchEvent(enter());
+
+    expect(clicked).toEqual([CLAIMS[1]]);
+  });
+
+  it('leaves Enter in a control inside the row to that control', async () => {
+    const { table, rows } = await renderTable({ columns: CLAIM_COLUMNS, data: CLAIMS, clickableRows: true });
+    const clicked: unknown[] = [];
+    table.rowClick.subscribe(row => clicked.push(row));
+
+    rows()[1].querySelector('button')!.dispatchEvent(enter());
+
+    expect(clicked).toEqual([]);
+  });
+
+  it('gives rows no tab stop when they are not clickable', async () => {
+    const { rows } = await renderTable({ columns: CLAIM_COLUMNS, data: CLAIMS });
+
+    expect(rows()[1].hasAttribute('tabindex')).toBe(false);
+  });
+});
+
+describe('TableComponent inline edit', () => {
+  async function editAmount(rowOnScreen: number, inputs: Record<string, unknown> = {}) {
+    const rendered = await renderTable({ columns: CLAIM_COLUMNS, data: CLAIMS, ...inputs });
+    const edits: TableCellEdit[] = [];
+    rendered.table.cellValueChange.subscribe(edit => edits.push(edit));
+    const editButton = () => rendered.rows()[rowOnScreen].querySelectorAll('td')[1].querySelector('button')!;
+    editButton().click();
+    await rendered.fixture.whenStable();
+    const input = rendered.element.querySelector<HTMLInputElement>('td input')!;
+    const type = (value: string) => {
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+    };
+    const press = (key: string) => input.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+    return { ...rendered, edits, editButton, input, type, press };
+  }
+
+  it('emits the index of the row in data(), not its place on screen after sorting', async () => {
+    // Sorted by employee, Amelia Wong is first on screen and third in data().
+    const { type, press, edits } = await editAmount(0, { defaultSort: { key: 'employee', direction: 'asc' } });
+
+    type('50');
+    press('Enter');
+
+    expect(edits).toHaveLength(1);
+    expect(edits[0].row).toBe(CLAIMS[2]);
+    expect(edits[0].rowIndex).toBe(2);
+  });
+
+  it('gives focus back to the edit button of the cell after Enter saves', async () => {
+    const { fixture, input, type, press, editButton } = await editAmount(1);
+    expect(document.activeElement).toBe(input);
+
+    type('130');
+    press('Enter');
+    await fixture.whenStable();
+
+    expect(document.activeElement).toBe(editButton());
+  });
+
+  it('gives focus back to the edit button of the cell after Escape cancels', async () => {
+    const { fixture, press, editButton } = await editAmount(1);
+
+    press('Escape');
+    await fixture.whenStable();
+
+    expect(document.activeElement).toBe(editButton());
   });
 });

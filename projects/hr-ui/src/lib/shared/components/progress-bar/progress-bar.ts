@@ -1,17 +1,21 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TextComponent } from '../text/text';
 
-/** A bar that shows how far a task has got, with a label and an optional percentage. */
+/** A bar that shows how far a task has got, with an optional label and percentage. */
 @Component({
   selector: 'oct-progress-bar',
   template: `
     <div class="flex flex-col gap-2">
-      <div class="flex justify-between items-center">
-        <oct-text variant="sm" color="2" weight="medium">{{ label() }}</oct-text>
-        @if (showPercentage()) {
-          <oct-text variant="sm" color="1" weight="semibold">{{ Math.round(progress()) }}%</oct-text>
-        }
-      </div>
+      @if (label() || showPercentage()) {
+        <div class="flex justify-between items-center">
+          @if (label()) {
+            <oct-text variant="sm" color="2" weight="medium">{{ label() }}</oct-text>
+          }
+          @if (showPercentage()) {
+            <oct-text variant="sm" color="1" weight="semibold" class="ml-auto">{{ percent() }}%</oct-text>
+          }
+        </div>
+      }
       <div class="relative w-full bg-hr-neutral-800 rounded-full h-4 overflow-hidden">
         <!-- Full width, slid left by what is left to do: a transform animates without layout. -->
         <div
@@ -22,16 +26,23 @@ import { TextComponent } from '../text/text';
     </div>
   `,
   imports: [TextComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    role: 'progressbar',
+    'aria-valuemin': '0',
+    'aria-valuemax': '100',
+    '[attr.aria-valuenow]': 'percent()',
+    '[attr.aria-label]': 'label() || "Progress"'
+  }
 })
 export class ProgressBarComponent {
-  readonly Math = Math;
   /** How far the task has got, from 0 to 100. */
   readonly progress = input.required<number>();
-  /** Text above the bar. */
-  readonly label = input<string>('Processing...');
-  /** Shows the rounded percentage beside the label. */
+  /** Text above the bar, and the bar's name for screen readers, which is "Progress" without it. */
+  readonly label = input<string>('');
+  /** Shows the rounded percentage above the bar. */
   readonly showPercentage = input<boolean>(true);
 
   protected readonly filled = computed(() => Math.min(100, Math.max(0, this.progress())));
+  protected readonly percent = computed(() => Math.round(this.filled()));
 }

@@ -34,7 +34,7 @@
                     <button
                       type="button"
                       class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 w-[calc(100%+18px)] text-start -ms-2 -me-2.5 px-2 py-[5px] rounded-md cursor-pointer transition-[background-color] duration-150 hover:bg-hr-neutral-800/60 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-primary-500 focus-visible:-outline-offset-2"
-                      [attr.aria-label]="assignment.department + ' - ' + formatDateRange(assignment.startDate, assignment.endDate)"
+                      [attr.aria-label]="assignmentLabel(assignment)"
                       (click)="onAssignmentClick(assignment)">
                       <oct-text color="1" variant="sm">{{ assignment.department }}</oct-text>
                       @if (assignment.jobTitle) {

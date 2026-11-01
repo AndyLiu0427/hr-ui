@@ -28,7 +28,7 @@ import { BadgeComponent, ButtonComponent, NoticeComponent, ProgressBarComponent,
           <oct-text variant="sm" color="2" weight="medium">Checks passed</oct-text>
           <oct-text variant="sm" color="3" class="tabular-nums">18 of 20</oct-text>
         </div>
-        <oct-progress-bar [progress]="90" label="" [showPercentage]="false" />
+        <oct-progress-bar [progress]="90" [showPercentage]="false" />
       </div>
 
       <oct-notice variant="warning">2 employees have no bank account. Their pay will be held.</oct-notice>

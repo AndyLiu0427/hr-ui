@@ -35,7 +35,6 @@ import {
   TableColumn,
   TableSort,
   TablePagination,
-  TableSize,
   SortDirection,
   DefaultSortConfig,
   TableSelectionConfig,
@@ -131,10 +130,12 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
   readonly tableElement = viewChild<ElementRef<HTMLTableElement>>('tableElement');
   /** The single active inline-edit input (only one cell edits at a time). */
   readonly editInput = viewChild<ElementRef<HTMLInputElement>>('editInput');
+  private readonly selectAllCheckbox = viewChild<CheckboxComponent>('selectAll');
+  /** The cell whose edit button gets focus back once its input closes from the keyboard. */
+  private cellToRefocus: HTMLElement | null = null;
 
   readonly actionTemplate = contentChild<TemplateRef<any>>('actionTemplate');
   readonly footerTemplate = contentChild<TemplateRef<any>>('footerTemplate');
-  readonly printActionTemplate = contentChild<TemplateRef<any>>('printActionTemplate');
 
   /** The columns: key and label, plus optional width, alignment, sorting, rendering and editing. */
   readonly columns = input<TableColumn<T>[]>([]);
@@ -147,15 +148,13 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
   readonly editAdvanceOnEnter = input(false);
   /** Covers the rows with a spinner while data loads. */
   readonly loading = input(false);
-  /** Has no effect at present. Use dense for tighter rows. */
-  readonly size = input<TableSize>('md');
   /** Shades every other row. */
   readonly striped = input(false);
-  /** Has no effect at present: the table always draws its border. */
+  /** Draws a border around the table. Turn it off when the table sits in a box that has one. */
   readonly bordered = input(true);
   /** Draws lines between the columns. */
   readonly cellLines = input(false);
-  /** Has no effect at present: the header row always stays in view while the rows scroll. */
+  /** Keeps the header row in view while the rows scroll. */
   readonly fixedHeader = input(true);
   /** The tallest the table gets, as a CSS length. Longer content scrolls inside it. */
   readonly maxHeight = input('min(530px, calc(100dvh - 22rem))');
@@ -167,13 +166,14 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
   readonly emptyMessage = input('No data available');
   /** Hides the icon in the empty state, which makes the empty table shorter. */
   readonly hideEmptyIcon = input(false);
-  /** Has no effect at present: the loading overlay shows a spinner only. */
-  readonly loadingMessage = input('Loading...');
-  /** Makes rows look clickable and emits rowClick when one is clicked. */
+  /** Makes rows clickable and focusable. A click, or Enter or Space on a focused row, emits rowClick. */
   readonly clickableRows = input(false);
   /** The sort to start with. Takes priority over a column's defaultSort. */
   readonly defaultSort = input<DefaultSortConfig | undefined>();
-  /** Adds a checkbox column. mode is 'single' or 'multiple'; key names the row field that identifies a row (default 'id'). */
+  /**
+   * Adds a checkbox column. mode is 'single' or 'multiple'; key names the row field that identifies a row (default 'id');
+   * enabled: false hides the column. Each checkbox is named "Select" and the row's first column.
+   */
   readonly selectionConfig = input<TableSelectionConfig | undefined>();
   /** Lets people drag a column edge to resize it. A column can opt out with resizable: false. */
   readonly resizableColumns = input(true);
@@ -194,8 +194,6 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
   readonly pageChange = output<number>();
   /** Emits the new page size. The table then goes back to page 1 and emits pageChange too. */
   readonly pageSizeChange = output<number>();
-  /** Not emitted at present. Use rowActions for buttons in a row. */
-  readonly actionClick = output<{ action: 'detail' | 'delete'; row: T }>();
   /** Emits the selected rows and their keys after every change to the selection. */
   readonly selectionChange = output<TableSelection<T>>();
   /** Emitted when an editable cell commits a new value (see {@link TableColumn.editable}). */
@@ -448,12 +446,26 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
       .subscribe(result => this.isMobile.set(result.matches));
 
     // Focus + select the inline-edit input as soon as it renders, so the user can type immediately.
+    // When Enter or Esc closes it, focus goes back to the cell's edit button instead of <body>.
     afterRenderEffect({
       write: () => {
         if (this.editingCell()) {
           const el = this.editInput()?.nativeElement;
           el?.focus();
           el?.select();
+        } else if (this.cellToRefocus) {
+          this.cellToRefocus.querySelector('button')?.focus();
+          this.cellToRefocus = null;
+        }
+      }
+    });
+
+    // oct-checkbox has no indeterminate input, so the header's native box gets it directly.
+    afterRenderEffect({
+      write: () => {
+        const selectAll = this.selectAllCheckbox();
+        if (selectAll) {
+          selectAll.checkboxInput().nativeElement.indeterminate = this.isIndeterminate();
         }
       }
     });
@@ -638,6 +650,21 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
     this.rowClick.emit(row);
   }
 
+  /** Enter or Space on a focused clickable row acts as a click. Keys pressed in a control inside the row stay with it. */
+  onRowKeydown(event: KeyboardEvent, row: T): void {
+    if (!this.clickableRows() || event.target !== event.currentTarget) return;
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.onRowClick(row);
+    }
+  }
+
+  /** What a row checkbox says after "Select": the row's first column, as the table shows it, or else its key. */
+  rowName(row: T): string {
+    const first = this.columns().find(column => !this.isActionsColumn(column));
+    return (first && this.getColumnValue(row, first)) || String(this.getNestedValue(row, this.selectionKey()));
+  }
+
   onPageChange(page: number): void {
     const currentPagination = this.activePagination();
     if (currentPagination && page !== currentPagination.page) {
@@ -764,11 +791,13 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
    * Number columns: reject NaN, round when {@link TableColumn.editInteger}, clamp to
    * {@link TableColumn.editMin}. Empty / unchanged / invalid input silently reverts.
    */
-  commitEdit(rowIndex: number, column: TableColumn<T>, row: T): void {
-    if (!this.isCellEditing(rowIndex, column)) return; // already closed (e.g. Enter then blur)
+  commitEdit(viewIndex: number, column: TableColumn<T>, row: T): void {
+    if (!this.isCellEditing(viewIndex, column)) return; // already closed (e.g. Enter then blur)
 
     const raw = this.editDraft().trim();
     const original = this.getNestedValue(row, column.key);
+    // The payload counts in data(), not in the sorted and paged rows on screen.
+    const rowIndex = this.data().indexOf(row);
 
     if (column.editType === TableEditType.Number) {
       if (raw === '') {
@@ -837,10 +866,13 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
       this.commitEdit(rowIndex, column, row);
       if (next) {
         this.beginEdit(next.rowIndex, next.column, next.row);
+      } else {
+        this.cellToRefocus = (event.target as HTMLElement).closest('td');
       }
     } else if (event.key === 'Escape') {
       event.preventDefault();
       this.cancelEdit();
+      this.cellToRefocus = (event.target as HTMLElement).closest('td');
     }
     event.stopPropagation();
   }
@@ -959,7 +991,7 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
     return (row as any).id || index;
   };
 
-  readonly hasSelection = computed(() => !!this.selectionConfig());
+  readonly hasSelection = computed(() => !!this.selectionConfig() && this.selectionConfig()!.enabled !== false);
 
   readonly selectionKey = computed(() => this.selectionConfig()?.key || 'id');
 
@@ -1037,16 +1069,6 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
     if (lowerValue === 'out-of-stock') return 'Out of Stock';
 
     return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-  }
-
-  onActionClick(action: 'detail' | 'delete', row: T, event?: Event): void {
-    // Stop event propagation to prevent triggering row click
-    if (event) {
-      event.stopPropagation();
-    }
-
-    // Emit action events for parent components to handle
-    this.actionClick.emit({ action, row });
   }
 
   openRowActionsSheet(row: T, event?: Event): void {

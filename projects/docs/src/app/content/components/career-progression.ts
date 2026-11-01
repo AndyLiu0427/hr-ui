@@ -22,7 +22,7 @@ export const doc: ComponentDoc = {
   ],
   accessibility: [
     'The tree is built from nested <ul> lists, and the outer list is labelled "Career timeline".',
-    'Each assignment is a native <button> named by its department and dates. The green dot on the current contract is colour only and is not announced.'
+    'Each assignment is a native <button> named by its department, job title and dates. The green dot on the current contract is colour only and is not announced.'
   ],
   api: ['CareerProgressionComponent']
 };
