@@ -128,3 +128,16 @@ describe('DropdownMenuComponent keyboard', () => {
     expect(document.activeElement).toBe(trigger);
   });
 });
+
+describe('DropdownMenuComponent teardown', () => {
+  it('removes its open panel when the menu itself is destroyed', async () => {
+    const fixture = TestBed.createComponent(MenuHost);
+    fixture.componentInstance.open.set(true);
+    await fixture.whenStable();
+    expect(document.querySelectorAll('.cdk-overlay-pane').length).toBe(1);
+
+    fixture.destroy();
+
+    expect(document.querySelectorAll('.cdk-overlay-pane').length).toBe(0);
+  });
+});

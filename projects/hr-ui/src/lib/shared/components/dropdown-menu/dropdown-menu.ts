@@ -1,19 +1,4 @@
-import {
-  Component,
-  input,
-  output,
-  ChangeDetectionStrategy,
-  ViewContainerRef,
-  TemplateRef,
-  viewChild,
-  effect,
-  inject,
-  ElementRef,
-  Injector,
-  afterNextRender,
-  afterRenderEffect,
-  signal
-} from '@angular/core';
+import { afterNextRender, afterRenderEffect, ChangeDetectionStrategy, Component, DestroyRef, effect, ElementRef, inject, Injector, input, output, signal, TemplateRef, viewChild, ViewContainerRef } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 
 import { Overlay, OverlayRef, OverlayModule, ConnectedPosition } from '@angular/cdk/overlay';
@@ -64,6 +49,9 @@ export class DropdownMenuComponent {
   private readonly menu = viewChild(CdkMenu);
 
   constructor() {
+    // A parent can remove the menu while it is open; take the panel and its backdrop with it.
+    inject(DestroyRef).onDestroy(() => this.overlayRef?.dispose());
+
     // Effect to manage overlay when menu opens/closes
     effect(() => {
       const open = this.isOpen();
