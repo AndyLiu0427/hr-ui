@@ -41,7 +41,7 @@ export default class TableInlineEdit {
     { key: 'status', label: 'Status' }
   ];
 
-  // Match the row by id: rowIndex counts the rows on screen, after sorting and paging.
+  // Match the row by id. rowIndex, the row's index in data(), works too.
   update({ row, column, value }: TableCellEdit<Timesheet>): void {
     this.timesheets.update(rows => rows.map(r => (r.id === row.id ? { ...r, [column.key]: value } : r)));
   }

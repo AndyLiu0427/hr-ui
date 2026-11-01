@@ -79,15 +79,17 @@ export const doc: ComponentDoc = {
   ],
   keyboard: [
     { keys: ['Space'], action: 'Selects or clears the row of the focused checkbox.' },
+    { keys: ['Enter'], action: 'On a row made clickable with clickableRows, emits rowClick. Space does the same.' },
     { keys: ['Enter'], action: 'On an editable cell, opens it for editing.' },
-    { keys: ['Enter'], action: 'While editing, saves the value. With editAdvanceOnEnter, opens the next editable cell.' },
+    { keys: ['Enter'], action: 'While editing, saves the value and puts focus back on the cell. With editAdvanceOnEnter, opens the next editable cell instead.' },
     { keys: ['↑'], action: 'While editing a number, adds editStep.' },
     { keys: ['↓'], action: 'While editing a number, subtracts editStep.' },
-    { keys: ['Esc'], action: 'While editing, cancels the change.' }
+    { keys: ['Esc'], action: 'While editing, cancels the change and puts focus back on the cell.' }
   ],
   accessibility: [
     'oct-table renders a native <table> with a header row, so screen readers announce the column of each cell. Row actions are buttons named by their label, and an editable cell is a button that opens an input.',
-    'Rows made clickable with clickableRows cannot take focus, so also give each row a keyboard path, such as a row action. The loading spinner is not announced.'
+    'Each selection checkbox has a name that only screen readers get: "Select all rows" in the header, and "Select" with the row\'s first column in a row, as in "Select Arjun Mehta". The header checkbox shows a dash and reads as partly checked while only some rows on the page are selected.',
+    'clickableRows makes each row a tab stop with a focus ring. Screen readers announce it as a row, not as a button, so also give the row a keyboard path that says what it does, such as a row action. The loading spinner is not announced.'
   ],
   api: ['TableComponent', 'TableFiltersComponent']
 };
