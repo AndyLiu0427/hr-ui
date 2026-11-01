@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { UnifiedSidebarComponent, type SidebarConfig } from 'ngx-hr-ui';
 
 @Component({
@@ -32,13 +32,4 @@ export default class SidebarSections {
     ]
   };
 
-  constructor() {
-    // Docs only: these routes do not exist on this site, so page links in this preview stay here.
-    inject(ElementRef).nativeElement.addEventListener('click', (event: MouseEvent) => {
-      if ((event.target as Element).closest('a')) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-    }, true);
-  }
 }

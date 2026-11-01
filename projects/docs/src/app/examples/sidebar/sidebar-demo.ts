@@ -1,4 +1,4 @@
-import { Component, ElementRef, computed, inject, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { ButtonComponent, UnifiedSidebarComponent, type SidebarConfig, type SidebarItem } from 'ngx-hr-ui';
 
 @Component({
@@ -61,16 +61,6 @@ export default class SidebarDemo {
       ]
     };
   });
-
-  constructor() {
-    // Docs only: these routes do not exist on this site, so page links in this preview stay here.
-    inject(ElementRef).nativeElement.addEventListener('click', (event: MouseEvent) => {
-      if ((event.target as Element).closest('a')) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-    }, true);
-  }
 
   togglePin(page: SidebarItem): void {
     this.pinned.update(routes =>

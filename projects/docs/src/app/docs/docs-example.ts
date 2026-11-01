@@ -1,5 +1,5 @@
 import { NgComponentOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, input, signal, Type } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, ElementRef, inject, input, signal, Type } from '@angular/core';
 import { EXAMPLES } from '../generated/examples';
 import { DocsCodeComponent } from './docs-code';
 
@@ -80,6 +80,19 @@ export class DocsExampleComponent {
   protected readonly missing = signal(false);
 
   constructor() {
+    // Examples link to app routes such as /employees that this site does not have. Keep a click on
+    // one inside the preview, so the demo reacts without leaving the page. External links still work.
+    const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+    const stayOnPage = (event: MouseEvent) => {
+      const link = (event.target as Element).closest('a[href]') as HTMLAnchorElement | null;
+      const preview = host.querySelector(`#${this.id}-preview-panel`);
+      if (!link || !preview?.contains(link) || link.target === '_blank' || link.origin !== location.origin) return;
+      event.preventDefault();
+      event.stopPropagation();
+    };
+    host.addEventListener('click', stayOnPage, true);
+    inject(DestroyRef).onDestroy(() => host.removeEventListener('click', stayOnPage, true));
+
     effect(() => {
       const entry = EXAMPLES[this.name()];
       this.component.set(null);
