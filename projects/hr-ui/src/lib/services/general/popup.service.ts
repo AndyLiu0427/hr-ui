@@ -75,35 +75,9 @@ enum PopupType {
 }
 
 /**
- * PopupService - Modern Angular 20+ implementation using oct-dialog
- *
- * Clean implementation without legacy Material Dialog dependencies.
- *
- * Features:
- * - Signal-based state management with signal() and computed()
- * - Programmatic dialog creation using createComponent()
- * - Type-safe interfaces and enums
- * - Proper memory management and cleanup
- * - Modern Angular 20+ patterns throughout
- *
- * Usage:
- * ```typescript
- * // Show success message
- * await this.popupService.success('Operation completed!');
- *
- * // Show error with translation key
- * await this.popupService.error('ERROR_MESSAGE');
- *
- * // Show delete confirmation
- * const confirmed = await this.popupService.confirmDanger(
- *   'Delete User',
- *   'Are you sure you want to delete this user?',
- *   'Delete'
- * );
- * if (confirmed) {
- *   // Delete user
- * }
- * ```
+ * Opens ready-made dialogs from code: alerts with one OK button, and confirmations that resolve to true or false.
+ * Only one popup is open at a time. confirm() and confirmDanger() pass their texts through ngx-translate, so they
+ * also accept translation keys.
  */
 @Service()
 export class PopupService {
@@ -406,10 +380,12 @@ export class PopupService {
     }
   }
 
+  /** Closes the open popup. Its promise does not resolve. */
   close(): void {
     this.closeCurrentDialog();
   }
 
+  /** Shows a success message with one OK button. Resolves when the popup closes. */
   async success(message: string, okText?: string, onOkClick?: () => void): Promise<void> {
     const title = this.translateService.instant('MULTIUSED_POPUP.SUCCESS');
     const translatedOkText = okText ?? this.translateService.instant('MULTIUSED_POPUP.OK');
@@ -429,6 +405,7 @@ export class PopupService {
     });
   }
 
+  /** Shows an error message with one OK button. Resolves when the popup closes. */
   async error(message: string, okText?: string, onOkClick?: () => void): Promise<void> {
     const title = this.translateService.instant('MULTIUSED_POPUP.ERROR');
     const translatedOkText = okText ?? this.translateService.instant('MULTIUSED_POPUP.OK');
@@ -448,6 +425,7 @@ export class PopupService {
     });
   }
 
+  /** Shows a warning with one OK button. Resolves when the popup closes. */
   async warning(message: string, okText?: string, onOkClick?: () => void): Promise<void> {
     const title = this.translateService.instant('MULTIUSED_POPUP.WARNING');
     const translatedOkText = okText ?? this.translateService.instant('MULTIUSED_POPUP.OK');
@@ -467,6 +445,7 @@ export class PopupService {
     });
   }
 
+  /** Shows a message with one OK button. Resolves when the popup closes. */
   async info(message: string): Promise<void> {
     const title = this.translateService.instant('MULTIUSED_POPUP.INFO');
     const okText = this.translateService.instant('MULTIUSED_POPUP.OK');
@@ -486,6 +465,7 @@ export class PopupService {
     });
   }
 
+  /** Asks to confirm an action that cannot be undone, with a red button. Resolves to true only when confirmed. */
   async confirmDanger(title: string, message: string, confirmText?: string, cancelText?: string): Promise<boolean> {
     const translatedTitle = this.translateService.instant(title);
     const translatedMessage = this.translateService.instant(message);
@@ -515,6 +495,7 @@ export class PopupService {
     return result === true;
   }
 
+  /** Asks to confirm an action. Resolves to true when confirmed, and to false when cancelled or closed. */
   async confirm(title: string, message: string, confirmText?: string, cancelText?: string): Promise<boolean> {
     const translatedTitle = this.translateService.instant(title);
     const translatedMessage = this.translateService.instant(message);
@@ -544,6 +525,7 @@ export class PopupService {
     return result === true;
   }
 
+  /** Shows an error with Cancel and Retry buttons. Resolves to true when the user picks Retry. */
   async errorWithRetry(message: string): Promise<boolean> {
     const title = this.translateService.instant('MULTIUSED_POPUP.ERROR');
     const retryText = this.translateService.instant('GENERAL.RETRY');
@@ -572,6 +554,7 @@ export class PopupService {
     return result === true;
   }
 
+  /** Opens a popup with your own title, message and buttons. Resolves to what the clicked button's action returns. */
   async custom(config: {
     title?: string;
     message: string;
@@ -583,7 +566,10 @@ export class PopupService {
     return await this.createDialog(config);
   }
 
-  /** @deprecated Use confirm() instead */
+  /**
+   * Deprecated: use confirm().
+   * @deprecated Use confirm() instead
+   */
   async setPopCounting(initialSeconds: number, countdownSeconds: number): Promise<boolean | null> {
     const title = this.translateService.instant('MULTIUSED_POPUP.SESSION_TIMEOUT');
     const message = this.translateService.instant('MULTIUSED_POPUP.SESSION_TIMEOUT_MESSAGE').replace('{countdown}', countdownSeconds.toString());
@@ -613,7 +599,10 @@ export class PopupService {
     return null;
   }
 
-  /** @deprecated Use custom() instead */
+  /**
+   * Deprecated: use custom().
+   * @deprecated Use custom() instead
+   */
   async setPopUp(param: {
     header?: string;
     body?: string;
@@ -655,23 +644,35 @@ export class PopupService {
     return result === true;
   }
 
-  /** @deprecated Use error() instead */
+  /**
+   * Deprecated: use error().
+   * @deprecated Use error() instead
+   */
   async errorData(message: string): Promise<boolean> {
     await this.error(message);
     return false;
   }
 
-  /** @deprecated Use errorWithRetry() instead */
+  /**
+   * Deprecated: use errorWithRetry().
+   * @deprecated Use errorWithRetry() instead
+   */
   async errorDataWithRetry(message: string): Promise<boolean> {
     return await this.errorWithRetry(message);
   }
 
-  /** @deprecated Use success() instead */
+  /**
+   * Deprecated: use success().
+   * @deprecated Use success() instead
+   */
   async successData(message: string): Promise<void> {
     await this.success(message);
   }
 
-  /** @deprecated Use confirmDanger() instead */
+  /**
+   * Deprecated: use confirmDanger().
+   * @deprecated Use confirmDanger() instead
+   */
   async deleteData(): Promise<boolean> {
     const title = this.translateService.instant('MULTIUSED_POPUP.DELETE');
     const message = this.translateService.instant('MULTIUSED_POPUP.CONFIRMDELETEDATA');
@@ -679,7 +680,10 @@ export class PopupService {
     return await this.confirmDanger(title, message, confirmText);
   }
 
-  /** @deprecated Use confirmDanger() instead */
+  /**
+   * Deprecated: use confirmDanger().
+   * @deprecated Use confirmDanger() instead
+   */
   async confirmDelete(_itemName: string, customTitle?: string): Promise<boolean> {
     const title = customTitle ? this.translateService.instant(customTitle) : this.translateService.instant('MULTIUSED_POPUP.DELETE');
     const message = this.translateService.instant('MULTIUSED_POPUP.CONFIRMDELETEDATA');

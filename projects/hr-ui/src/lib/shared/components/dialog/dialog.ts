@@ -18,6 +18,7 @@ const SIZE_CLASSES: Record<string, string> = {
   custom: ''
 };
 
+/** A modal window. Put an oct-dialog-header, oct-dialog-content and oct-dialog-footer inside it. */
 @Component({
   selector: 'oct-dialog',
   imports: [ButtonComponent],
@@ -125,11 +126,17 @@ const SIZE_CLASSES: Record<string, string> = {
   ]
 })
 export class DialogComponent implements OnDestroy {
+  /** Whether the dialog is shown. Set it back to false when dialogClose emits. */
   isOpen = input<boolean>(false);
+  /** The maximum width. On phones every size fills the screen; custom takes its width from maxWidth. */
   size = input<'sm' | 'md' | 'lg' | 'xl' | 'full' | 'custom'>('md');
+  /** A CSS max-width, such as "40rem". Used only when size is custom. */
   maxWidth = input<string>();
+  /** A CSS max-height, such as "80vh". Set it when the content can be taller than the screen, so the content scrolls. */
   maxHeight = input<string>();
+  /** Shows the close (X) button in the top-right corner. */
   showCloseButton = input<boolean>(true);
+  /** Removes the space between the header, content and footer. */
   noGap = input<boolean>(false);
   /**
    * Only the close button ends the dialog: the backdrop and Escape do nothing.
@@ -141,7 +148,9 @@ export class DialogComponent implements OnDestroy {
   /** What the close control announces. Overridable, because a dialog may end in more than closing. */
   closeLabel = input<string>('Close dialog');
 
+  /** Emits false when the user closes the dialog, and true when openDialog() is called. */
   openChange = output<boolean>();
+  /** Emits when the user closes the dialog with the close button, the backdrop or Escape. */
   dialogClose = output<void>();
 
   protected readonly shaking = signal(false);
@@ -261,6 +270,7 @@ export class DialogComponent implements OnDestroy {
   }
 }
 
+/** The title row at the top of a dialog. */
 @Component({
   selector: 'oct-dialog-header',
   imports: [],
@@ -285,6 +295,7 @@ const CONTENT_PADDING_CLASSES: Record<DialogContentPadding, string> = {
   md: 'px-4 sm:px-6'
 };
 
+/** The body of a dialog. It scrolls when the dialog has a maxHeight. */
 @Component({
   selector: 'oct-dialog-content',
   imports: [],
@@ -299,7 +310,7 @@ const CONTENT_PADDING_CLASSES: Record<DialogContentPadding, string> = {
   `
 })
 export class DialogContentComponent {
-  /** Defaults to the padding this component has always applied, so existing dialogs are unchanged. */
+  /** Horizontal padding. Use 'none' to let content such as a table reach the edges of the dialog. */
   readonly padding = input<DialogContentPadding>('md');
 
   protected readonly contentClasses = computed(() =>
@@ -307,6 +318,7 @@ export class DialogContentComponent {
   );
 }
 
+/** The action row at the bottom of a dialog. Its children are spread to both ends. */
 @Component({
   selector: 'oct-dialog-footer',
   imports: [],
