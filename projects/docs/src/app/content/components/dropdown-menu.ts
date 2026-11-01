@@ -23,7 +23,7 @@ export const doc: ComponentDoc = {
     {
       name: 'dropdown-menu-alignment',
       title: 'Alignment',
-      description: 'The menu opens below the trigger, lined up with its right edge by default. Use MenuAlign.LEFT near the left edge of the screen.'
+      description: 'The menu opens below the trigger, lined up with its right edge by default. Set alignment="left" near the left edge of the screen.'
     }
   ],
   keyboard: [

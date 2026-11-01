@@ -52,7 +52,7 @@ export class BottomSheetComponent {
   readonly title = input<string>('');
   /** Names the sheet for screen readers when the title is empty. */
   readonly ariaLabel = input<string>();
-  /** The maximum height of the overlay pane that holds the sheet, as a CSS length. */
+  /** The maximum height of the sheet, as a CSS length. Taller content scrolls inside it. */
   readonly maxHeight = input<string>('70vh');
 
   /** Emits when the user closes the sheet: close button, backdrop, Escape or a downward swipe. */
@@ -107,7 +107,11 @@ export class BottomSheetComponent {
     this.dragStartY = event.clientY;
     this.dragStartTime = event.timeStamp;
     this.isDragging.set(true);
-    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+    try {
+      (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+    } catch {
+      // The browser throws when the pointer is no longer active. The drag still works, only without capture.
+    }
   }
 
   onDragMove(event: PointerEvent): void {

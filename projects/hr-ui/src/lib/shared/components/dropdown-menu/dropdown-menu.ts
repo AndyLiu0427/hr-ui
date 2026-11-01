@@ -11,6 +11,10 @@ import { AvatarComponent } from '../avatar/avatar';
 /** The trigger is projected content, so it is found as the first thing in the host that takes focus. */
 const TRIGGER = 'button, a[href], [tabindex]:not([tabindex="-1"])';
 
+/**
+ * A menu of actions in sections that opens from the trigger you project into it, such as an oct-button.
+ * Set isOpen to show it, and set it back to false when closed emits. An item with href renders as a link.
+ */
 @Component({
   selector: 'oct-dropdown-menu',
   templateUrl: './dropdown-menu.html',

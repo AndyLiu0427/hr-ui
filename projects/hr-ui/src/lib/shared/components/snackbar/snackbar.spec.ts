@@ -8,7 +8,12 @@ import { SnackbarService } from './snackbar.service';
 
 const writeText = vi.fn().mockResolvedValue(undefined);
 
-async function setup(inputs: { message: string; description?: string; duration?: number }): Promise<ComponentFixture<SnackbarComponent>> {
+async function setup(inputs: {
+  message: string;
+  description?: string;
+  duration?: number;
+  dismissible?: boolean;
+}): Promise<ComponentFixture<SnackbarComponent>> {
   await TestBed.configureTestingModule({
     imports: [SnackbarComponent],
     providers: [provideZonelessChangeDetection(), provideNoopAnimations()]
@@ -66,8 +71,8 @@ describe('SnackbarComponent timer', () => {
   });
 
   /** The box renders a microtask after init, the way the enter animation needs it. */
-  async function rendered(duration: number): Promise<{ snackbar: SnackbarComponent; box: HTMLElement }> {
-    const fixture = await setup({ message: 'Contract saved', duration });
+  async function rendered(duration: number, dismissible = true): Promise<{ snackbar: SnackbarComponent; box: HTMLElement }> {
+    const fixture = await setup({ message: 'Contract saved', duration, dismissible });
     await Promise.resolve();
     fixture.detectChanges();
     return { snackbar: fixture.componentInstance, box: fixture.nativeElement.querySelector('[role="status"]') };
@@ -86,6 +91,14 @@ describe('SnackbarComponent timer', () => {
     expect(snackbar.animationState()).toBe('in');
 
     vi.advanceTimersByTime(1);
+    expect(snackbar.animationState()).toBe('void');
+  });
+
+  it('closes itself on time even without a close button', async () => {
+    const { snackbar } = await rendered(1000, false);
+
+    vi.advanceTimersByTime(1000);
+
     expect(snackbar.animationState()).toBe('void');
   });
 

@@ -354,7 +354,8 @@ export class SnackbarComponent implements OnInit, OnDestroy {
       this.timerStartedAt = Date.now();
       this.dismissTimeoutId = setTimeout(() => {
         this.stopDismissTimer();
-        this.onDismiss();
+        // Not onDismiss(): dismissible only decides whether the close button shows.
+        this.animationState.set('void');
       }, Math.max(0, this.remainingMs));
     }
   }

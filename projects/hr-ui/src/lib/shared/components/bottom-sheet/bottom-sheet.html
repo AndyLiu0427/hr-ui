@@ -3,6 +3,7 @@
        bottom edge, and the copy fills that gap. (A drop shadow never showed on a sheet pinned there.) -->
   <div
     class="bg-secondary rounded-t-2xl shadow-[0_100px_0_var(--secondary-background)] overflow-hidden flex flex-col"
+    [style.max-height]="maxHeight()"
     [style.transform]="panelTransform()"
     [style.opacity]="panelOpacity()"
     [style.transition]="panelTransition()"
@@ -27,7 +28,8 @@
       <oct-button variant="ghost" color="neutral" size="sm" icon="X" ariaLabel="Close" (buttonClick)="onCloseClick()" />
     </div>
 
-    <div class="flex-1 overflow-y-auto overscroll-contain">
+    <!-- min-h-0 lets the body shrink under the sheet's max height, so it scrolls instead of running off screen. -->
+    <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain">
       <ng-content></ng-content>
     </div>
 
