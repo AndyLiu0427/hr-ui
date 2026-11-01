@@ -11,7 +11,6 @@ import { SliderComponent } from 'ngx-hr-ui';
       rightLabel="Project Borealis"
       [step]="5"
       [leftPercent]="atlasPercent()"
-      [rightPercent]="100 - atlasPercent()"
       (percentageChange)="atlasPercent.set($event.left)"
     />
   `

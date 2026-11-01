@@ -12,7 +12,6 @@ import { SliderComponent } from 'ngx-hr-ui';
       leftColor="neutral"
       rightColor="primary"
       [leftPercent]="employeePercent()"
-      [rightPercent]="100 - employeePercent()"
       (percentageChange)="employeePercent.set($event.left)"
     />
   `

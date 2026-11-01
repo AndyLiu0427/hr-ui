@@ -5,6 +5,9 @@ import { debounceTime } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TextComponent } from '../text/text';
 
+/** The gap between two ticks, in percent. */
+const TICK_STEP = 10;
+
 // Types
 export type SliderColorVariant = 'primary' | 'neutral';
 
@@ -15,7 +18,6 @@ export interface PercentageChangeEvent {
 
 export interface SliderInputs {
   leftPercent: number;
-  rightPercent: number;
   leftLabel: string;
   rightLabel: string;
   leftColor?: SliderColorVariant;
@@ -110,9 +112,10 @@ export interface SliderInputs {
 
       <!-- Tick marks (optional percentage scale) -->
       @if (showTicks()) {
-        <div class="relative -mx-2 flex justify-between">
+        <!-- Zero-width columns, so justify-between puts each tick at its percentage of the track, where the knob stops. -->
+        <div class="relative flex justify-between">
           @for (tick of tickMarks(); track tick) {
-            <div class="flex flex-col items-center">
+            <div class="flex w-0 flex-col items-center">
               <!-- Tick mark line -->
               <div
                 class="h-2 w-px cursor-pointer transition-colors hover:bg-primary-solid"
@@ -145,10 +148,8 @@ export interface SliderInputs {
   ]
 })
 export class SliderComponent {
-  /** Share of the left part, from 0 to 100. */
+  /** Share of the left part, from 0 to 100. The right part is the rest. */
   leftPercent = input.required<number>();
-  /** Share of the right part. It is not read: the slider always shows 100 minus leftPercent. */
-  rightPercent = input.required<number>();
   /** Name of the left part. It also names the slider for screen readers. */
   leftLabel = input.required<string>();
   /** Name of the right part. */
@@ -159,7 +160,7 @@ export class SliderComponent {
   rightColor = input<SliderColorVariant>('neutral');
   /** Shows both labels and their percentages above the track. */
   showLabels = input<boolean>(true);
-  /** Shows a scale from 0 to 100 and snaps the split to steps of 10. */
+  /** Shows a scale from 0 to 100 and snaps the split to steps of 10. An arrow key then moves one tick. */
   showTicks = input<boolean>(false);
   /** Snaps the split to multiples of this value. An arrow key moves one step. */
   step = input<number>(1);
@@ -205,7 +206,7 @@ export class SliderComponent {
 
   // Generate tick marks array (0, 10, 20, ..., 100)
   tickMarks = computed(() => {
-    return Array.from({ length: 11 }, (_, i) => i * 10);
+    return Array.from({ length: 11 }, (_, i) => i * TICK_STEP);
   });
 
   constructor() {
@@ -342,7 +343,8 @@ export class SliderComponent {
   onKeyDown(event: KeyboardEvent): void {
     let newLeftPercent = this.displayLeftPercent();
     let handled = false;
-    const stepValue = this.step();
+    // A move smaller than a tick snaps straight back to the tick it started on.
+    const stepValue = this.showTicks() ? Math.max(this.step(), TICK_STEP) : this.step();
 
     switch (event.key) {
       case 'ArrowRight':
@@ -394,8 +396,7 @@ export class SliderComponent {
   }
 
   private snapToNearestTick(percent: number): number {
-    // Snap to nearest multiple of 10 (0, 10, 20, ..., 100)
-    return Math.round(percent / 10) * 10;
+    return Math.round(percent / TICK_STEP) * TICK_STEP;
   }
 
   onLeftLabelClick(event: MouseEvent): void {

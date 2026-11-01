@@ -11,7 +11,7 @@ import {
   signal,
   afterNextRender
 } from '@angular/core';
-import { FormValueControl, ValidationError, DisabledReason } from '@angular/forms/signals';
+import { FormValueControl, ValidationError, DisabledReason, WithOptionalFieldTree } from '@angular/forms/signals';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { TextComponent } from '../text/text';
 
@@ -38,7 +38,7 @@ export class TextareaComponent implements FormValueControl<string> {
   /** Invalid state from the form field. The error state shows after the field is touched. */
   readonly invalid = input<boolean>(false);
   /** Validation errors from the form field. The first message shows in the error state. */
-  readonly errors = input<readonly ValidationError.WithField[]>([]);
+  readonly errors = input<readonly ValidationError.WithOptionalFieldTree[]>([]);
   /** Async validation state from the form field. The textarea does not show it. */
   readonly pending = input<boolean>(false);
 
@@ -46,7 +46,7 @@ export class TextareaComponent implements FormValueControl<string> {
   /** Disables the field. */
   readonly disabled = input<boolean>(false);
   /** Reasons from the form field for why the field is disabled. The textarea does not show them. */
-  readonly disabledReasons = input<readonly DisabledReason[]>([]);
+  readonly disabledReasons = input<readonly WithOptionalFieldTree<DisabledReason>[]>([]);
   /** Lets the user select and copy the text, but not change it. */
   readonly readonly = input<boolean>(false);
 

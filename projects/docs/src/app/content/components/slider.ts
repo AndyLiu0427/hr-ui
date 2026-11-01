@@ -9,12 +9,11 @@ export const doc: ComponentDoc = {
   leftLabel="Main account"
   rightLabel="Savings account"
   [leftPercent]="mainPercent()"
-  [rightPercent]="100 - mainPercent()"
   (percentageChange)="mainPercent.set($event.left)"
 />`,
   examples: [
     { name: 'slider-demo' },
-    { name: 'slider-ticks', title: 'Ticks', description: 'showTicks adds a scale from 0 to 100 and snaps the split to its ticks. Set step to 10 too, so each arrow key press moves one tick.' },
+    { name: 'slider-ticks', title: 'Ticks', description: 'showTicks adds a scale from 0 to 100 and snaps the split to its ticks. Each arrow key press moves one tick.' },
     { name: 'slider-step', title: 'Step', description: 'step snaps the split to a multiple of its value, here 5%.' },
     { name: 'slider-colors', title: 'Colors', description: 'leftColor and rightColor take primary or neutral. Give primary to the part that matters most.' }
   ],
