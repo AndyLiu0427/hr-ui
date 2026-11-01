@@ -16,6 +16,7 @@ export interface TableFiltersConfig<T> {
   icon?: string;
 }
 
+/** A bar of filters for a table. Each filter writes the values people pick into its own signal. */
 @Component({
   selector: 'oct-table-filters',
   templateUrl: './table-filters.html',
@@ -26,14 +27,21 @@ export interface TableFiltersConfig<T> {
   }
 })
 export class TableFiltersComponent<T> {
+  /** One entry per filter: its label, its options, and the signal that holds its selected values. */
   filters = input.required<TableFiltersConfig<T>[]>();
+  /** Shows an icon at the start of the bar. */
   showIcon = input<boolean>(true);
+  /** The icon at the start of the bar. */
   iconName = input<string>('Settings2');
+  /** Text, or a translation key, for the button that clears every filter. */
   clearAllLabel = input<string>('FILTER_COMPONENT.CLEAR_ALL_FILTERS');
-  // Hide the "clear all" button (e.g. a single mandatory filter where clearing
-  // is meaningless). Defaults to true so existing multi-filter bars are unchanged.
+  /**
+   * Shows the clear-all button once a filter has a value. Turn it off for a single filter that
+   * must always keep a value.
+   */
   showClearAll = input<boolean>(true);
 
+  /** Emits after the clear-all button empties every filter. */
   readonly clearAllFilters = output<void>();
 
   readonly hasActiveFilters = computed(() => {
