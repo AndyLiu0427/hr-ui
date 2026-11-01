@@ -118,22 +118,23 @@ export class SearchPanelComponent<T extends SearchPanelItem> {
   // Focus never leaves the query box, so this is the only thing a screen reader can announce.
   readonly activeOptionId = computed(() => (this.hasResults() ? this.optionId(this.selectedIndex()) : null));
 
-  readonly resultAnnouncement = computed(() => {
+  /** i18n key and params of what the status region says. The template translates it, so it follows the language. */
+  protected readonly resultAnnouncement = computed((): { key: string; params?: Record<string, unknown> } => {
     if (this.loading()) {
-      return 'Searching';
+      return { key: 'COMMON.SEARCHING' };
     }
 
     const total = this.items().length;
     if (total === 0) {
-      return `No match for ${this.query()}`;
+      return { key: 'SEARCH_PANEL.NO_MATCH', params: { query: this.query() } };
     }
 
-    const hidden = this.hiddenCount();
-    if (hidden > 0) {
-      return `${total} results, showing the first ${this.visibleItems().length}. Refine your search to narrow them down.`;
+    // The same sentence as the note under the capped list.
+    if (this.hiddenCount() > 0) {
+      return { key: 'SEARCH_PANEL.SHOWING_FIRST', params: { shown: this.visibleItems().length, total } };
     }
 
-    return total === 1 ? '1 result' : `${total} results`;
+    return total === 1 ? { key: 'SEARCH_PANEL.RESULT' } : { key: 'SEARCH_PANEL.RESULTS', params: { count: total } };
   });
 
   constructor() {

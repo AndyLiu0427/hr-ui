@@ -114,8 +114,6 @@ export class FilterComponent<T> {
   readonly selections = signal<Set<unknown>>(new Set());
   selectionCount = computed(() => this.selections().size);
   hasSelections = computed(() => this.selections().size > 0);
-  /** The button's name. It says the count too, which the badge shows. */
-  protected readonly triggerLabel = computed(() => `${this.label()} filter${this.hasSelections() ? `, ${this.selectionCount()} selected` : ''}`);
 
   filteredOptions = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();

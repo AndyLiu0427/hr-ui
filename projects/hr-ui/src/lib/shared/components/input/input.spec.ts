@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { Component, ComponentRef, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { form, FormField } from '@angular/forms/signals';
-import { TranslateService } from '@ngx-translate/core';
 import { InputComponent } from './input';
 
 /**
@@ -20,8 +19,7 @@ describe('InputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InputComponent],
-      providers: [{ provide: TranslateService, useValue: { instant: (key: string) => key } }]
+      imports: [InputComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(InputComponent);

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { FormField, FieldTree, REQUIRED } from '@angular/forms/signals';
+import { TranslateModule } from '@ngx-translate/core';
 
 import {
   fieldContainerClass,
@@ -32,7 +33,7 @@ import { TextComponent } from '../text/text';
 @Component({
   selector: 'oct-input-select',
   templateUrl: './input-select.html',
-  imports: [FormField, InputComponent, SelectComponent, TextComponent],
+  imports: [TranslateModule, FormField, InputComponent, SelectComponent, TextComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputSelectComponent {
@@ -43,7 +44,7 @@ export class InputSelectComponent {
   /** Units to pick from. */
   readonly unitOptions = input<SelectOption[]>([]);
 
-  /** Text of the label above the field. The unit is named after it too. */
+  /** Text of the label above the field. The unit is named after it too, such as "Pay rate unit" from the i18n files. */
   readonly label = input<string>();
   /** Hint in the amount half while it is empty. */
   readonly placeholder = input<string>('');
@@ -140,12 +141,6 @@ export class InputSelectComponent {
   readonly dividerClass = fieldDividerClass;
 
   readonly displayHelperText = computed(() => (this.hasError() ? this.errorMessage() : this.helperText() || ''));
-
-  /** Names the unit control for a screen reader, since the visible label belongs to the amount. */
-  readonly unitAriaLabel = computed(() => {
-    const label = this.label();
-    return label ? `${label} unit` : 'Unit';
-  });
 
   /**
    * Tall enough that the option list never sits exactly on its own cap.

@@ -48,6 +48,7 @@ describe('octCopyOnRightClick', () => {
 
     const region = document.body.querySelector('[aria-live="polite"]');
     expect(region?.textContent).toBe('Copied');
-    expect(document.body.textContent).toContain('Copied!');
+    // The tooltip by the pointer says the same word.
+    expect(document.body.textContent?.match(/Copied/g)).toHaveLength(2);
   });
 });

@@ -3,14 +3,31 @@
     "SELECT_ALL": "全選",
     "SELECT_PLACEHOLDER": "請選擇…",
     "SEARCH": "搜尋…",
-    "REMOVE_LABEL": "移除 {{label}}"
+    "REMOVE_LABEL": "移除 {{label}}",
+    "CLEAR_LABEL": "清除 {{label}}",
+    "CLEAR_SELECTION": "清除選取",
+    "CLOSE": "關閉",
+    "CLOSE_DIALOG": "關閉對話框",
+    "COPY": "複製",
+    "COPIED": "已複製",
+    "HIDE_PASSWORD": "隱藏密碼",
+    "PROGRESS": "進度",
+    "SEARCHING": "搜尋中…",
+    "SEARCH_OPTIONS": "搜尋選項",
+    "SHOW_PASSWORD": "顯示密碼",
+    "TABS": "頁籤",
+    "TOGGLE_SWITCH": "切換開關",
+    "VIEW": "檢視"
   },
   "FILTER_COMPONENT": {
     "CLEAR": "清除",
     "CLEAR_ALL_FILTERS": "清除所有篩選",
     "DONE": "完成",
     "NO_OPTIONS": "沒有可用的選項",
-    "NO_RESULTS": "找不到「{{query}}」的結果"
+    "NO_RESULTS": "找不到「{{query}}」的結果",
+    "TRIGGER": "{{label}} 篩選",
+    "TRIGGER_SELECTED": "{{label}} 篩選，已選 {{count}} 項",
+    "MENU": "{{label}} 篩選選單"
   },
   "GENERAL": {
     "LOADING": "載入中…",
@@ -37,7 +54,16 @@
   },
   "TABLE_COMPONENT": {
     "ACTIONS": "操作",
-    "NO_ACTIONS": "沒有可用的操作"
+    "NO_ACTIONS": "沒有可用的操作",
+    "SELECT_ALL_ROWS": "選取所有列",
+    "SELECT_ROW": "選取 {{name}}",
+    "INCREASE": "增加",
+    "DECREASE": "減少",
+    "ROWS_PER_PAGE": "每頁筆數",
+    "PAGE_RANGE": "第 {{start}}–{{end}} 筆，共 {{total}} 筆",
+    "PREVIOUS_PAGE": "上一頁",
+    "NEXT_PAGE": "下一頁",
+    "SCROLL_REGION": "表格"
   },
   "THEME": {
     "LABEL": "主題",
@@ -45,5 +71,52 @@
     "DARK": "深色模式",
     "SWITCH_FROM_LIGHT": "淺色模式。切換到深色模式。",
     "SWITCH_FROM_DARK": "深色模式。切換到淺色模式。"
+  },
+  "AVATAR": {
+    "USER_AVATAR": "使用者頭像",
+    "ONLINE": "{{name}}，線上",
+    "OFFLINE": "{{name}}，離線",
+    "BUSY": "{{name}}，忙碌",
+    "AWAY": "{{name}}，離開"
+  },
+  "CAREER_PROGRESSION": {
+    "TIMELINE": "職涯時間軸",
+    "EMPTY": "沒有可顯示的項目",
+    "PRESENT": "至今",
+    "UNKNOWN_CLIENT": "未知客戶"
+  },
+  "FILE_INPUT": {
+    "NO_IMAGE": "尚未上傳圖片",
+    "CHOOSE_FILE": "選擇檔案",
+    "SUPPORTED_FORMATS": "支援格式：PNG、JPEG、JPG、SVG",
+    "REMOVE_IMAGE": "移除圖片",
+    "TOO_LARGE": "檔案太大",
+    "INVALID_TYPE": "檔案類型無效"
+  },
+  "INPUT_SELECT": {
+    "UNIT": "單位",
+    "LABEL_UNIT": "{{label}} 單位"
+  },
+  "NOTICE": {
+    "DISMISS": "關閉提示"
+  },
+  "SEARCH_PANEL": {
+    "RESULT": "1 筆結果",
+    "RESULTS": "{{count}} 筆結果",
+    "SHOWING_FIRST": "顯示前 {{shown}} 筆，共 {{total}} 筆。請調整搜尋條件以縮小範圍。",
+    "NO_MATCH": "找不到符合「{{query}}」的項目",
+    "NAVIGATE": "切換",
+    "OPEN": "開啟"
+  },
+  "SEARCH_SELECT": {
+    "PLACEHOLDER": "搜尋並選擇…",
+    "LOADING_OPTIONS": "選項載入中…",
+    "MIN_SEARCH_LENGTH": "請至少輸入 {{count}} 個字元以進行搜尋",
+    "PRELOAD_FAILED": "選項載入失敗",
+    "SEARCH_FAILED": "搜尋失敗"
+  },
+  "SNACKBAR": {
+    "CLICK_TO_COPY": "按一下即可複製",
+    "DISMISS": "關閉通知"
   }
 }

@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, computed, signal, input, effect } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { IconComponent } from '../icon/icon';
 
 /** icon is the px size of the person icon shown when there is neither a photo nor a name. */
@@ -51,12 +52,21 @@ const AVATAR_SIZE_CLASSES = {
 export type AvatarSize = keyof typeof AVATAR_SIZE_CLASSES;
 export type AvatarStatus = 'online' | 'offline' | 'busy' | 'away' | 'none';
 
+/** i18n key of the accessible name with each status. */
+const STATUS_KEYS: Record<AvatarStatus, string | null> = {
+  online: 'AVATAR.ONLINE',
+  offline: 'AVATAR.OFFLINE',
+  busy: 'AVATAR.BUSY',
+  away: 'AVATAR.AWAY',
+  none: null
+};
+
 /** A person's photo, or their initials when there is no photo, with an optional status dot. */
 @Component({
   selector: 'oct-avatar',
   templateUrl: './avatar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgTemplateOutlet, IconComponent],
+  imports: [NgTemplateOutlet, TranslateModule, IconComponent],
   host: {
     class: 'inline-flex leading-none',
     '[attr.data-size]': 'size()',
@@ -186,17 +196,7 @@ export class AvatarComponent {
     return `relative inline-flex rounded-full bg-emerald-500 ${sizeConfig.status}`;
   });
 
-  protected readonly ariaLabel = computed(() => {
-    const name = this.name();
-    const alt = this.alt();
-    const status = this.status();
-
-    let label = alt || name || 'User avatar';
-    if (status !== 'none') {
-      label += `, ${status}`;
-    }
-    return label;
-  });
+  protected readonly statusKeys = STATUS_KEYS;
 
   protected readonly tooltipText = computed(() => {
     if (!this.showTooltip()) return '';

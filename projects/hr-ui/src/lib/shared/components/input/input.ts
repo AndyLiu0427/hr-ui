@@ -21,6 +21,7 @@ import {
   fieldShellClass,
   fieldTextPaddingClass
 } from '../form/field-shell';
+import { TranslateModule } from '@ngx-translate/core';
 import { IconComponent } from '../icon/icon';
 import { TextComponent } from '../text/text';
 
@@ -39,7 +40,7 @@ export type InputState = 'default' | 'error' | 'disabled';
 @Component({
   selector: 'oct-input',
   templateUrl: './input.html',
-  imports: [IconComponent, TextComponent],
+  imports: [TranslateModule, IconComponent, TextComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   // Bare: the host is the flex item of the owner's shell, so it must grow and be allowed to shrink.
   host: {
@@ -86,9 +87,9 @@ export class InputComponent implements FormValueControl<string> {
   readonly leftText = input<string>();
   /** Short text at the end of the field, such as a unit. */
   readonly rightText = input<string>();
-  /** With type password, adds a button that shows and hides the password. */
+  /** With type password, adds a button that shows and hides the password. Its name, such as "Show password", comes from the i18n files. */
   readonly showPasswordToggle = input<boolean>(false);
-  /** Shows an X that empties the field. */
+  /** Shows an X that empties the field. It is named "Clear" and the label or placeholder, from the i18n files. */
   readonly clearable = input<boolean>(false);
   /** Shows typed text in capitals. The value keeps the case that the user typed. */
   readonly uppercase = input<boolean>(false);

@@ -1,8 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { provideTranslateService } from '@ngx-translate/core';
 
 import { SearchPanelComponent } from './search-panel';
 import { SearchPanelEmptyDirective, SearchPanelRowDirective } from './search-panel.directives';
@@ -31,8 +30,6 @@ class PanelHost {
 }
 
 describe('SearchPanelComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({ providers: [provideTranslateService()] }));
-
   function open() {
     const fixture = TestBed.createComponent(PanelHost);
     fixture.detectChanges();

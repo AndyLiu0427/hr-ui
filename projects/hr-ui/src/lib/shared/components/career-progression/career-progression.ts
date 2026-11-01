@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { DateService } from '../../../services/general/date.service';
 import { IconComponent } from '../icon/icon';
 import { TextComponent } from '../text/text';
@@ -15,6 +16,7 @@ export interface CareerProgressionAssignment {
 
 /** Middle level: one client within a contract. A contract can span several. */
 export interface CareerProgressionClient {
+  /** Empty when the record has no client. The tree then shows "Unknown client" from the i18n files. */
   name: string;
   assignments: CareerProgressionAssignment[];
 }
@@ -33,12 +35,12 @@ export interface CareerProgressionContract {
 
 export interface CareerProgressionConfig {
   emptyIcon?: string;
+  /** The default is "No items to display" from the i18n files. */
   emptyMessage?: string;
 }
 
 const DEFAULT_CONFIG: CareerProgressionConfig = {
-  emptyIcon: 'Clock',
-  emptyMessage: 'No items to display'
+  emptyIcon: 'Clock'
 };
 
 /** An employee's work history as a tree: contracts, the clients served under each, and their assignments. */
@@ -46,7 +48,7 @@ const DEFAULT_CONFIG: CareerProgressionConfig = {
   selector: 'oct-career-progression',
   templateUrl: './career-progression.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IconComponent, TextComponent]
+  imports: [TranslateModule, IconComponent, TextComponent]
 })
 export class CareerProgressionComponent {
   private readonly dateService = inject(DateService);
@@ -54,7 +56,7 @@ export class CareerProgressionComponent {
   /** Contracts, most recent first. Clients and assignments read forwards. */
   readonly contracts = input.required<CareerProgressionContract[]>();
 
-  /** Icon and message for the empty state. */
+  /** Icon and message for the empty state. The default message is "No items to display" from the i18n files. */
   readonly config = input<CareerProgressionConfig>({});
 
   /** Emitted when an assignment leaf is clicked. */
@@ -70,15 +72,18 @@ export class CareerProgressionComponent {
     return this.dateService.formatDate(date);
   }
 
-  formatDateRange(startDate: string, endDate?: string): string {
+  /** `present` is the translated word for a period that has not ended. */
+  formatDateRange(startDate: string, endDate: string | undefined, present: string): string {
     const start = this.formatDate(startDate);
-    const end = endDate ? this.formatDate(endDate) : 'Present';
+    const end = endDate ? this.formatDate(endDate) : present;
     return `${start} - ${end}`;
   }
 
   /** Names an assignment button by what it shows, with commas where the row has dots. */
-  assignmentLabel(assignment: CareerProgressionAssignment): string {
-    return [assignment.department, assignment.jobTitle, this.formatDateRange(assignment.startDate, assignment.endDate)].filter(Boolean).join(', ');
+  assignmentLabel(assignment: CareerProgressionAssignment, present: string): string {
+    return [assignment.department, assignment.jobTitle, this.formatDateRange(assignment.startDate, assignment.endDate, present)]
+      .filter(Boolean)
+      .join(', ');
   }
 
   /**

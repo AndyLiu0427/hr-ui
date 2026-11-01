@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { TranslateService } from '@ngx-translate/core';
 
 import { PopupService } from './popup.service';
 
@@ -15,7 +14,7 @@ describe('PopupService', () => {
   let trigger: HTMLButtonElement;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [{ provide: TranslateService, useValue: { instant: (key: string) => key } }] });
+    TestBed.configureTestingModule({});
     popup = TestBed.inject(PopupService);
     trigger = document.body.appendChild(document.createElement('button'));
     trigger.textContent = 'Approve pay run';

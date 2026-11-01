@@ -1,16 +1,17 @@
 @if (mode() === 'preview') {
+  @let buttonText = labels().buttonText ?? ('FILE_INPUT.CHOOSE_FILE' | translate);
   <div class="flex flex-col gap-4">
     @if (displayPreview()) {
       <div class="relative h-32 border border-primary rounded-lg overflow-hidden">
         <img
           [src]="displayPreview()"
-          [alt]="buttonText()"
+          [alt]="buttonText"
           class="w-full h-full object-contain p-2" />
         <oct-button
           color="error"
           size="sm"
           icon="X"
-          [ariaLabel]="removeButtonAriaLabel()"
+          [ariaLabel]="labels().removeButtonAriaLabel ?? ('FILE_INPUT.REMOVE_IMAGE' | translate)"
           class="!absolute !top-0.5 !right-0.5"
           (buttonClick)="onRemoveClick()" />
       </div>
@@ -21,14 +22,14 @@
         [class.cursor-not-allowed]="disabled() || loading()"
         role="button"
         tabindex="0"
-        [attr.aria-label]="buttonText()"
+        [attr.aria-label]="buttonText"
         (click)="onPlaceholderClick()"
         (keydown.enter)="onPlaceholderClick()"
         (keydown.space)="onPlaceholderClick()">
         <div class="text-center">
           <oct-icon [name]="placeholderIcon()" [size]="32" class="text-gray-400" />
           <oct-text variant="xs" color="3" class="mt-1">
-            {{ placeholderText() }}
+            {{ labels().placeholderText ?? ('FILE_INPUT.NO_IMAGE' | translate) }}
           </oct-text>
         </div>
       </div>
@@ -50,10 +51,10 @@
         icon="Upload"
         [disabled]="disabled() || loading()"
         (buttonClick)="onButtonClick()">
-        {{ buttonText() }}
+        {{ buttonText }}
       </oct-button>
       <oct-text variant="xs" color="3">
-        {{ helpText() }}
+        {{ labels().helpText ?? ('FILE_INPUT.SUPPORTED_FORMATS' | translate) }}
       </oct-text>
       @if (displayError()) {
         <oct-text variant="xs" color="error" role="alert">

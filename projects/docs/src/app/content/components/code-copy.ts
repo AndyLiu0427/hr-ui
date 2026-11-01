@@ -19,7 +19,7 @@ export const doc: ComponentDoc = {
     }
   ],
   accessibility: [
-    'The button is a native <button> labelled "Copy". After a successful copy the label reads "Copied!" for 2 seconds.'
+    'The button is a native <button> labelled "Copy". After a successful copy the label reads "Copied" for 2 seconds. Both words come from the i18n files.'
   ],
   api: ['CodeCopyComponent']
 };

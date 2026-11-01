@@ -83,7 +83,7 @@
             (click)="clearSelection($event)"
             (keydown.enter)="clearSelection($event)"
             (keydown.space)="clearSelection($event)"
-            [attr.aria-label]="'Clear all selections'"
+            [attr.aria-label]="'COMMON.CLEAR_SELECTION' | translate"
             [attr.role]="'button'"
             [attr.tabindex]="'-1'"
           />
@@ -125,9 +125,7 @@
         <oct-icon name="RefreshCw" class="animate-hr-spin text-2" />
       </div>
     } @else if (filteredOptions().length === 0) {
-      <div class="p-1 px-2 py-3 text-center text-3 text-sm">
-        No options found
-      </div>
+      <div class="p-1 px-2 py-3 text-center text-3 text-sm">{{ 'GENERAL.NO_OPTIONS_FOUND' | translate }}</div>
     } @else if (virtualScrolling()) {
       <div class="p-1">
         @if (multiple()) {

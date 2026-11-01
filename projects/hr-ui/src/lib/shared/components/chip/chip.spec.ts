@@ -1,12 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { provideTranslateService, TranslateService } from '@ngx-translate/core';
 
 import { ChipComponent } from './chip';
 
 describe('ChipComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({ providers: [provideTranslateService()] }));
-
   it('emits remove without triggering the row it sits in', () => {
     const fixture = TestBed.createComponent(ChipComponent);
     fixture.componentRef.setInput('label', 'INV');
@@ -24,9 +21,6 @@ describe('ChipComponent', () => {
   });
 
   it('names the remove button with the label by default', async () => {
-    const translate = TestBed.inject(TranslateService);
-    translate.setTranslation('en', { COMMON: { REMOVE_LABEL: 'Remove {{label}}' } });
-    translate.use('en');
     const fixture = TestBed.createComponent(ChipComponent);
     fixture.componentRef.setInput('label', 'Payroll');
     fixture.componentRef.setInput('removable', true);

@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, DestroyRef, OnDestroy, effect, inject, input, output, computed, signal, viewChild, ElementRef } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '../button/button';
 
 /** RWD-optimized size classes: mobile-first with progressive enhancement */
@@ -21,7 +22,7 @@ const SIZE_CLASSES: Record<string, string> = {
 /** A modal window. Put an oct-dialog-header, oct-dialog-content and oct-dialog-footer inside it. */
 @Component({
   selector: 'oct-dialog',
-  imports: [ButtonComponent],
+  imports: [TranslateModule, ButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(document:keydown.escape)': 'handleEscapeKey()'
@@ -61,7 +62,7 @@ const SIZE_CLASSES: Record<string, string> = {
               [icon]="'X'"
               color="neutral"
               (buttonClick)="closeDialog()"
-              [ariaLabel]="closeLabel()"
+              [ariaLabel]="closeLabel() ?? ('COMMON.CLOSE_DIALOG' | translate)"
             >
             </oct-button>
           }
@@ -201,8 +202,11 @@ export class DialogComponent implements OnDestroy {
    * running - where a stray click outside would throw it away.
    */
   persistent = input<boolean>(false);
-  /** What the close control announces. Overridable, because a dialog may end in more than closing. */
-  closeLabel = input<string>('Close dialog');
+  /**
+   * What the close control announces. The default is "Close dialog" from the i18n files.
+   * Overridable, because a dialog may end in more than closing.
+   */
+  closeLabel = input<string>();
   /** The dialog's name for screen readers, when it has no oct-dialog-header to take it from. */
   ariaLabel = input<string>();
   /** Set by oct-dialog-header, so a dialog with a visible title is named by it. */

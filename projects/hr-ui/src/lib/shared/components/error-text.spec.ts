@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { provideZonelessChangeDetection, Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideTranslateService } from '@ngx-translate/core';
 import { CheckboxComponent } from './checkbox/checkbox';
 import { InputComponent } from './input/input';
 import { SearchSelectComponent } from './search-select/search-select';
@@ -21,7 +20,7 @@ const controls: [string, Type<{ hasError: () => boolean }>][] = [
 
 describe('errorText on form controls', () => {
   it.each(controls)('%s shows the error state when only errorText is set', (_name, component) => {
-    TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection(), provideTranslateService()] });
+    TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
     const fixture = TestBed.createComponent(component);
     expect(fixture.componentInstance.hasError()).toBe(false);
     fixture.componentRef.setInput('errorText', 'Enter a value.');

@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { Component, ComponentRef, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { form, FormField } from '@angular/forms/signals';
-import { provideTranslateService } from '@ngx-translate/core';
 import { SelectComponent, SelectOption } from './select';
 
 describe('SelectComponent', () => {
@@ -11,10 +10,7 @@ describe('SelectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SelectComponent],
-      providers: [
-        provideTranslateService()
-      ]
+      imports: [SelectComponent]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(SelectComponent);
@@ -360,8 +356,7 @@ describe('SelectComponent', () => {
 describe('SelectComponent — the open list for screen readers', () => {
   async function openSelect(multiple: boolean) {
     await TestBed.configureTestingModule({
-      imports: [SelectComponent],
-      providers: [provideTranslateService()]
+      imports: [SelectComponent]
     }).compileComponents();
     const fixture = TestBed.createComponent(SelectComponent);
     fixture.componentRef.setInput('label', 'Department');

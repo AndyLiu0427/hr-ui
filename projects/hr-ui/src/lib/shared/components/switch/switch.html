@@ -8,7 +8,7 @@
     [class]="switchTrackClass()"
     [attr.aria-checked]="computedChecked()"
     [attr.aria-disabled]="computedDisabled()"
-    [attr.aria-label]="label() || 'Toggle switch'"
+    [attr.aria-label]="label() || ('COMMON.TOGGLE_SWITCH' | translate)"
     [attr.aria-required]="isRequired() || null"
     [attr.aria-invalid]="hasError() || null"
     [disabled]="computedDisabled()"

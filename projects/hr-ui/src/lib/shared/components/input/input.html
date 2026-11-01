@@ -41,10 +41,11 @@
     />
 
     @if (showClearButton()) {
+    @let clearTarget = label() || placeholder();
     <button
       type="button"
       [class]="clearButtonClass()"
-      [attr.aria-label]="'Clear ' + (label() || placeholder() || 'value')"
+      [attr.aria-label]="clearTarget ? ('COMMON.CLEAR_LABEL' | translate: { label: clearTarget }) : ('FILTER_COMPONENT.CLEAR' | translate)"
       tabindex="-1"
       (click)="clear()"
     >
@@ -72,7 +73,7 @@
       type="button"
       [class]="passwordToggleClass()"
       [disabled]="isDisabled()"
-      [attr.aria-label]="passwordVisible() ? 'Hide password' : 'Show password'"
+      [attr.aria-label]="(passwordVisible() ? 'COMMON.HIDE_PASSWORD' : 'COMMON.SHOW_PASSWORD') | translate"
       (click)="togglePasswordVisibility()"
     >
       <oct-icon [name]="passwordToggleIconName()" [class]="iconSize" />

@@ -1,11 +1,15 @@
+@let displayName = alt() || name() || ('AVATAR.USER_AVATAR' | translate);
+@let statusKey = statusKeys[status()];
+<!-- The name ends with the status, such as "Nurul Aisyah, away". -->
+@let accessibleName = statusKey ? (statusKey | translate: { name: displayName }) : displayName;
 <div class="group relative inline-flex">
   <!-- Main avatar container. A clickable one is a native button, so Enter and Space click it too. -->
   @if (clickable()) {
-    <button type="button" [class]="containerClasses()" [attr.aria-label]="ariaLabel()">
+    <button type="button" [class]="containerClasses()" [attr.aria-label]="accessibleName">
       <ng-container [ngTemplateOutlet]="content" />
     </button>
   } @else {
-    <div [class]="containerClasses()" role="img" [attr.aria-label]="ariaLabel()">
+    <div [class]="containerClasses()" role="img" [attr.aria-label]="accessibleName">
       <ng-container [ngTemplateOutlet]="content" />
     </div>
   }

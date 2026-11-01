@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
 
 import { FilterComponent, FilterOption } from './filter';
 
@@ -11,7 +10,7 @@ describe('FilterComponent: Escape on the trigger', () => {
 
   beforeEach(() => {
     TestBed.resetTestingModule();
-    TestBed.configureTestingModule({ imports: [TranslateModule.forRoot(), FilterComponent] });
+    TestBed.configureTestingModule({ imports: [FilterComponent] });
     const fixture = TestBed.createComponent(FilterComponent<string>);
     fixture.componentRef.setInput('label', 'Status');
     component = fixture.componentInstance;
@@ -42,7 +41,7 @@ async function render(inputs: Record<string, unknown> = {}): Promise<{
   fixture: ComponentFixture<FilterComponent<string>>;
   trigger: HTMLButtonElement;
 }> {
-  TestBed.configureTestingModule({ imports: [TranslateModule.forRoot(), FilterComponent] });
+  TestBed.configureTestingModule({ imports: [FilterComponent] });
   const fixture = TestBed.createComponent(FilterComponent<string>);
   fixture.componentRef.setInput('label', 'Department');
   fixture.componentRef.setInput('options', DEPARTMENTS);
@@ -72,7 +71,7 @@ const optionsRendered = () => vi.waitFor(() => expect(document.querySelectorAll(
 
 describe('FilterComponent menu events', () => {
   it('does not emit menuClosed when it is created, only when an open menu closes', async () => {
-    TestBed.configureTestingModule({ imports: [TranslateModule.forRoot(), FilterComponent] });
+    TestBed.configureTestingModule({ imports: [FilterComponent] });
     const fixture = TestBed.createComponent(FilterComponent<string>);
     fixture.componentRef.setInput('label', 'Department');
     let closed = 0;

@@ -17,6 +17,8 @@ import {
   Injector
 } from '@angular/core';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 import { TextComponent } from '../text/text';
 import { prefersReducedMotion } from '../../../utils/reduced-motion';
 
@@ -45,7 +47,7 @@ export interface TabItem {
   selector: 'oct-tabs',
   templateUrl: './tabs.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TextComponent],
+  imports: [TranslateModule, TextComponent],
   host: {
     class: 'block w-full'
   }
@@ -71,8 +73,11 @@ export class TabsComponent {
    * (e.g. an open edit dialog whose draft would be silently replaced by the sibling's values).
    */
   readonly interactive = input<boolean>(true);
-  /** Names the tab strip for screen readers. Pass a translated, specific name where the page has more than one. */
-  readonly ariaLabel = input<string>('Tabs');
+  /**
+   * Names the tab strip for screen readers. The default is "Tabs" from the i18n files.
+   * Pass a translated, specific name where the page has more than one.
+   */
+  readonly ariaLabel = input<string>();
 
   protected readonly indicatorPlaced = signal(false);
   /** Set by the arrow keys: a keyboard move shows at once instead of sliding. */
@@ -92,6 +97,9 @@ export class TabsComponent {
     height: '0px',
     isVertical: false
   });
+
+  /** Link tabs change the page, so the strip is a navigation landmark, not a tablist that needs role="tab" children. */
+  protected readonly navigates = computed(() => this.tabs().some(tab => tab.href));
 
   readonly activeTabIndex = computed(() => {
     const activeId = this.activeTab();

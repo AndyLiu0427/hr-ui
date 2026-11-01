@@ -10,7 +10,7 @@
     (mouseleave)="setHovered(false)"
     (focusin)="setFocusWithin(true)"
     (focusout)="onFocusOut($event)"
-    title="Click to copy"
+    [title]="'SNACKBAR.CLICK_TO_COPY' | translate"
     [attr.role]="type() === 'error' ? 'alert' : 'status'"
     aria-atomic="true">
 
@@ -40,7 +40,6 @@
           shape="square"
           size="sm"
           [color]="buttonColor()"
-          [ariaLabel]="'Action: ' + actionText()"
           (buttonClick)="onActionClick($event)">
           {{ actionText() }}
         </oct-button>
@@ -54,7 +53,7 @@
           [color]="buttonColor()"
           shape="round"
           icon="X"
-          ariaLabel="Dismiss notification"
+          [ariaLabel]="'SNACKBAR.DISMISS' | translate"
           (buttonClick)="onDismiss($event)">
         </oct-button>
       }

@@ -30,14 +30,14 @@ export const doc: ComponentDoc = {
     }
   ],
   keyboard: [
-    { keys: ['Tab'], action: 'Moves focus to the active tab, then out of the strip.' },
+    { keys: ['Tab'], action: 'Moves focus to the active tab, then out of the strip. Link tabs are each in the tab order.' },
     { keys: ['→'], action: 'Selects the next tab. From the last tab, goes to the first.' },
     { keys: ['←'], action: 'Selects the previous tab. From the first tab, goes to the last.' },
     { keys: ['Home'], action: 'Selects the first tab.' },
     { keys: ['End'], action: 'Selects the last tab.' }
   ],
   accessibility: [
-    'The strip has role="tablist", and each tab has role="tab" with aria-selected. A tab with href is a link with aria-current="page" instead.',
+    'The strip has role="tablist", and each tab has role="tab" with aria-selected. When the tabs have href, they change the page: the strip is a navigation landmark, and each tab is a link with aria-current="page" on the active one.',
     'The component renders the strip only. Give the panel you render role="tabpanel" and a name, such as aria-label with the tab label, as in the first example.'
   ],
   api: ['TabsComponent']
