@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-3">
   <div
-    class="relative flex flex-wrap sm:flex-nowrap items-center bg-neutral-900 px-1 py-1 rounded-lg gap-0.5 sm:gap-0"
+    class="relative flex flex-wrap sm:flex-nowrap items-center bg-hr-neutral-900 px-1 py-1 rounded-lg gap-0.5 sm:gap-0"
     role="tablist"
     aria-label="Tabs navigation">
 
@@ -29,8 +29,8 @@
           class="relative z-10 flex-1 basis-full sm:basis-0 grow flex items-center justify-center px-3 py-1.5 text-sm font-medium transition-colors duration-300 select-none focus:outline-none rounded-sm no-underline"
           [class.cursor-pointer]="interactive()"
           [class.cursor-default]="!interactive()"
-          [class.text-neutral-50]="isActive(tab.id)"
-          [class.text-neutral-500]="!isActive(tab.id)"
+          [class.text-hr-neutral-50]="isActive(tab.id)"
+          [class.text-hr-neutral-500]="!isActive(tab.id)"
           [class.opacity-60]="!interactive()"
           [attr.aria-current]="isActive(tab.id) ? 'page' : null"
           [attr.aria-disabled]="interactive() ? null : 'true'"
@@ -49,8 +49,8 @@
           type="button"
           role="tab"
           class="relative z-10 flex-1 basis-full sm:basis-0 grow flex items-center justify-center px-3 py-1.5 text-sm font-medium transition-colors duration-300 cursor-pointer select-none focus:outline-none rounded-sm"
-          [class.text-neutral-50]="isActive(tab.id)"
-          [class.text-neutral-500]="!isActive(tab.id)"
+          [class.text-hr-neutral-50]="isActive(tab.id)"
+          [class.text-hr-neutral-500]="!isActive(tab.id)"
           [attr.aria-selected]="isActive(tab.id)"
           [attr.aria-disabled]="interactive() ? null : 'true'"
           [attr.aria-label]="tab.label"

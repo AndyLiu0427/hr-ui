@@ -1889,7 +1889,7 @@ export class TablePageComponent {
       label: 'Salary',
       sortable: true,
       align: 'right',
-      cellClass: 'tabular-nums font-semibold text-right text-blue-600',
+      cellClass: 'tabular-nums font-semibold text-right text-hr-blue-600',
       headerClass: 'text-right',
       render: (value: number) => `$${value.toLocaleString()}`
     },
@@ -1923,7 +1923,7 @@ export class TablePageComponent {
       sortable: true,
       align: 'right',
       minWidth: '100px',
-      cellClass: 'tabular-nums font-semibold text-right text-green-600',
+      cellClass: 'tabular-nums font-semibold text-right text-hr-green-600',
       headerClass: 'text-right',
       render: (value: number) => `$${value.toFixed(2)}`
     },
@@ -1935,7 +1935,7 @@ export class TablePageComponent {
       minWidth: '80px',
       cellClass: 'tabular-nums text-center font-bold',
       headerClass: 'text-center',
-      render: (value: number) => (value > 0 ? value.toString() : '<span class="text-red-500">0</span>')
+      render: (value: number) => (value > 0 ? value.toString() : '<span class="text-hr-red-500">0</span>')
     },
     {
       key: 'status',
@@ -2237,7 +2237,7 @@ export class TablePageComponent {
 
   private renderRating(rating: number): string {
     const stars = Math.round(rating);
-    const starIcon = '<oct-icon name="Star" class="text-yellow-400" />';
+    const starIcon = '<oct-icon name="Star" class="text-hr-yellow-400" />';
     const emptyIcon = '<oct-icon name="Star" class="text-gray-300" />';
 
     let html = '';

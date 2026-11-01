@@ -53,8 +53,8 @@
               </div>
 
               <!-- Code Display -->
-              <div class="relative rounded-lg border border-primary bg-neutral-900 p-4">
-                <pre class="overflow-x-auto text-sm text-neutral-100"><code [textContent]="displayCode()"></code></pre>
+              <div class="relative rounded-lg border border-primary bg-hr-neutral-900 p-4">
+                <pre class="overflow-x-auto text-sm text-hr-neutral-100"><code [textContent]="displayCode()"></code></pre>
                 <oct-code-copy [code]="displayCode()" />
               </div>
             </div>
@@ -167,7 +167,7 @@
                 type="checkbox"
                 id="showLabels"
                 [(ngModel)]="config().showLabels"
-                class="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500" />
+                class="h-4 w-4 rounded border-hr-neutral-300 text-primary-600 focus:ring-primary-500" />
               <label for="showLabels">
                 <oct-text color="2" variant="sm" weight="medium">Show Labels</oct-text>
               </label>
@@ -179,7 +179,7 @@
                 type="checkbox"
                 id="showTicks"
                 [(ngModel)]="config().showTicks"
-                class="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500" />
+                class="h-4 w-4 rounded border-hr-neutral-300 text-primary-600 focus:ring-primary-500" />
               <label for="showTicks">
                 <oct-text color="2" variant="sm" weight="medium">Show Percentage Ticks (0-100)</oct-text>
               </label>
@@ -197,7 +197,7 @@
                 max="100"
                 [(ngModel)]="config().step"
                 placeholder="Enter step value"
-                class="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                class="w-full rounded-md border border-hr-neutral-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500" />
               <oct-text color="3" variant="xs" weight="regular">
                 Controls how much the slider moves per action (e.g., 10 = 10% increments)
               </oct-text>

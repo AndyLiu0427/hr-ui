@@ -67,12 +67,12 @@ export class SearchSelectOptionComponent {
     const option = this.option();
 
     if (option.disabled) {
-      baseClasses.push('bg-neutral-900', 'cursor-not-allowed', 'text-disabled');
+      baseClasses.push('bg-hr-neutral-900', 'cursor-not-allowed', 'text-disabled');
     } else {
       if (this.selected()) {
-        baseClasses.push('bg-neutral-900', 'text-1', 'rounded-lg');
+        baseClasses.push('bg-hr-neutral-900', 'text-1', 'rounded-lg');
       } else if (this.highlighted()) {
-        baseClasses.push('bg-neutral-800', 'text-1', 'rounded-lg');
+        baseClasses.push('bg-hr-neutral-800', 'text-1', 'rounded-lg');
       } else {
         baseClasses.push('text-1');
       }

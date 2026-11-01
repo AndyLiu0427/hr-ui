@@ -19,7 +19,7 @@ export class HighlightPipe implements PipeTransform {
     const escaped = this.escape(text);
     const escapedQuery = this.escapeRegex(query);
     const regex = new RegExp(`(${escapedQuery})`, 'gi');
-    const highlighted = escaped.replace(regex, '<mark class="bg-yellow-500/30 text-1 rounded-sm px-0.5">$1</mark>');
+    const highlighted = escaped.replace(regex, '<mark class="bg-hr-yellow-500/30 text-1 rounded-sm px-0.5">$1</mark>');
 
     return this.sanitizer.bypassSecurityTrustHtml(highlighted);
   }

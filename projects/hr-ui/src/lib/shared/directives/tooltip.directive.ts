@@ -16,12 +16,12 @@ const TOOLTIP_BODY =
 // Theme-aware color classes — neutral scale is inverted in this project
 // (neutral-50 = dark in light mode, neutral-950 = dark in dark mode)
 const COLOR_CLASSES: Record<TooltipColor, string> = {
-  default: 'bg-neutral-50 text-neutral-950',
+  default: 'bg-hr-neutral-50 text-hr-neutral-950',
   primary: 'bg-primary-600 text-white',
-  blue: 'bg-blue-400 text-white',
-  red: 'bg-red-400 text-white',
-  purple: 'bg-violet-400 text-white',
-  amber: 'bg-orange-400 text-white'
+  blue: 'bg-hr-blue-400 text-white',
+  red: 'bg-hr-red-400 text-white',
+  purple: 'bg-hr-violet-400 text-white',
+  amber: 'bg-hr-orange-400 text-white'
 };
 
 // Scale-pop enter (HeroUI feel): the panel scales up from the edge nearest the
@@ -53,12 +53,12 @@ const ARROW_SIZE = 8; // px — keep in sync with the w-2 h-2 below
 
 // Arrow surfaces per color — bg only, matching each bubble (no border).
 const ARROW_COLOR_CLASSES: Record<TooltipColor, string> = {
-  default: 'bg-neutral-50',
+  default: 'bg-hr-neutral-50',
   primary: 'bg-primary-600',
-  blue: 'bg-blue-400',
-  red: 'bg-red-400',
-  purple: 'bg-violet-400',
-  amber: 'bg-orange-400'
+  blue: 'bg-hr-blue-400',
+  red: 'bg-hr-red-400',
+  purple: 'bg-hr-violet-400',
+  amber: 'bg-hr-orange-400'
 };
 
 const isTouchPointer = (): boolean =>

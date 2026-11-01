@@ -95,15 +95,15 @@ describe('CareerProgressionComponent', () => {
     await fixture.whenStable();
 
     const classes = nodeClasses();
-    expect(classes[0]).toContain('bg-green-500');
-    expect(classes[1]).not.toContain('bg-green-500');
+    expect(classes[0]).toContain('bg-hr-green-500');
+    expect(classes[1]).not.toContain('bg-hr-green-500');
   });
 
   it('greens nothing once the top contract has ended', async () => {
     ref.setInput('contracts', [contract({ id: 'c-2', endDate: '2024-06-30' })]);
     await fixture.whenStable();
 
-    expect(nodeClasses()[0]).not.toContain('bg-green-500');
+    expect(nodeClasses()[0]).not.toContain('bg-hr-green-500');
   });
 
   it('emits the assignment behind the leaf that was clicked', async () => {

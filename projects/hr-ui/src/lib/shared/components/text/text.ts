@@ -74,8 +74,8 @@ export class TextComponent implements TextInputs {
       '2': 'text-2',
       '3': 'text-3',
       error: 'text-error',
-      warning: 'text-orange-600',
-      disabled: 'text-neutral-600',
+      warning: 'text-hr-orange-600',
+      disabled: 'text-hr-neutral-600',
       inherit: 'text-inherit'
     } as const;
 

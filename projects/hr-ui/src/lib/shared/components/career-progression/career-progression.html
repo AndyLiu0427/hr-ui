@@ -9,7 +9,7 @@
   <!-- The trunk runs unbroken behind every contract, so the tree still reads as
        a timeline: each dot sits on it and each branch reaches back to it. -->
   <ul
-    class="relative list-none p-0 m-0 before:content-[''] before:absolute before:start-1 before:top-[18px] before:bottom-0 before:w-px before:bg-neutral-800"
+    class="relative list-none p-0 m-0 before:content-[''] before:absolute before:start-1 before:top-[18px] before:bottom-0 before:w-px before:bg-hr-neutral-800"
     aria-label="Career timeline">
     @for (contract of contracts(); track contract.id; let firstContract = $first) {
       <li class="[&+li]:pt-2.5">
@@ -22,7 +22,7 @@
 
         <ul class="list-none m-0 ps-[22px] pt-0.5">
           @for (client of contract.clients; track client.name) {
-            <li class="relative after:content-[''] after:absolute after:-start-[18px] after:top-4 after:w-[14px] after:h-px after:bg-neutral-800">
+            <li class="relative after:content-[''] after:absolute after:-start-[18px] after:top-4 after:w-[14px] after:h-px after:bg-hr-neutral-800">
               <div class="py-1.5">
                 <oct-text color="1" variant="sm" weight="semibold">{{ client.name }}</oct-text>
               </div>
@@ -30,10 +30,10 @@
               <ul class="list-none m-0 ps-1 pb-0.5">
                 @for (assignment of client.assignments; track assignment.id) {
                   <li
-                    class="relative ps-[18px] before:content-[''] before:absolute before:start-0 before:top-0 before:h-full before:w-px before:bg-neutral-800 last:before:h-[15px] after:content-[''] after:absolute after:start-0 after:top-[15px] after:w-3 after:h-px after:bg-neutral-800">
+                    class="relative ps-[18px] before:content-[''] before:absolute before:start-0 before:top-0 before:h-full before:w-px before:bg-hr-neutral-800 last:before:h-[15px] after:content-[''] after:absolute after:start-0 after:top-[15px] after:w-3 after:h-px after:bg-hr-neutral-800">
                     <button
                       type="button"
-                      class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 w-[calc(100%+18px)] text-start -ms-2 -me-2.5 px-2 py-[5px] rounded-md cursor-pointer transition-[background-color] duration-150 hover:bg-neutral-800/60 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-primary-500 focus-visible:-outline-offset-2"
+                      class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 w-[calc(100%+18px)] text-start -ms-2 -me-2.5 px-2 py-[5px] rounded-md cursor-pointer transition-[background-color] duration-150 hover:bg-hr-neutral-800/60 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-primary-500 focus-visible:-outline-offset-2"
                       [attr.aria-label]="assignment.department + ' - ' + formatDateRange(assignment.startDate, assignment.endDate)"
                       (click)="onAssignmentClick(assignment)">
                       <oct-text color="1" variant="sm">{{ assignment.department }}</oct-text>

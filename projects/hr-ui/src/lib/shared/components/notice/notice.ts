@@ -104,10 +104,10 @@ export class NoticeComponent {
   // Computed properties for variant-based styling
   readonly noticeClasses = computed(() => {
     const variantClasses = {
-      info: 'bg-blue-950 border border-blue-800 text-blue-600',
-      success: 'bg-green-950 border border-green-800 text-green-600',
-      warning: 'bg-orange-950 border border-orange-800 text-orange-600',
-      error: 'bg-red-950 border border-red-800 text-error'
+      info: 'bg-hr-blue-950 border border-hr-blue-800 text-hr-blue-600',
+      success: 'bg-hr-green-950 border border-hr-green-800 text-hr-green-600',
+      warning: 'bg-hr-orange-950 border border-hr-orange-800 text-hr-orange-600',
+      error: 'bg-hr-red-950 border border-hr-red-800 text-error'
     };
 
     return variantClasses[this.variant()];
@@ -115,10 +115,10 @@ export class NoticeComponent {
 
   readonly iconColorClass = computed(() => {
     const colorClasses = {
-      info: 'text-blue-500',
-      success: 'text-green-500',
-      warning: 'text-orange-500',
-      error: 'text-red-500'
+      info: 'text-hr-blue-500',
+      success: 'text-hr-green-500',
+      warning: 'text-hr-orange-500',
+      error: 'text-hr-red-500'
     };
 
     return colorClasses[this.variant()];
@@ -126,10 +126,10 @@ export class NoticeComponent {
 
   readonly dismissButtonClass = computed(() => {
     const buttonClasses = {
-      info: 'text-blue-600 hover:text-blue-500 hover:bg-blue-900',
-      success: 'text-green-600 hover:text-green-500 hover:bg-green-900',
-      warning: 'text-orange-600 hover:text-orange-500 hover:bg-orange-900',
-      error: 'text-red-600 hover:text-red-500 hover:bg-red-900'
+      info: 'text-hr-blue-600 hover:text-hr-blue-500 hover:bg-hr-blue-900',
+      success: 'text-hr-green-600 hover:text-hr-green-500 hover:bg-hr-green-900',
+      warning: 'text-hr-orange-600 hover:text-hr-orange-500 hover:bg-hr-orange-900',
+      error: 'text-hr-red-600 hover:text-hr-red-500 hover:bg-hr-red-900'
     };
 
     return buttonClasses[this.variant()];

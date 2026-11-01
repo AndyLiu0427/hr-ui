@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { TextComponent } from '../text/text';
 
 const SPINNER_SIZE_CLASSES = { sm: 'size-6', md: 'size-8', lg: 'size-12' };
-const SPINNER_COLOR_CLASSES = { primary: 'border-primary-600', neutral: 'border-neutral-700' };
+const SPINNER_COLOR_CLASSES = { primary: 'border-primary-600', neutral: 'border-hr-neutral-700' };
 const TEXT_SIZE_CLASSES = { sm: 'mt-2', md: 'mt-4', lg: 'mt-6' };
 
 @Component({

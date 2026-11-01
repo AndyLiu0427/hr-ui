@@ -355,13 +355,13 @@ export class SearchSelectComponent implements AfterViewInit {
     classes.push(sizeMap[this.size()]);
 
     if (this.isDisabled()) {
-      classes.push('!bg-neutral-900', 'text-disabled', 'cursor-not-allowed');
+      classes.push('!bg-hr-neutral-900', 'text-disabled', 'cursor-not-allowed');
     } else {
       classes.push('cursor-pointer', 'hover:border-primary-600');
     }
 
     if (this.hasError()) {
-      classes.push('!border-transparent', 'outline-2', '!outline-red-500');
+      classes.push('!border-transparent', 'outline-2', '!outline-hr-red-500');
     } else if (this.isOpen()) {
       classes.push('!border-transparent', 'outline-2', 'outline-primary', 'outline-offset-transparent');
     }

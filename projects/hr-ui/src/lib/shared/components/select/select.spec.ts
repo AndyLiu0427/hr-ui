@@ -190,7 +190,7 @@ describe('SelectComponent', () => {
     it('suppresses the error outline when bare, since the shell owns the error treatment', () => {
       ref.setInput('bare', true);
       ref.setInput('errorText', 'bad');
-      expect(component.triggerClasses()).not.toContain('outline-red-500');
+      expect(component.triggerClasses()).not.toContain('outline-hr-red-500');
     });
 
     it('still shows disabled affordance when bare, without the filled background', () => {
@@ -198,7 +198,7 @@ describe('SelectComponent', () => {
       ref.setInput('disabled', true);
       const cls = component.triggerClasses();
       expect(cls).toContain('cursor-not-allowed');
-      expect(cls).not.toContain('bg-neutral-900');
+      expect(cls).not.toContain('bg-hr-neutral-900');
     });
   });
 

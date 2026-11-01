@@ -3,10 +3,10 @@
        labels start at their dot, so only the trailing label needs room. -->
   <div class="w-full" [class]="labelAlign() === 'start' ? 'pr-12' : 'px-8'">
     <div class="relative" [style.height.px]="containerHeight()">
-      <div class="absolute left-0 right-0 h-px bg-neutral-800" [style.top.px]="trackTop()"></div>
+      <div class="absolute left-0 right-0 h-px bg-hr-neutral-800" [style.top.px]="trackTop()"></div>
       @if (emphasisSegment(); as segment) {
         <!-- Accent stretch: from the emphasized node to the end of the span. -->
-        <div class="absolute h-px bg-blue-600" [style.left.%]="segment.left" [style.width.%]="segment.width" [style.top.px]="trackTop()"></div>
+        <div class="absolute h-px bg-hr-blue-600" [style.left.%]="segment.left" [style.width.%]="segment.width" [style.top.px]="trackTop()"></div>
       }
 
       @for (marker of yearMarkers(); track marker.year) {
@@ -15,7 +15,7 @@
         </oct-text>
         @if (marker.tickPercent !== null) {
           <!-- 13px tall so the tick crosses the 1px track symmetrically (6px above, 6px below its center). -->
-          <div class="absolute w-px h-[13px] -translate-x-1/2 bg-neutral-700" [style.left.%]="marker.tickPercent" [style.top.px]="trackTop() - 6"></div>
+          <div class="absolute w-px h-[13px] -translate-x-1/2 bg-hr-neutral-700" [style.left.%]="marker.tickPercent" [style.top.px]="trackTop() - 6"></div>
         }
       }
 
@@ -24,7 +24,7 @@
              covers a same-day neutral dot instead of leaving a sliver behind it. -->
         <span
           class="absolute -translate-x-1/2 rounded-full"
-          [class]="item.node.emphasis ? 'h-[11px] w-[11px] bg-blue-600 z-10' : 'h-[9px] w-[9px] bg-neutral-50'"
+          [class]="item.node.emphasis ? 'h-[11px] w-[11px] bg-hr-blue-600 z-10' : 'h-[9px] w-[9px] bg-hr-neutral-50'"
           [style.left.%]="item.percent"
           [style.top.px]="item.node.emphasis ? trackTop() - 5 : trackTop() - 4"
         ></span>
@@ -35,7 +35,7 @@
           [style.left.%]="item.labelPercent"
           [style.top.px]="item.side === 'above' ? aboveTextTop() : textTop()"
         >
-          <oct-text [color]="item.node.emphasis ? 'inherit' : '1'" variant="sm" weight="medium" [class.text-blue-600]="item.node.emphasis">
+          <oct-text [color]="item.node.emphasis ? 'inherit' : '1'" variant="sm" weight="medium" [class.text-hr-blue-600]="item.node.emphasis">
             {{ item.label }}
           </oct-text>
         </div>

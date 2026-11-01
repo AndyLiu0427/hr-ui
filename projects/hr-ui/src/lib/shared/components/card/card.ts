@@ -5,8 +5,8 @@ export type CardPadding = 'none' | 'sm' | 'md' | 'lg';
 
 const STATUS_CLASSES: Record<CardStatus, string> = {
   initial: 'border border-primary',
-  success: 'ring-4 ring-green-500 border border-transparent',
-  error: 'ring-4 ring-red-500 border border-transparent'
+  success: 'ring-4 ring-hr-green-500 border border-transparent',
+  error: 'ring-4 ring-hr-red-500 border border-transparent'
 };
 
 const PADDING_CLASSES: Record<CardPadding, string> = {

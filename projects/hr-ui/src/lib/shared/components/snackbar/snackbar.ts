@@ -125,11 +125,11 @@ export class SnackbarComponent implements OnInit, OnDestroy {
     };
 
     const typeClasses = {
-      success: ['bg-green-950', 'border-green-800', 'text-green-600'],
-      error: ['bg-red-950', 'border-red-800', 'text-red-600'],
-      warning: ['bg-orange-950', 'border-orange-800', 'text-orange-600'],
-      info: ['bg-blue-950', 'border-blue-800', 'text-blue-600'],
-      neutral: ['bg-secondary', 'border-neutral-800', 'text-1', '!text-sm']
+      success: ['bg-hr-green-950', 'border-hr-green-800', 'text-hr-green-600'],
+      error: ['bg-hr-red-950', 'border-hr-red-800', 'text-hr-red-600'],
+      warning: ['bg-hr-orange-950', 'border-hr-orange-800', 'text-hr-orange-600'],
+      info: ['bg-hr-blue-950', 'border-hr-blue-800', 'text-hr-blue-600'],
+      neutral: ['bg-secondary', 'border-hr-neutral-800', 'text-1', '!text-sm']
     };
 
     const classes = [...baseClasses, ...sizeClasses[this.size()], ...positionClasses[this.position()], ...typeClasses[this.type()]];
@@ -188,10 +188,10 @@ export class SnackbarComponent implements OnInit, OnDestroy {
     };
 
     const typeClasses = {
-      success: ['text-green-600'],
-      error: ['text-red-600'],
-      warning: ['text-orange-600'],
-      info: ['text-blue-600'],
+      success: ['text-hr-green-600'],
+      error: ['text-hr-red-600'],
+      warning: ['text-hr-orange-600'],
+      info: ['text-hr-blue-600'],
       neutral: ['text-1']
     };
 
@@ -204,10 +204,10 @@ export class SnackbarComponent implements OnInit, OnDestroy {
 
   readonly descriptionClasses = computed(() => {
     const typeClasses = {
-      success: 'text-green-600',
-      error: 'text-red-600',
-      warning: 'text-orange-600',
-      info: 'text-blue-600',
+      success: 'text-hr-green-600',
+      error: 'text-hr-red-600',
+      warning: 'text-hr-orange-600',
+      info: 'text-hr-blue-600',
       neutral: 'text-3'
     };
 

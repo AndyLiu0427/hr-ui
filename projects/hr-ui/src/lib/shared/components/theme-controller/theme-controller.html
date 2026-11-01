@@ -1,12 +1,12 @@
 @switch (variant()) {
   @case ('list') {
     <button (click)="toggleTheme($event)"
-            class="flex items-center gap-3 w-full px-4 py-4 hover:bg-neutral-800 transition-colors"
+            class="flex items-center gap-3 w-full px-4 py-4 hover:bg-hr-neutral-800 transition-colors"
             [attr.aria-label]="getAriaLabel()"
             [disabled]="disabled()">
-      <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-neutral-800">
+      <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-hr-neutral-800">
         <oct-icon [name]="themeIcon()" size="sm"
-                  class="text-neutral-400 transition-transform duration-500 ease-out"
+                  class="text-hr-neutral-400 transition-transform duration-500 ease-out"
                   [style.transform]="iconRotation()" />
       </div>
       <oct-text color="1" variant="md" class="flex-1 text-left">{{ themeLabel() }}</oct-text>

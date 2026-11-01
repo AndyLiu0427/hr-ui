@@ -51,7 +51,7 @@ export class RadioComponent {
     // first line instead of the whole block.
     const baseClasses = ['inline-flex', this.description() ? 'items-start' : 'items-center', 'gap-3', 'cursor-pointer'];
     if (this.disabled()) {
-      baseClasses.push('cursor-not-allowed', 'text-neutral-600');
+      baseClasses.push('cursor-not-allowed', 'text-hr-neutral-600');
     }
     return baseClasses.join(' ');
   });
@@ -96,9 +96,9 @@ export class RadioComponent {
       'checked:before:opacity-100',
       'checked:before:scale-100',
       'disabled:cursor-not-allowed',
-      'disabled:border-neutral-800',
-      'disabled:hover:border-neutral-800',
-      'disabled:before:bg-neutral-700',
+      'disabled:border-hr-neutral-800',
+      'disabled:hover:border-hr-neutral-800',
+      'disabled:before:bg-hr-neutral-700',
       'disabled:active:scale-100',
       'w-4',
       'h-4',

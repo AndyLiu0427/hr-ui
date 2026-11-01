@@ -77,7 +77,7 @@ export class IconComponent {
   private readonly colorMap: Record<IconColor, string> = {
     error: 'text-error',
     success: 'text-success-600',
-    disabled: 'text-neutral-600',
+    disabled: 'text-hr-neutral-600',
     primary: 'text-primary-600',
     neutral: 'text-1'
   };

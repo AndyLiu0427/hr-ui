@@ -106,10 +106,10 @@ export class DividerComponent {
       const colorMap = {
         primary: 'bg-primary-500',
         secondary: 'bg-secondary',
-        neutral: 'bg-neutral-700',
-        success: 'bg-green-500',
-        warning: 'bg-orange-500',
-        error: 'bg-red-500'
+        neutral: 'bg-hr-neutral-700',
+        success: 'bg-hr-green-500',
+        warning: 'bg-hr-orange-500',
+        error: 'bg-hr-red-500'
       };
       classes.push(colorMap[this.color()]);
     } else {
@@ -117,10 +117,10 @@ export class DividerComponent {
       const borderColorMap = {
         primary: 'border-primary-500',
         secondary: 'border-secondary',
-        neutral: 'border-neutral-700',
-        success: 'border-green-500',
-        warning: 'border-orange-500',
-        error: 'border-red-500'
+        neutral: 'border-hr-neutral-700',
+        success: 'border-hr-green-500',
+        warning: 'border-hr-orange-500',
+        error: 'border-hr-red-500'
       };
 
       if (this.orientation() === 'horizontal') {

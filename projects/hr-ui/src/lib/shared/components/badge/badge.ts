@@ -97,20 +97,20 @@ export class BadgeComponent {
   private getColorClasses(): string[] {
     if (this.mode() === 'solid') {
       const solidColors: Record<BadgeColor, string[]> = {
-        neutral: ['bg-neutral-400', 'text-neutral-950'],
-        success: ['bg-green-600', 'text-neutral-950'],
-        warning: ['bg-orange-600', 'text-neutral-950'],
-        error: ['bg-red-600', 'text-neutral-950'],
-        info: ['bg-blue-600', 'text-neutral-950']
+        neutral: ['bg-hr-neutral-400', 'text-hr-neutral-950'],
+        success: ['bg-hr-green-600', 'text-hr-neutral-950'],
+        warning: ['bg-hr-orange-600', 'text-hr-neutral-950'],
+        error: ['bg-hr-red-600', 'text-hr-neutral-950'],
+        info: ['bg-hr-blue-600', 'text-hr-neutral-950']
       };
       return solidColors[this.color()] || solidColors['neutral'];
     } else {
       const opacityColors: Record<BadgeColor, string[]> = {
-        neutral: ['bg-neutral-900', 'text-1'],
-        success: ['bg-green-950', 'text-green-600'],
-        warning: ['bg-orange-950', 'text-orange-600'],
-        error: ['bg-red-950', 'text-red-600'],
-        info: ['bg-blue-950', 'text-blue-600']
+        neutral: ['bg-hr-neutral-900', 'text-1'],
+        success: ['bg-hr-green-950', 'text-hr-green-600'],
+        warning: ['bg-hr-orange-950', 'text-hr-orange-600'],
+        error: ['bg-hr-red-950', 'text-hr-red-600'],
+        info: ['bg-hr-blue-950', 'text-hr-blue-600']
       };
       return opacityColors[this.color()] || opacityColors['neutral'];
     }

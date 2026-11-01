@@ -59,7 +59,7 @@ export class ThemeControllerComponent {
 
   // CSS classes
   get containerClasses(): string {
-    const baseClasses = ['theme-controller', 'relative', 'inline-flex', 'items-center', '!text-neutral-500'];
+    const baseClasses = ['theme-controller', 'relative', 'inline-flex', 'items-center', '!text-hr-neutral-500'];
 
     baseClasses.push('gap-2');
 

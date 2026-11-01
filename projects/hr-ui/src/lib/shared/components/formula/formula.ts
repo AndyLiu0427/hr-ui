@@ -13,7 +13,7 @@ import { Component, ChangeDetectionStrategy, input } from '@angular/core';
       </div>
 
       <!-- Dividing line -->
-      <div class="w-full border-t bg-neutral-50 my-1"></div>
+      <div class="w-full border-t bg-hr-neutral-50 my-1"></div>
 
       <!-- Denominator -->
       <div class="text-center">

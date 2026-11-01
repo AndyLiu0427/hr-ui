@@ -11,15 +11,15 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
         <div class="text-center">
-          <oct-text color="1" variant="2xl" weight="bold" class="text-green-600">{{ componentLinks().length }}</oct-text>
+          <oct-text color="1" variant="2xl" weight="bold" class="text-hr-green-600">{{ componentLinks().length }}</oct-text>
           <oct-text color="3" variant="sm">Components</oct-text>
         </div>
         <div class="text-center">
-          <oct-text color="1" variant="2xl" weight="bold" class="text-orange-600">{{ colorFamilyCount }}</oct-text>
+          <oct-text color="1" variant="2xl" weight="bold" class="text-hr-orange-600">{{ colorFamilyCount }}</oct-text>
           <oct-text color="3" variant="sm">Color Palettes</oct-text>
         </div>
         <div class="text-center">
-          <oct-text color="1" variant="2xl" weight="bold" class="text-blue-600">{{ typographyScales().length }}</oct-text>
+          <oct-text color="1" variant="2xl" weight="bold" class="text-hr-blue-600">{{ typographyScales().length }}</oct-text>
           <oct-text color="3" variant="sm">Typography Scales</oct-text>
         </div>
       </div>
@@ -35,7 +35,7 @@
         <a [routerLink]="[]" [fragment]="'components'" class="group">
           <oct-card class="hover:shadow-lg group-hover:scale-[1.02]">
             <div class="flex items-center space-x-4">
-              <oct-icon name="Grid3x3" [size]="32" class="text-green-600" />
+              <oct-icon name="Grid3x3" [size]="32" class="text-hr-green-600" />
               <div>
                 <oct-text color="1" variant="md" weight="semibold">Components</oct-text>
                 <oct-text color="3" variant="sm">Browse all available components</oct-text>
@@ -47,7 +47,7 @@
         <a routerLink="/colors" class="group">
           <oct-card class="hover:shadow-lg group-hover:scale-[1.02]">
             <div class="flex items-center space-x-4">
-              <oct-icon name="Palette" [size]="32" class="text-orange-600" />
+              <oct-icon name="Palette" [size]="32" class="text-hr-orange-600" />
               <div>
                 <oct-text color="1" variant="md" weight="semibold">Color Palette</oct-text>
                 <oct-text color="3" variant="sm">Semantic tokens and the full color palette</oct-text>
@@ -59,7 +59,7 @@
         <a [routerLink]="[]" [fragment]="'typography'" class="group">
           <oct-card class="hover:shadow-lg group-hover:scale-[1.02]">
             <div class="flex items-center space-x-4">
-              <oct-icon name="Type" [size]="32" class="text-blue-600" />
+              <oct-icon name="Type" [size]="32" class="text-hr-blue-600" />
               <div>
                 <oct-text color="1" variant="md" weight="semibold">Typography</oct-text>
                 <oct-text color="3" variant="sm">View text styles and scales</oct-text>
@@ -142,7 +142,7 @@
             <oct-text color="1" variant="xl" weight="semibold" class="mb-4">Typography Scale</oct-text>
             <div class="space-y-4">
               @for (scale of typographyScales(); track scale.class) {
-                <div class="flex items-baseline justify-between p-4 border border-neutral-700 rounded-lg">
+                <div class="flex items-baseline justify-between p-4 border border-hr-neutral-700 rounded-lg">
                   <div class="flex-1">
                     <oct-text color="1" [variant]="getVariantFromClass(scale.class)" weight="medium">
                       {{ scale.name }}
@@ -152,7 +152,7 @@
                     </oct-text>
                   </div>
                   <div class="text-right">
-                    <code class="text-xs bg-neutral-800 text-neutral-300 px-2 py-1 rounded">
+                    <code class="text-xs bg-hr-neutral-800 text-hr-neutral-300 px-2 py-1 rounded">
                       {{ scale.class }}
                     </code>
                   </div>
@@ -198,8 +198,8 @@
               All components are built with Angular's standalone architecture and follow modern best practices.
               Import components directly into your modules or use them in standalone components.
             </oct-text>
-            <div class="bg-neutral-800 rounded-lg p-4">
-              <code class="text-sm text-neutral-300">
+            <div class="bg-hr-neutral-800 rounded-lg p-4">
+              <code class="text-sm text-hr-neutral-300">
                 import &#123; ButtonComponent &#125; from './shared/components/button';<br>
                 import &#123; CardComponent &#125; from './shared/components/card';
               </code>
@@ -217,8 +217,8 @@
               The design system uses Tailwind CSS with custom design tokens.
               Use semantic color classes like bg-primary-500, text-success-600, etc.
             </oct-text>
-            <div class="bg-neutral-800 rounded-lg p-4">
-              <code class="text-sm text-neutral-300">
+            <div class="bg-hr-neutral-800 rounded-lg p-4">
+              <code class="text-sm text-hr-neutral-300">
                 class="bg-primary-600 text-white rounded-lg p-4"<br>
                 class="text-error-600 bg-error-50 border-error-200"
               </code>
@@ -229,7 +229,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="text-center py-8 border-t border-neutral-700">
+    <footer class="text-center py-8 border-t border-hr-neutral-700">
       <oct-text color="3" variant="md">
         Built with Angular {{ '20' }} and Tailwind CSS.
         <oct-text color="1" variant="md" link class="text-primary-600 hover:text-primary-500 transition-colors ml-1">View Documentation</oct-text>

@@ -141,7 +141,7 @@ describe('InputComponent', () => {
       // The combo control relies on this: one shell owns the error treatment for both halves.
       ref.setInput('errorText', 'bad');
       TestBed.tick?.();
-      expect(component.inputWrapperClass()).toContain('!outline-red-500');
+      expect(component.inputWrapperClass()).toContain('!outline-hr-red-500');
       expect(component.inputClass()).not.toContain('outline-red');
     });
   });

@@ -575,11 +575,11 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
     const state = this.isDisabled()
       ? bare
         ? 'text-disabled cursor-not-allowed'
-        : '!bg-neutral-900 text-disabled cursor-not-allowed'
+        : '!bg-hr-neutral-900 text-disabled cursor-not-allowed'
       : bare
         ? 'cursor-pointer'
         : 'cursor-pointer hover:border-primary-600';
-    const error = this.hasError() && !bare ? '!border-transparent outline-2 !outline-red-500' : '';
+    const error = this.hasError() && !bare ? '!border-transparent outline-2 !outline-hr-red-500' : '';
     const open = this.isOpen() && !bare ? '!border-transparent outline-2 outline-primary outline-offset-transparent' : '';
 
     return [base, size, state, error, open, this.bareFocusRing()].filter(Boolean).join(' ');

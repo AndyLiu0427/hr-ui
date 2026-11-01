@@ -131,9 +131,9 @@ export class TextareaComponent implements FormValueControl<string> {
     ];
 
     if (this.hasError()) {
-      classes.push('!border-transparent', 'outline-2', '!outline-red-500');
+      classes.push('!border-transparent', 'outline-2', '!outline-hr-red-500');
     } else if (this.disabled()) {
-      classes.push('disabled:border-neutral-800', 'disabled:bg-neutral-900', 'disabled:text-disabled', 'cursor-not-allowed');
+      classes.push('disabled:border-hr-neutral-800', 'disabled:bg-hr-neutral-900', 'disabled:text-disabled', 'cursor-not-allowed');
     } else if (!this.value()) {
       classes.push('text-3', 'focus:!border-transparent', 'focus:outline-2', 'focus:outline-primary', 'focus:outline-offset-transparent');
     }

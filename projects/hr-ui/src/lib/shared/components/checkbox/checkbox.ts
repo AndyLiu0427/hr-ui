@@ -102,7 +102,7 @@ export class CheckboxComponent implements FormCheckboxControl {
     // top so it sits on the label line, not the centre of the text block.
     baseClasses.push(this.description() ? 'items-start' : 'items-center');
     if (this.isDisabled()) {
-      baseClasses.push('cursor-not-allowed', 'text-neutral-600');
+      baseClasses.push('cursor-not-allowed', 'text-hr-neutral-600');
     }
     return baseClasses.join(' ');
   });
@@ -112,8 +112,8 @@ export class CheckboxComponent implements FormCheckboxControl {
       'appearance-none',
       'cursor-pointer',
       'border',
-      'border-neutral-800',
-      'bg-neutral-900',
+      'border-hr-neutral-800',
+      'bg-hr-neutral-900',
       'flex-shrink-0',
       'inline-block',
       'relative',
@@ -130,7 +130,7 @@ export class CheckboxComponent implements FormCheckboxControl {
       'before:absolute',
       'before:inset-0.5',
       'before:opacity-0',
-      'before:bg-neutral-950',
+      'before:bg-hr-neutral-950',
       'before:transition-all',
       'before:duration-300',
       'before:ease-in-out',
@@ -142,7 +142,7 @@ export class CheckboxComponent implements FormCheckboxControl {
       'checked:before:opacity-100',
       'checked:before:[clip-path:polygon(20%_100%,20%_80%,50%_80%,50%_0%,70%_0%,70%_100%)]',
       'disabled:cursor-not-allowed',
-      'disabled:hover:border-neutral-800',
+      'disabled:hover:border-hr-neutral-800',
       'w-4',
       'h-4',
       'rounded-sm'
@@ -154,7 +154,7 @@ export class CheckboxComponent implements FormCheckboxControl {
     }
 
     if (this.hasError()) {
-      baseClasses.push('!border-red-500', 'focus-visible:!outline-red-500', 'checked:!bg-red-500', 'checked:!border-red-500');
+      baseClasses.push('!border-hr-red-500', 'focus-visible:!outline-hr-red-500', 'checked:!bg-hr-red-500', 'checked:!border-hr-red-500');
     }
 
     return baseClasses.join(' ');

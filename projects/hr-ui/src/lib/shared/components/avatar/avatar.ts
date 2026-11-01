@@ -125,20 +125,20 @@ export class AvatarComponent {
 
     const content = this.displayContent();
     if (content === 'image' || content === 'fallback') {
-      classes.push('bg-neutral-200');
+      classes.push('bg-hr-neutral-200');
     } else {
-      classes.push('bg-blue-500', 'text-white', 'font-semibold');
+      classes.push('bg-hr-blue-500', 'text-white', 'font-semibold');
     }
 
     if (this.clickable()) {
       classes.push(
         'cursor-pointer',
         'hover:ring-2',
-        'hover:ring-blue-300',
+        'hover:ring-hr-blue-300',
         'hover:ring-offset-1',
         'focus-visible:outline-none',
         'focus-visible:ring-2',
-        'focus-visible:ring-blue-500',
+        'focus-visible:ring-hr-blue-500',
         'focus-visible:ring-offset-2'
       );
     }
@@ -167,11 +167,11 @@ export class AvatarComponent {
       classes.push('relative', 'flex');
     } else {
       const colorMap: Record<string, string> = {
-        offline: 'bg-neutral-400',
+        offline: 'bg-hr-neutral-400',
         busy: 'bg-rose-500',
         away: 'bg-amber-500'
       };
-      classes.push(colorMap[status] ?? 'bg-neutral-400');
+      classes.push(colorMap[status] ?? 'bg-hr-neutral-400');
     }
 
     return classes.join(' ');

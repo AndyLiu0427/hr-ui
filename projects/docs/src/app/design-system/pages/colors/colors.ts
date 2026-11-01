@@ -249,7 +249,7 @@ export class ColorsPageComponent {
 
   private scale(family: string, values: string[]): Shade[] {
     const steps = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'];
-    return steps.map((step, i) => ({ name: step, class: `bg-${family}-${step}`, value: values[i] }));
+    return steps.map((step, i) => ({ name: step, class: `bg-hr-${family}-${step}`, value: values[i] }));
   }
 
   swatchFill(token: string): string {

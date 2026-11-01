@@ -128,12 +128,12 @@ export class SwitchComponent implements FormCheckboxControl {
     ];
 
     const colorClasses: Record<SwitchColor, { on: string; off: string; focus: string }> = {
-      primary: { on: 'bg-primary-600', off: 'bg-neutral-800', focus: 'focus-visible:outline-blue-500' },
-      success: { on: 'bg-green-600', off: 'bg-neutral-800', focus: 'focus-visible:outline-green-500' },
-      error: { on: 'bg-red-600', off: 'bg-neutral-800', focus: 'focus-visible:outline-red-500' },
-      warning: { on: 'bg-orange-600', off: 'bg-neutral-800', focus: 'focus-visible:outline-amber-500' },
-      info: { on: 'bg-blue-600', off: 'bg-neutral-800', focus: 'focus-visible:outline-sky-500' },
-      neutral: { on: 'bg-neutral-600', off: 'bg-neutral-800', focus: 'focus-visible:outline-neutral-500' }
+      primary: { on: 'bg-primary-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-hr-blue-500' },
+      success: { on: 'bg-hr-green-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-hr-green-500' },
+      error: { on: 'bg-hr-red-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-hr-red-500' },
+      warning: { on: 'bg-hr-orange-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-amber-500' },
+      info: { on: 'bg-hr-blue-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-sky-500' },
+      neutral: { on: 'bg-hr-neutral-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-hr-neutral-500' }
     };
 
     const selectedColor = colorClasses[this.color()];
@@ -145,7 +145,7 @@ export class SwitchComponent implements FormCheckboxControl {
     }
 
     if (this.hasError()) {
-      baseClasses.push('!outline-red-500', 'focus-visible:!outline-red-500');
+      baseClasses.push('!outline-hr-red-500', 'focus-visible:!outline-hr-red-500');
     } else {
       baseClasses.push(selectedColor.focus);
     }
@@ -178,7 +178,7 @@ export class SwitchComponent implements FormCheckboxControl {
     const baseClasses = ['text-sm', 'select-none'];
 
     if (this.computedDisabled()) {
-      baseClasses.push('text-neutral-600', 'cursor-not-allowed');
+      baseClasses.push('text-hr-neutral-600', 'cursor-not-allowed');
     } else {
       baseClasses.push('text-1', 'cursor-pointer');
     }

@@ -89,7 +89,7 @@ export class CareerProgressionComponent {
     // relative, or the trunk - an absolutely positioned pseudo-element - paints
     // over the dot instead of running behind it.
     const baseClasses = 'relative w-[9px] h-[9px] rounded-full shrink-0';
-    return isCurrent ? `${baseClasses} bg-green-500` : `${baseClasses} bg-neutral-700`;
+    return isCurrent ? `${baseClasses} bg-hr-green-500` : `${baseClasses} bg-hr-neutral-700`;
   }
 
   onAssignmentClick(assignment: CareerProgressionAssignment): void {

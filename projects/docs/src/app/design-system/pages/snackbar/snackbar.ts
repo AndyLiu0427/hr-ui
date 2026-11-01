@@ -57,11 +57,11 @@ export class SnackbarPageComponent {
 
   // Available options for selectors
   snackbarTypes: { type: SnackbarType; description: string; color: string }[] = [
-    { type: 'success', description: 'Success messages', color: '!text-green-600' },
-    { type: 'error', description: 'Error messages', color: '!text-red-600' },
-    { type: 'warning', description: 'Warning messages', color: '!text-orange-600' },
-    { type: 'info', description: 'Information messages', color: '!text-blue-600' },
-    { type: 'neutral', description: 'General notifications', color: '!text-neutral-600' }
+    { type: 'success', description: 'Success messages', color: '!text-hr-green-600' },
+    { type: 'error', description: 'Error messages', color: '!text-hr-red-600' },
+    { type: 'warning', description: 'Warning messages', color: '!text-hr-orange-600' },
+    { type: 'info', description: 'Information messages', color: '!text-hr-blue-600' },
+    { type: 'neutral', description: 'General notifications', color: '!text-hr-neutral-600' }
   ];
 
   snackbarPositions: { position: SnackbarPosition; label: string; description: string }[] = [

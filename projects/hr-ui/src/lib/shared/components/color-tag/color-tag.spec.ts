@@ -29,7 +29,7 @@ describe('ColorTagComponent', () => {
     it('prints the code beside the mark, so a colour is never the only identifier', () => {
       setup({ variant: 'inline', color: 'orange', label: 'JO-4471' });
       expect(host.textContent).toContain('JO-4471');
-      expect(mark()?.className).toContain('bg-orange-600');
+      expect(mark()?.className).toContain('bg-hr-orange-600');
     });
 
     // A column of codes has to keep one straight left edge, so an unfiled client still
@@ -49,7 +49,7 @@ describe('ColorTagComponent', () => {
   describe('corner', () => {
     it('pins the mark to the cell and still prints the code', () => {
       setup({ variant: 'corner', color: 'red', label: 'EMP-00421' });
-      expect(corner()?.className).toContain('bg-red-600');
+      expect(corner()?.className).toContain('bg-hr-red-600');
       expect(host.textContent).toContain('EMP-00421');
     });
 
@@ -64,7 +64,7 @@ describe('ColorTagComponent', () => {
 
   it('cut paints a wedge rather than the row mark', () => {
     setup({ variant: 'cut', color: 'red' });
-    expect(wedge()?.className).toContain('bg-red-600');
+    expect(wedge()?.className).toContain('bg-hr-red-600');
     expect(mark()).toBeNull();
   });
 });

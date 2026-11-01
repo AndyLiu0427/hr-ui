@@ -18,7 +18,7 @@ import { TextComponent, type TextColor, type TextWeight } from '../text/text';
  */
 @Component({
   selector: 'oct-settings-group',
-  host: { class: 'block bg-neutral-900 rounded-2xl overflow-hidden' },
+  host: { class: 'block bg-hr-neutral-900 rounded-2xl overflow-hidden' },
   template: `<ng-content />`,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -48,7 +48,7 @@ export type SettingsItemColor = 'neutral' | 'error';
       </div>
       <oct-text [color]="textColor()" variant="md" [weight]="textWeight()" class="flex-1 text-left">{{ label() }}</oct-text>
       @if (showChevron()) {
-        <oct-icon name="ChevronRight" size="xs" class="text-neutral-500" />
+        <oct-icon name="ChevronRight" size="xs" class="text-hr-neutral-500" />
       }
     </button>
   `,
@@ -65,14 +65,14 @@ export class SettingsItemComponent {
 
   readonly buttonClasses = computed(() => {
     const base = 'flex items-center gap-3 w-full px-4 py-4 transition-colors';
-    const hover = this.color() === 'error' ? 'hover:bg-error-900' : 'hover:bg-neutral-800';
+    const hover = this.color() === 'error' ? 'hover:bg-error-900' : 'hover:bg-hr-neutral-800';
     return `${base} ${hover}`;
   });
 
   readonly iconContainerClasses = computed(() => {
     const base = 'flex items-center justify-center w-9 h-9 rounded-xl';
     const isError = this.color() === 'error';
-    return `${base} ${isError ? 'bg-red-900 text-error' : 'bg-neutral-800 text-neutral-400'}`;
+    return `${base} ${isError ? 'bg-hr-red-900 text-error' : 'bg-hr-neutral-800 text-hr-neutral-400'}`;
   });
 
   readonly textColor = computed<TextColor>(() => (this.color() === 'error' ? 'error' : '1'));

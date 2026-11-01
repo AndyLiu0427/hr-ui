@@ -31,3 +31,26 @@ describe('ButtonComponent keyboard press', () => {
     expect(clicks.length).toBe(0);
   });
 });
+
+describe('ButtonComponent link mode', () => {
+  function render(inputs: Record<string, unknown>) {
+    const fixture = TestBed.createComponent(ButtonComponent);
+    for (const [name, value] of Object.entries(inputs)) fixture.componentRef.setInput(name, value);
+    fixture.detectChanges();
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('renders a link that opens safely in a new tab when href is set', () => {
+    const link = render({ href: '/file.pdf', target: '_blank' }).querySelector('a');
+
+    expect(link?.getAttribute('href')).toBe('/file.pdf');
+    expect(link?.getAttribute('rel')).toBe('noopener noreferrer');
+  });
+
+  it('falls back to a disabled button, because a disabled link can still be followed', () => {
+    const element = render({ href: '/file.pdf', disabled: true });
+
+    expect(element.querySelector('a')).toBeNull();
+    expect(element.querySelector('button')?.disabled).toBe(true);
+  });
+});

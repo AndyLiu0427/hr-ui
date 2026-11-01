@@ -29,12 +29,12 @@ export type ColorTagVariant = 'cut' | 'corner' | 'inline';
  * the client.
  */
 const FILL_CLASS: Record<ColorTagColor, string> = {
-  red: 'bg-red-600',
-  orange: 'bg-orange-600',
-  yellow: 'bg-yellow-600',
-  green: 'bg-green-600',
-  blue: 'bg-blue-600',
-  purple: 'bg-violet-600'
+  red: 'bg-hr-red-600',
+  orange: 'bg-hr-orange-600',
+  yellow: 'bg-hr-yellow-600',
+  green: 'bg-hr-green-600',
+  blue: 'bg-hr-blue-600',
+  purple: 'bg-hr-violet-600'
 };
 
 /**

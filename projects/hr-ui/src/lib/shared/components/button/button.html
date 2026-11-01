@@ -1,22 +1,46 @@
-<button
-  [type]="type()"
-  [disabled]="disabled() || loading()"
-  [class]="buttonClasses()"
-  [attr.aria-label]="ariaLabel()"
-  [attr.aria-describedby]="ariaDescribedBy()"
-  [attr.aria-disabled]="disabled() || loading()"
-  (click)="onButtonClick($event)"
-  (mousedown)="onMouseDown($event)"
-  (mouseup)="onMouseUp()"
-  (mouseleave)="onMouseLeave()"
-  (keydown)="onKeyDown($event)"
-  (keyup)="onKeyUp($event)"
-  (focus)="onFocus()"
-  (blur)="onBlur()"
-  [attr.tabindex]="disabled() || loading() ? -1 : 0"
-  #buttonRef>
+<!-- A link renders an <a>, so it can be right-clicked and copied. A disabled or loading
+     link stays a <button>, because only the button has a real disabled state. -->
+@if (asLink()) {
+  <a
+    [href]="href()"
+    [attr.target]="target()"
+    [attr.rel]="target() === '_blank' ? 'noopener noreferrer' : null"
+    [class]="buttonClasses()"
+    [attr.aria-label]="ariaLabel()"
+    [attr.aria-describedby]="ariaDescribedBy()"
+    (click)="onButtonClick($event)"
+    (mousedown)="onMouseDown($event)"
+    (mouseup)="onMouseUp()"
+    (mouseleave)="onMouseLeave()"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    #buttonRef>
+    <ng-container [ngTemplateOutlet]="inner" />
+  </a>
+} @else {
+  <button
+    [type]="type()"
+    [disabled]="disabled() || loading()"
+    [class]="buttonClasses()"
+    [attr.aria-label]="ariaLabel()"
+    [attr.aria-describedby]="ariaDescribedBy()"
+    [attr.aria-disabled]="disabled() || loading()"
+    (click)="onButtonClick($event)"
+    (mousedown)="onMouseDown($event)"
+    (mouseup)="onMouseUp()"
+    (mouseleave)="onMouseLeave()"
+    (keydown)="onKeyDown($event)"
+    (keyup)="onKeyUp($event)"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    [attr.tabindex]="disabled() || loading() ? -1 : 0"
+    #buttonRef>
+    <ng-container [ngTemplateOutlet]="inner" />
+  </button>
+}
 
-
+<!-- One template for both branches: <ng-content> projects into one place only. -->
+<ng-template #inner>
   <!-- Loading spinner -->
   @if (loading()) {
     <oct-icon name="LoaderCircle" size="sm" [class]="'animate-spin ' + iconBoxClass()" aria-hidden="true" />
@@ -35,4 +59,4 @@
   @if (icon() && iconPosition() === 'right' && !loading()) {
     <oct-icon [name]="icon()" size="sm" aria-hidden="true" [class]="iconBoxClass()" />
   }
-</button>
+</ng-template>

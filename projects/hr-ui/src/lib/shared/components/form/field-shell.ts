@@ -54,9 +54,9 @@ export const fieldShellClass = ({ hasError, isDisabled, suppressFocusRing = fals
   ];
 
   if (hasError) {
-    base.push('!border-transparent', 'outline-2', '!outline-red-500', 'focus-within:!outline-red-500');
+    base.push('!border-transparent', 'outline-2', '!outline-hr-red-500', 'focus-within:!outline-hr-red-500');
   } else if (isDisabled) {
-    base.push('border-neutral-800', 'bg-neutral-900', 'cursor-not-allowed');
+    base.push('border-hr-neutral-800', 'bg-hr-neutral-900', 'cursor-not-allowed');
   } else {
     base.push('bg-secondary');
   }

@@ -45,8 +45,8 @@
               [class.right-0]="column.fixed && column.fixedPosition === 'right'"
               [class.bg-secondary]="column.fixed"
               [class.border-r]="cellLines() && !isLastColumn"
-              [class.border-neutral-800]="cellLines() && !isLastColumn"
-              [style.box-shadow]="column.fixed ? 'inset 0 -1px 0 var(--color-neutral-800)' : null"
+              [class.border-hr-neutral-800]="cellLines() && !isLastColumn"
+              [style.box-shadow]="column.fixed ? 'inset 0 -1px 0 var(--color-hr-neutral-800)' : null"
               [style.width]="getColumnWidth(column)"
               [style.min-width]="column.minWidth"
               [style.max-width]="column.maxWidth"
@@ -99,7 +99,7 @@
                 (mousedown)="onResizeStart($event, column)"
                 (click)="$event.stopPropagation()"
               >
-                <oct-icon name="UnfoldHorizontal" [size]="14" class="text-neutral-500" />
+                <oct-icon name="UnfoldHorizontal" [size]="14" class="text-hr-neutral-500" />
               </div>
               }
             </th>
@@ -113,7 +113,7 @@
           <tr
             class="group/row border-primary transition-all duration-300"
             [class.border-b]="!isLast"
-            [class.bg-neutral-900]="striped() && isEven"
+            [class.bg-hr-neutral-900]="striped() && isEven"
             [class.cursor-pointer]="clickableRows()"
             [class.cursor-default]="!clickableRows()"
             (click)="clickableRows() ? onRowClick(row) : null"
@@ -121,7 +121,7 @@
           >
             @for (column of enhancedColumns(); track trackByColumn($index, column); let isLastColumn = $last) {
             <td
-              class="text-sm transition-[background-color] duration-100 group-hover/row:bg-neutral-900"
+              class="text-sm transition-[background-color] duration-100 group-hover/row:bg-hr-neutral-900"
               [class.whitespace-nowrap]="!column.multiline"
               [class.whitespace-normal]="column.multiline === true"
               [class.px-3]="!dense()"
@@ -132,11 +132,11 @@
               [class.text-ellipsis]="!isStatusColumn(column) && !column.fixed && !column.multiline"
               [class.sticky]="column.fixed"
               [class.border-r]="cellLines() && !isLastColumn"
-              [class.border-r-neutral-800]="cellLines() && !isLastColumn"
+              [class.border-r-hr-neutral-800]="cellLines() && !isLastColumn"
               [class.left-0]="column.fixed && column.fixedPosition === 'left'"
               [class.right-0]="column.fixed && column.fixedPosition === 'right'"
               [class.bg-secondary]="column.fixed && !(striped() && isEven)"
-              [class.bg-neutral-900]="column.fixed && striped() && isEven"
+              [class.bg-hr-neutral-900]="column.fixed && striped() && isEven"
               [class.relative]="(isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())"
               [class.after:absolute]="((isActionsColumn(column) && column.fixed) || (isLastNonFixedColumn(column) && !hasFixedActionColumn())) && hasHorizontalScroll() && paginatedData().length > 0"
               [class.after:right-[-24px]]="isLastNonFixedColumn(column) && !hasFixedActionColumn() && hasHorizontalScroll() && paginatedData().length > 0"
@@ -275,7 +275,7 @@
                     aria-label="Increment"
                     (mousedown)="$event.preventDefault()"
                     (click)="$event.stopPropagation(); stepEdit(1, column)"
-                    class="flex h-[13px] w-4 items-center justify-center rounded-t-[4px] hover:bg-neutral-800/70 hover:text-1 active:scale-[0.96] transition-[background-color,color,transform] duration-100"
+                    class="flex h-[13px] w-4 items-center justify-center rounded-t-[4px] hover:bg-hr-neutral-800/70 hover:text-1 active:scale-[0.96] transition-[background-color,color,transform] duration-100"
                   >
                     <oct-icon name="ChevronUp" [size]="11" />
                   </button>
@@ -285,7 +285,7 @@
                     aria-label="Decrement"
                     (mousedown)="$event.preventDefault()"
                     (click)="$event.stopPropagation(); stepEdit(-1, column)"
-                    class="flex h-[13px] w-4 items-center justify-center rounded-b-[4px] hover:bg-neutral-800/70 hover:text-1 active:scale-[0.96] transition-[background-color,color,transform] duration-100"
+                    class="flex h-[13px] w-4 items-center justify-center rounded-b-[4px] hover:bg-hr-neutral-800/70 hover:text-1 active:scale-[0.96] transition-[background-color,color,transform] duration-100"
                   >
                     <oct-icon name="ChevronDown" [size]="11" />
                   </button>
@@ -309,7 +309,7 @@
               <button
                 type="button"
                 (click)="startEdit(rowIndex, column, row, $event)"
-                class="group/edit flex w-full items-center gap-1 -mx-1 px-1 py-0.5 rounded-sm cursor-pointer hover:bg-neutral-800/60 transition-[background-color] duration-150"
+                class="group/edit flex w-full items-center gap-1 -mx-1 px-1 py-0.5 rounded-sm cursor-pointer hover:bg-hr-neutral-800/60 transition-[background-color] duration-150"
                 [class.justify-end]="column.align === 'right'"
                 [class.justify-center]="column.align === 'center'"
                 [title]="getColumnValue(row, column)"
@@ -342,7 +342,7 @@
         </tbody>
 
         @if (footerTemplate(); as template) {
-        <tfoot class="sticky bottom-0 z-5 outline outline-neutral-800 transition-color duration-300">
+        <tfoot class="sticky bottom-0 z-5 outline outline-hr-neutral-800 transition-color duration-300">
           <tr>
             <td [attr.colspan]="enhancedColumns().length" class="p-2 bg-secondary transition-color duration-300">
               <ng-container
@@ -438,7 +438,7 @@
         class="!w-8 rounded-lg"
         [class.hidden]="activePagination()?.page !== page"
         [class.sm:flex]="activePagination()?.page !== page"
-        [style.background-color]="activePagination()?.page === page ? 'var(--color-neutral-950)' : 'transparent'  "
+        [style.background-color]="activePagination()?.page === page ? 'var(--color-hr-neutral-950)' : 'transparent'  "
         (buttonClick)="onPageChange(page)"
       >
         {{ page }}
@@ -481,12 +481,12 @@
             @if (action.icon) {
               <oct-icon
                 [name]="action.icon"
-                [class]="action.color === 'error' ? 'text-red-500' : action.color === 'success' ? 'text-green-500' : action.color === 'warning' ? 'text-orange-500' : 'text-1'"
+                [class]="action.color === 'error' ? 'text-hr-red-500' : action.color === 'success' ? 'text-hr-green-500' : action.color === 'warning' ? 'text-hr-orange-500' : 'text-1'"
               />
             }
             <span
               class="flex-1 text-base"
-              [class]="action.color === 'error' ? 'text-red-500' : action.color === 'success' ? 'text-green-500' : action.color === 'warning' ? 'text-orange-500' : 'text-1'"
+              [class]="action.color === 'error' ? 'text-hr-red-500' : action.color === 'success' ? 'text-hr-green-500' : action.color === 'warning' ? 'text-hr-orange-500' : 'text-1'"
             >
               {{ action.label | translate }}
             </span>
