@@ -19,13 +19,17 @@ export const doc: ComponentDoc = {
     { name: 'filter-enum', title: 'From an enum', description: 'enumToFilterOptions turns an enum into options and uses each value as its label.' }
   ],
   keyboard: [
-    { keys: ['Enter'], action: 'On the filter button, opens or closes the menu.' },
+    { keys: ['Enter'], action: 'On the filter button, opens or closes the menu. On an option, picks it or clears it.' },
     { keys: ['Space'], action: 'Same as Enter.' },
-    { keys: ['Esc'], action: 'Closes the menu.' }
+    { keys: ['↓'], action: 'In the menu, moves from the search box to the options, and down the options.' },
+    { keys: ['↑'], action: 'In the menu, moves up the options, then to the search box.' },
+    { keys: ['Tab'], action: 'Moves through Clear, the search box and the options. Past the last one, closes the menu.' },
+    { keys: ['Esc'], action: 'Closes the menu and puts focus back on the filter button.' }
   ],
   accessibility: [
-    'The menu has role="menu", and each option is a menuitemcheckbox whose aria-checked follows the selection. The count badge is part of the button name, as in "Department 2".',
-    'Focus stays on the button when the menu opens, and Tab moves past the menu, so the options cannot be reached from the keyboard. On a phone the menu opens as a bottom sheet.'
+    'The button is named after label, with the count of selected values, as in "Department filter, 2 selected". It has aria-haspopup and aria-expanded.',
+    'The menu has role="menu", and each option is a menuitemcheckbox whose aria-checked follows the selection.',
+    'When the menu opens, focus moves to the search box, or to the first option when there is no search box. On a phone the menu opens as a bottom sheet instead.'
   ],
   api: ['FilterComponent']
 };
