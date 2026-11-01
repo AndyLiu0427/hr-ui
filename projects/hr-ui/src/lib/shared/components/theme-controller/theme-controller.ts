@@ -35,8 +35,8 @@ export class ThemeControllerComponent {
   // Input properties
   /** button is an icon button, toggle adds a "Theme" label, and list is a full-width row for menus. */
   readonly variant = input<ThemeControllerVariant>('button');
-  /** Not used yet: every variant renders at one size. */
-  readonly size = input<ThemeControllerSize>('md');
+  /** Size of the button in the button and toggle variants. The list variant is a full-width row and ignores it. */
+  readonly size = input<ThemeControllerSize>('sm');
   /** Shows a text label: the current mode for button (with iconOnly false), or "Theme" for toggle. */
   readonly showLabel = input<boolean>(false);
   /** Disables the control. */
@@ -52,7 +52,6 @@ export class ThemeControllerComponent {
   readonly currentTheme = computed(() => {
     return this.themeService.themeMode();
   });
-  readonly effectiveTheme = computed(() => this.themeService.effectiveTheme());
   readonly isTransitioning = computed(() => this.themeService.isTransitioning());
   readonly themeLabel = computed(() => {
     const theme = this.currentTheme();

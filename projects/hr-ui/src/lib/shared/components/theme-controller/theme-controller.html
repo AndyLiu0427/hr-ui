@@ -17,12 +17,11 @@
       <oct-button
         [color]="'neutral'"
         [variant]="'outline'"
-        [size]="'sm'"
+        [size]="size()"
         [shape]="iconOnly() ? 'round' : 'square'"
         [disabled]="disabled()"
         [icon]="themeIcon()"
         [ariaLabel]="getAriaLabel()"
-        [attr.aria-pressed]="effectiveTheme() === 'dark'"
         [attr.title]="themeLabel()"
         (buttonClick)="cycleTheme($event)"
       >
@@ -46,14 +45,12 @@
         <oct-button
           [color]="'neutral'"
           [variant]="'outline'"
-          [size]="'sm'"
+          [size]="size()"
           [shape]="'round'"
           [disabled]="disabled()"
           [icon]="themeIcon()"
           [ariaLabel]="getAriaLabel()"
-          [attr.aria-checked]="effectiveTheme() === 'dark'"
           [attr.title]="themeLabel()"
-          [attr.role]="'switch'"
           (buttonClick)="toggleTheme($event)">
 
           <!-- Screen reader text -->

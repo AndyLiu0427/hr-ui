@@ -3,7 +3,7 @@ import type { ComponentDoc } from '../../docs/types';
 export const doc: ComponentDoc = {
   slug: 'tooltip',
   title: 'Tooltip',
-  description: 'A short label that appears on hover, to name an icon button or explain a value without taking space on the page.',
+  description: 'A short label that appears on hover and on keyboard focus, to name an icon button or explain a value without taking space on the page.',
   imports: ['ButtonComponent', 'TooltipDirective'],
   usage: `<oct-button icon="Download" ariaLabel="Download payslip" octTooltip="Download payslip" />`,
   examples: [
@@ -29,7 +29,8 @@ export const doc: ComponentDoc = {
     }
   ],
   accessibility: [
-    'The tooltip has role="tooltip", and while it is shown its host has aria-describedby pointing at it.',
+    'The tooltip has role="tooltip". While it is shown, the control that takes focus, such as the <button> inside oct-button, has aria-describedby pointing at it.',
+    'It also shows while the host or a control inside it has keyboard focus. Escape closes it.',
     'A tooltip is not a name. An icon-only button still needs ariaLabel, as in the examples above.'
   ],
   api: ['TooltipDirective']

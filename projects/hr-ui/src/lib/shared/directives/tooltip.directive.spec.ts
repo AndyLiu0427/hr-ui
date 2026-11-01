@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
+import { ButtonComponent } from '../components/button/button';
 import { TooltipDirective } from './tooltip.directive';
 
 /**
@@ -59,5 +60,48 @@ describe('octTooltip', () => {
     expect(tooltip.style.left).toBe('530px');
 
     host.dispatchEvent(new MouseEvent('mouseleave'));
+  });
+});
+
+/** oct-button's host never takes focus itself: its inner <button> does, and focus does not bubble. */
+@Component({
+  imports: [TooltipDirective, ButtonComponent],
+  template: `
+    <oct-button octTooltip="Approves every payslip in the run" [octTooltipShowDelay]="0">Approve</oct-button>
+    <button type="button">Next</button>
+  `
+})
+class ComponentHostComponent {}
+
+describe('octTooltip on keyboard focus', () => {
+  const tooltip = () => document.body.querySelector('[role="tooltip"]');
+
+  it('shows when focus lands inside a component host, and describes the control that has focus', () => {
+    const fixture = TestBed.createComponent(ComponentHostComponent);
+    fixture.detectChanges();
+    const button = fixture.nativeElement.querySelector('oct-button button') as HTMLButtonElement;
+
+    button.focus();
+
+    expect(tooltip()).toBeTruthy();
+    expect(button.getAttribute('aria-describedby')).toBe(tooltip()!.id);
+    expect(fixture.nativeElement.querySelector('oct-button').hasAttribute('aria-describedby')).toBe(false);
+
+    (fixture.nativeElement.querySelector(':scope > button') as HTMLButtonElement).focus();
+    expect(tooltip()).toBeNull();
+    expect(button.hasAttribute('aria-describedby')).toBe(false);
+  });
+
+  it('closes on Escape while focus stays on the host', () => {
+    const fixture = TestBed.createComponent(ComponentHostComponent);
+    fixture.detectChanges();
+    const button = fixture.nativeElement.querySelector('oct-button button') as HTMLButtonElement;
+    button.focus();
+    expect(tooltip()).toBeTruthy();
+
+    button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+
+    expect(tooltip()).toBeNull();
+    expect(document.activeElement).toBe(button);
   });
 });

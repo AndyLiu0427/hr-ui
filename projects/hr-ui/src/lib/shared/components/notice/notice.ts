@@ -51,7 +51,7 @@ export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
               [icon]="'X'"
               [class]="dismissButtonClass()"
               (buttonClick)="onDismiss()"
-              aria-label="Dismiss notice"
+              ariaLabel="Dismiss notice"
             />
           </div>
         }
