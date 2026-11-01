@@ -22,7 +22,7 @@ export const fieldContainerClass = (isDisabled: boolean): string =>
 export const fieldLabelClass = (hasError: boolean): string =>
   ['inline-flex', 'text-sm', 'font-medium', 'transition-colors', hasError ? 'text-error' : 'text-1'].join(' ');
 
-export const fieldHelperTextClass = (hasError: boolean): string => ['text-sm', hasError ? 'text-error' : 'text-gray-500'].join(' ');
+export const fieldHelperTextClass = (hasError: boolean): string => ['text-sm', hasError ? 'text-error' : 'text-3'].join(' ');
 
 /**
  * The box itself: border, radius, and the focus ring.
@@ -48,7 +48,7 @@ export const fieldShellClass = ({ hasError, isDisabled, suppressFocusRing = fals
     'duration-100',
     'hover:duration-200',
     'focus-within:duration-200',
-    'hover:border-primary-600',
+    'hover:border-primary-300',
     ...(suppressFocusRing ? [] : ['focus-within:!outline', 'focus-within:!outline-2', 'focus-within:!outline-primary']),
     'outline-transparent'
   ];

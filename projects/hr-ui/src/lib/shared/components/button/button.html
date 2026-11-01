@@ -48,7 +48,7 @@
 
   <!-- Left icon -->
   @if (icon() && iconPosition() === 'left' && !loading()) {
-    <oct-icon [name]="icon()" size="sm" aria-hidden="true" [class]="iconBoxClass()" />
+    <oct-icon [name]="icon()!" size="sm" aria-hidden="true" [class]="iconBoxClass()" />
   }
 
   @if (!isForcedIconOnly()) {
@@ -57,6 +57,6 @@
 
   <!-- Right icon -->
   @if (icon() && iconPosition() === 'right' && !loading()) {
-    <oct-icon [name]="icon()" size="sm" aria-hidden="true" [class]="iconBoxClass()" />
+    <oct-icon [name]="icon()!" size="sm" aria-hidden="true" [class]="iconBoxClass()" />
   }
 </ng-template>

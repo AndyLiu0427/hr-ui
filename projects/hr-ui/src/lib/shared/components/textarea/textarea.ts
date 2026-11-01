@@ -122,7 +122,7 @@ export class TextareaComponent implements FormValueControl<string> {
       'placeholder:text-3',
       'outline-2',
       'outline-transparent',
-      'hover:border-primary-600',
+      'hover:border-primary-300',
       'focus:border-transparent',
       'focus:outline-2',
       'focus:outline-primary',

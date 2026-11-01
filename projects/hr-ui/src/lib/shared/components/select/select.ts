@@ -578,7 +578,7 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
         : '!bg-hr-neutral-900 text-disabled cursor-not-allowed'
       : bare
         ? 'cursor-pointer'
-        : 'cursor-pointer hover:border-primary-600';
+        : 'cursor-pointer hover:border-primary-300';
     const error = this.hasError() && !bare ? '!border-transparent outline-2 !outline-hr-red-500' : '';
     const open = this.isOpen() && !bare ? '!border-transparent outline-2 outline-primary outline-offset-transparent' : '';
 

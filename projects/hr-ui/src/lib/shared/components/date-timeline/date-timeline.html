@@ -6,7 +6,7 @@
       <div class="absolute left-0 right-0 h-px bg-hr-neutral-800" [style.top.px]="trackTop()"></div>
       @if (emphasisSegment(); as segment) {
         <!-- Accent stretch: from the emphasized node to the end of the span. -->
-        <div class="absolute h-px bg-hr-blue-600" [style.left.%]="segment.left" [style.width.%]="segment.width" [style.top.px]="trackTop()"></div>
+        <div class="absolute h-px bg-hr-blue-400" [style.left.%]="segment.left" [style.width.%]="segment.width" [style.top.px]="trackTop()"></div>
       }
 
       @for (marker of yearMarkers(); track marker.year) {
@@ -24,18 +24,19 @@
              covers a same-day neutral dot instead of leaving a sliver behind it. -->
         <span
           class="absolute -translate-x-1/2 rounded-full"
-          [class]="item.node.emphasis ? 'h-[11px] w-[11px] bg-hr-blue-600 z-10' : 'h-[9px] w-[9px] bg-hr-neutral-50'"
+          [class]="item.node.emphasis ? 'h-[11px] w-[11px] bg-hr-blue-400 z-10' : 'h-[9px] w-[9px] bg-hr-neutral-50'"
           [style.left.%]="item.percent"
           [style.top.px]="item.node.emphasis ? trackTop() - 5 : trackTop() - 4"
         ></span>
         <div
           class="absolute whitespace-nowrap"
+          [class.text-info]="item.node.emphasis"
           [class.-translate-x-1/2]="labelAlign() === 'center'"
           [class.-translate-y-full]="item.side === 'above'"
           [style.left.%]="item.labelPercent"
           [style.top.px]="item.side === 'above' ? aboveTextTop() : textTop()"
         >
-          <oct-text [color]="item.node.emphasis ? 'inherit' : '1'" variant="sm" weight="medium" [class.text-hr-blue-600]="item.node.emphasis">
+          <oct-text [color]="item.node.emphasis ? 'inherit' : '1'" variant="sm" weight="medium">
             {{ item.label }}
           </oct-text>
         </div>

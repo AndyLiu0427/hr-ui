@@ -177,7 +177,8 @@ export class DialogComponent implements OnDestroy {
    * Keep Tab inside the dialog. Without this the next Tab lands on the page behind, which is still
    * fully operable by keyboard while a modal covers it.
    */
-  protected holdFocus(event: KeyboardEvent): void {
+  protected holdFocus(event: Event): void {
+    const { shiftKey } = event as KeyboardEvent;
     const host = this.container()?.nativeElement;
     if (!host) {
       return;
@@ -186,12 +187,12 @@ export class DialogComponent implements OnDestroy {
     if (stops.length === 0) {
       return;
     }
-    const edge = event.shiftKey ? stops[0] : stops[stops.length - 1];
+    const edge = shiftKey ? stops[0] : stops[stops.length - 1];
     if (document.activeElement !== edge) {
       return;
     }
     event.preventDefault();
-    (event.shiftKey ? stops[stops.length - 1] : stops[0]).focus();
+    (shiftKey ? stops[stops.length - 1] : stops[0]).focus();
   }
 
   dialogSizeClass = computed(() => {

@@ -8,7 +8,7 @@
           </oct-text>
           @if (status()) {
             <oct-badge
-              [text]="status()"
+              [text]="status() ?? ''"
               [color]="statusColor()"
               size="md"
               mode="opacity">
@@ -23,7 +23,7 @@
                 [variant]="action.variant || 'outline'"
                 size="sm"
                 [icon]="action.icon"
-                [disabled]="action.disabled"
+                [disabled]="!!action.disabled"
                 (buttonClick)="action.handler()">
                 @if (isDesktop() && action.label) {
                   {{ action.label | translate }}
@@ -41,7 +41,7 @@
               [variant]="action.variant || 'outline'"
               size="sm"
               [icon]="action.icon"
-              [disabled]="action.disabled"
+              [disabled]="!!action.disabled"
               (buttonClick)="action.handler()">
               @if (isDesktop() && action.label) {
                 {{ action.label | translate }}

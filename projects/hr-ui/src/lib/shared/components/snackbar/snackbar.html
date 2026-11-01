@@ -13,10 +13,9 @@
     <div class="flex items-center gap-3 flex-1 min-w-0">
       @if (defaultIcon()) {
         <oct-icon
-          [name]="defaultIcon()"
+          [name]="defaultIcon()!"
           [size]="size() === 'sm' ? 16 : size() === 'lg' ? 24 : 20"
           [class]="iconClasses()"
-          color="currentColor"
           aria-hidden="true"
         />
       }

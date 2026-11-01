@@ -11,7 +11,7 @@
     @if (showPrefix()) {
     <div [class]="prefixClass()">
       @if (leftIcon()) {
-      <oct-icon [name]="leftIcon()" [class]="iconSize" />
+      <oct-icon [name]="leftIcon()!" [class]="iconSize" />
       } @else if (leftText()) {
       <oct-text color="3" variant="sm">{{ leftText() }}</oct-text>
       }
@@ -55,9 +55,9 @@
     <div [class]="suffixClass()">
       @if (rightIcon()) {
       <oct-icon
-        [name]="rightIcon()"
+        [name]="rightIcon()!"
         [class]="iconSize"
-        [color]="rightIcon() === 'Check' ? 'rgb(34 197 94)' : rightIcon() === 'CircleAlert' ? 'rgb(239 68 68)' : 'currentColor'"
+        [color]="rightIcon() === 'Check' ? 'success' : rightIcon() === 'CircleAlert' ? 'error' : undefined"
       />
       } @else if (rightText()) {
       <oct-text color="3" variant="sm">{{ rightText() }}</oct-text>

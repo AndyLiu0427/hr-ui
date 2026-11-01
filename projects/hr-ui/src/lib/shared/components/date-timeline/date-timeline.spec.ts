@@ -51,7 +51,7 @@ describe('DateTimelineComponent', () => {
   it('highlights the emphasized node and colors the track from it to the end of the span', async () => {
     await setNodes([{ date: '2026-01-15' }, { date: '2026-03-15', emphasis: true }, { date: '2026-12-31' }]);
 
-    expect(fixture.nativeElement.querySelectorAll('.text-hr-blue-600').length).toBeGreaterThan(0);
+    expect(fixture.nativeElement.querySelectorAll('.text-info').length).toBeGreaterThan(0);
     const segment = fixture.componentInstance.emphasisSegment();
     const positioned = fixture.componentInstance.positionedNodes();
     expect(segment?.left).toBeCloseTo(positioned[1].percent, 5);

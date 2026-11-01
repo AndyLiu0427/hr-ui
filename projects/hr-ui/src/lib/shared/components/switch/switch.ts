@@ -128,12 +128,12 @@ export class SwitchComponent implements FormCheckboxControl {
     ];
 
     const colorClasses: Record<SwitchColor, { on: string; off: string; focus: string }> = {
-      primary: { on: 'bg-primary-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-hr-blue-500' },
-      success: { on: 'bg-hr-green-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-hr-green-500' },
-      error: { on: 'bg-hr-red-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-hr-red-500' },
-      warning: { on: 'bg-hr-orange-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-amber-500' },
-      info: { on: 'bg-hr-blue-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-sky-500' },
-      neutral: { on: 'bg-hr-neutral-600', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-hr-neutral-500' }
+      primary: { on: 'bg-primary-solid', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-primary' },
+      success: { on: 'bg-success-solid', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-primary' },
+      error: { on: 'bg-error-solid', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-primary' },
+      warning: { on: 'bg-warning-solid', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-primary' },
+      info: { on: 'bg-info-solid', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-primary' },
+      neutral: { on: 'bg-hr-neutral-300', off: 'bg-hr-neutral-800', focus: 'focus-visible:outline-primary' }
     };
 
     const selectedColor = colorClasses[this.color()];

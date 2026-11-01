@@ -27,7 +27,7 @@
         (keydown.space)="onPlaceholderClick()">
         <div class="text-center">
           <oct-icon [name]="placeholderIcon()" [size]="32" class="text-gray-400" />
-          <oct-text variant="xs" color="muted" class="mt-1">
+          <oct-text variant="xs" color="3" class="mt-1">
             {{ placeholderText() }}
           </oct-text>
         </div>
@@ -52,7 +52,7 @@
         (buttonClick)="onButtonClick()">
         {{ buttonText() }}
       </oct-button>
-      <oct-text variant="xs" color="muted">
+      <oct-text variant="xs" color="3">
         {{ helpText() }}
       </oct-text>
       @if (displayError()) {

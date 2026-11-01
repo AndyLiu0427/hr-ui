@@ -13,8 +13,8 @@ export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
     @if (!isDismissed()) {
       <div [class]="combinedClasses()" [@noticeAnimation]="animationState()" role="alert" [attr.aria-live]="ariaLive()">
         <!-- Icon (if provided or default based on variant) -->
-        @if (showIcon()) {
-          <oct-icon [name]="iconName()" [class]="iconColorClass() + ' mt-[2px]'" />
+        @if (iconName(); as name) {
+          <oct-icon [name]="name" [class]="iconColorClass() + ' mt-[2px]'" />
         }
 
         <!-- Content -->
@@ -104,10 +104,10 @@ export class NoticeComponent {
   // Computed properties for variant-based styling
   readonly noticeClasses = computed(() => {
     const variantClasses = {
-      info: 'bg-hr-blue-950 border border-hr-blue-800 text-hr-blue-600',
-      success: 'bg-hr-green-950 border border-hr-green-800 text-hr-green-600',
-      warning: 'bg-hr-orange-950 border border-hr-orange-800 text-hr-orange-600',
-      error: 'bg-hr-red-950 border border-hr-red-800 text-error'
+      info: 'bg-hr-blue-950 border border-hr-blue-800 text-hr-blue-200',
+      success: 'bg-hr-green-950 border border-hr-green-800 text-hr-green-200',
+      warning: 'bg-hr-orange-950 border border-hr-orange-800 text-hr-orange-200',
+      error: 'bg-hr-red-950 border border-hr-red-800 text-hr-red-200'
     };
 
     return variantClasses[this.variant()];
@@ -115,10 +115,10 @@ export class NoticeComponent {
 
   readonly iconColorClass = computed(() => {
     const colorClasses = {
-      info: 'text-hr-blue-500',
-      success: 'text-hr-green-500',
-      warning: 'text-hr-orange-500',
-      error: 'text-hr-red-500'
+      info: 'text-hr-blue-300',
+      success: 'text-hr-green-300',
+      warning: 'text-hr-orange-300',
+      error: 'text-hr-red-300'
     };
 
     return colorClasses[this.variant()];
@@ -126,10 +126,10 @@ export class NoticeComponent {
 
   readonly dismissButtonClass = computed(() => {
     const buttonClasses = {
-      info: 'text-hr-blue-600 hover:text-hr-blue-500 hover:bg-hr-blue-900',
-      success: 'text-hr-green-600 hover:text-hr-green-500 hover:bg-hr-green-900',
-      warning: 'text-hr-orange-600 hover:text-hr-orange-500 hover:bg-hr-orange-900',
-      error: 'text-hr-red-600 hover:text-hr-red-500 hover:bg-hr-red-900'
+      info: 'text-hr-blue-200 hover:text-hr-blue-100 hover:bg-hr-blue-900',
+      success: 'text-hr-green-200 hover:text-hr-green-100 hover:bg-hr-green-900',
+      warning: 'text-hr-orange-200 hover:text-hr-orange-100 hover:bg-hr-orange-900',
+      error: 'text-hr-red-200 hover:text-hr-red-100 hover:bg-hr-red-900'
     };
 
     return buttonClasses[this.variant()];
@@ -162,9 +162,6 @@ export class NoticeComponent {
     return null;
   });
 
-  readonly showIcon = computed(() => {
-    return this.iconName() !== null;
-  });
 
   readonly ariaLive = computed(() => {
     const variant = this.variant();

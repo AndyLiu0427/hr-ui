@@ -148,7 +148,8 @@ export class ButtonComponent implements OnDestroy, AfterViewInit {
           'transition-all',
           'duration-300',
           'disabled:cursor-not-allowed',
-          'disabled:!pointer-events-none'
+          'disabled:!pointer-events-none',
+          'oct-focus-ring'
         ]
       : [
           'relative',
@@ -172,7 +173,8 @@ export class ButtonComponent implements OnDestroy, AfterViewInit {
           'overflow-hidden',
           'select-none',
           'motion-reduce:transition-none',
-          'active:brightness-97'
+          'active:brightness-97',
+          'oct-focus-ring'
         ];
 
     // Size classes - no padding for icon-only buttons, minimal for link variant, normal padding for others
@@ -210,38 +212,39 @@ export class ButtonComponent implements OnDestroy, AfterViewInit {
 
     // Color-based styles (for solid buttons) - with color-specific shadows
     const solidColorClasses = {
-      primary: ['text-white', 'bg-primary-600'],
-      success: ['text-white', 'bg-hr-green-600'],
-      error: ['text-white', 'bg-hr-red-600'],
-      warning: ['text-white', 'bg-hr-orange-600'],
-      info: ['text-white', 'bg-hr-blue-600'],
+      primary: ['text-white', 'bg-primary-solid', 'hover:bg-primary-solid-hover'],
+      success: ['text-white', 'bg-success-solid', 'hover:bg-success-solid-hover'],
+      error: ['text-white', 'bg-error-solid', 'hover:bg-error-solid-hover'],
+      warning: ['text-white', 'bg-warning-solid', 'hover:bg-warning-solid-hover'],
+      info: ['text-white', 'bg-info-solid', 'hover:bg-info-solid-hover'],
       neutral: ['text-hr-neutral-950', 'bg-hr-neutral-50', 'hover:bg-hr-neutral-200']
     };
 
     // Outline variant styles - with bg-secondary background
     const outlineColorClasses = {
-      primary: ['bg-secondary hover:bg-hr-neutral-800', 'text-primary', 'outline outline-primary-600 -outline-offset-1'],
-      success: ['bg-secondary hover:bg-hr-neutral-800', 'text-hr-green-500', 'outline outline-hr-green-500 -outline-offset-1'],
-      error: ['bg-secondary hover:bg-hr-neutral-800', 'text-hr-red-600', 'outline outline-hr-red-600 -outline-offset-1'],
-      warning: ['bg-secondary hover:bg-hr-neutral-800', 'text-hr-orange-600', 'outline outline-hr-orange-600 -outline-offset-1'],
-      info: ['bg-secondary hover:bg-hr-neutral-800', 'text-hr-blue-600', 'outline outline-hr-blue-600 -outline-offset-1'],
+      primary: ['bg-secondary hover:bg-hr-neutral-800', 'text-primary', 'outline outline-primary -outline-offset-1'],
+      success: ['bg-secondary hover:bg-hr-neutral-800', 'text-success', 'outline outline-success -outline-offset-1'],
+      error: ['bg-secondary hover:bg-hr-neutral-800', 'text-error', 'outline outline-error -outline-offset-1'],
+      warning: ['bg-secondary hover:bg-hr-neutral-800', 'text-warning', 'outline outline-warning -outline-offset-1'],
+      info: ['bg-secondary hover:bg-hr-neutral-800', 'text-info', 'outline outline-info -outline-offset-1'],
       neutral: [
         'bg-secondary',
         'text-1',
-        'outline !outline-hr-neutral-800 -outline-offset-1',
+        // Not !important: the keyboard focus ring has to be able to recolour this outline.
+        'outline outline-hr-neutral-800 -outline-offset-1',
         'hover:!bg-hr-neutral-800',
         'hover:!brightness-100',
-        'active:!outline-hr-neutral-800'
+        'active:outline-hr-neutral-800'
       ]
     };
 
     // Ghost variant styles - with very subtle color-specific shadows on hover
     const ghostColorClasses = {
-      primary: ['bg-transparent hover:bg-hr-neutral-800', 'text-primary-600', 'hover:brightness-100'],
-      success: ['bg-transparent hover:bg-hr-neutral-800', 'text-hr-green-600', 'hover:!brightness-100'],
-      error: ['bg-transparent hover:bg-hr-neutral-800', 'text-hr-red-600', 'hover:!brightness-100'],
-      warning: ['bg-transparent hover:bg-hr-neutral-800', 'text-hr-orange-600', 'hover:!brightness-100'],
-      info: ['bg-transparent hover:bg-hr-neutral-800', 'text-hr-blue-600', 'hover:!brightness-100'],
+      primary: ['bg-transparent hover:bg-hr-neutral-800', 'text-primary', 'hover:brightness-100'],
+      success: ['bg-transparent hover:bg-hr-neutral-800', 'text-success', 'hover:!brightness-100'],
+      error: ['bg-transparent hover:bg-hr-neutral-800', 'text-error', 'hover:!brightness-100'],
+      warning: ['bg-transparent hover:bg-hr-neutral-800', 'text-warning', 'hover:!brightness-100'],
+      info: ['bg-transparent hover:bg-hr-neutral-800', 'text-info', 'hover:!brightness-100'],
       neutral: ['bg-transparent hover:bg-hr-neutral-800', 'text-1', 'hover:!brightness-100']
     };
 
@@ -249,17 +252,17 @@ export class ButtonComponent implements OnDestroy, AfterViewInit {
     const linkColorClasses = {
       primary: [
         'bg-transparent',
-        'text-primary-600',
+        'text-primary',
         'underline',
         'decoration-1',
         'underline-offset-2',
         'hover:decoration-2',
         'hover:brightness-100'
       ],
-      success: ['bg-transparent', 'text-hr-green-600', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
-      error: ['bg-transparent', 'text-hr-red-600', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
-      warning: ['bg-transparent', 'text-hr-orange-600', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
-      info: ['bg-transparent', 'text-hr-blue-600', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
+      success: ['bg-transparent', 'text-success', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
+      error: ['bg-transparent', 'text-error', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
+      warning: ['bg-transparent', 'text-warning', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
+      info: ['bg-transparent', 'text-info', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
       neutral: ['bg-transparent', 'text-1', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100']
     };
 
@@ -272,7 +275,7 @@ export class ButtonComponent implements OnDestroy, AfterViewInit {
       colorClasses = ghostColorClasses[this.color()] || [];
       // Both outline-transparent classes are required: transition-all animates outline-color,
       // and the disabled: duplicate outranks disabled:!outline-hr-neutral-800 from base.
-      colorClasses.push('disabled:bg-transparent', '!outline-transparent', 'disabled:!outline-transparent');
+      colorClasses.push('disabled:bg-transparent', 'outline-transparent', 'disabled:!outline-transparent');
     } else if (this.variant() === 'link') {
       colorClasses = linkColorClasses[this.color()] || [];
       colorClasses.push('disabled:bg-transparent', 'disabled:!outline-transparent', 'disabled:no-underline', 'disabled:!text-hr-neutral-600');

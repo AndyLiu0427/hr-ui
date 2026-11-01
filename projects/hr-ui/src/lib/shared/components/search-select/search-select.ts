@@ -357,7 +357,7 @@ export class SearchSelectComponent implements AfterViewInit {
     if (this.isDisabled()) {
       classes.push('!bg-hr-neutral-900', 'text-disabled', 'cursor-not-allowed');
     } else {
-      classes.push('cursor-pointer', 'hover:border-primary-600');
+      classes.push('cursor-pointer', 'hover:border-primary-300');
     }
 
     if (this.hasError()) {

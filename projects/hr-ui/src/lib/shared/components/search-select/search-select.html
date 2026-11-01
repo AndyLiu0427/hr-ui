@@ -36,7 +36,7 @@
               <oct-color-tag variant="inline" [color]="selectedOption()!.colorTag!" />
             }
             <oct-text
-              [color]="isDisabled() ? 'text-hr-neutral-600' : '1'"
+              [color]="isDisabled() ? 'disabled' : '1'"
               variant="sm"
               class="min-w-0"
               [class.tabular-nums]="multiple()"
@@ -51,7 +51,6 @@
           <oct-icon
             name="X"
             [class]="'ml-1 cursor-pointer hover:!text-1 transition-colors duration-300' + (isDisabled() ? ' !text-hr-neutral-600' : ' !text-3')"
-            [color]="isDisabled() ? 'rgb(64 64 64)' : 'currentColor'"
             (click)="clearSelection($event)"
             aria-label="Clear selection"
             role="button"
@@ -139,12 +138,12 @@
           </div>
         } @else if (searchError()) {
           <div class="flex items-center justify-center py-4">
-            <oct-icon name="CircleAlert" class="text-hr-red-500 mr-2" />
+            <oct-icon name="CircleAlert" class="text-error mr-2" />
             <oct-text color="3" variant="sm">{{ searchError() }}</oct-text>
           </div>
         } @else if (preloadError()) {
           <div class="flex items-center justify-center py-4">
-            <oct-icon name="CircleAlert" class="text-hr-red-500 mr-2" />
+            <oct-icon name="CircleAlert" class="text-error mr-2" />
             <oct-text color="3" variant="sm">{{ preloadError() }}</oct-text>
           </div>
         } @else if (hasSearchConfig() && searchQuery().length > 0 && searchQuery().length < minSearchLength()) {

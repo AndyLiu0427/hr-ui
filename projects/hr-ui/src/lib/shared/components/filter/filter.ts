@@ -85,12 +85,13 @@ export class FilterComponent<T> {
   label = input.required<string>();
   icon = input<string>();
   size = input<'sm' | 'md' | 'lg'>('md');
-  width = input<number | string>('280px');
+  // undefined falls back to the default, so a config object can leave these out.
+  width = input<number | string, number | string | undefined>('280px', { transform: v => v ?? '280px' });
   offsetY = input<number>(8);
 
   options = input<FilterOption<T>[]>([]);
   searchable = input<boolean>(false);
-  searchPlaceholder = input<string>('Search...');
+  searchPlaceholder = input<string, string | undefined>('Search...', { transform: v => v ?? 'Search...' });
 
   selectedValues = model<unknown[]>([]);
 

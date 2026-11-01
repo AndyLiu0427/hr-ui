@@ -127,7 +127,7 @@ export class AvatarComponent {
     if (content === 'image' || content === 'fallback') {
       classes.push('bg-hr-neutral-200');
     } else {
-      classes.push('bg-hr-blue-500', 'text-white', 'font-semibold');
+      classes.push('bg-info-solid', 'text-white', 'font-semibold');
     }
 
     if (this.clickable()) {

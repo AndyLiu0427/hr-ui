@@ -55,7 +55,7 @@ export type OctIconName = keyof typeof icons | keyof typeof HR_ICON_OVERRIDES;
   ]
 })
 export class IconComponent {
-  name = input.required<OctIconName>();
+  name = input.required<OctIconName | (string & {})>();
   class = input<string>('');
   size = input<IconSize | number>('md');
   /**
@@ -76,9 +76,9 @@ export class IconComponent {
 
   private readonly colorMap: Record<IconColor, string> = {
     error: 'text-error',
-    success: 'text-success-600',
+    success: 'text-success',
     disabled: 'text-hr-neutral-600',
-    primary: 'text-primary-600',
+    primary: 'text-primary',
     neutral: 'text-1'
   };
 

@@ -99,7 +99,7 @@
                 (mousedown)="onResizeStart($event, column)"
                 (click)="$event.stopPropagation()"
               >
-                <oct-icon name="UnfoldHorizontal" [size]="14" class="text-hr-neutral-500" />
+                <oct-icon name="UnfoldHorizontal" [size]="14" class="text-3" />
               </div>
               }
             </th>
@@ -392,11 +392,11 @@
       <oct-text color="2" variant="sm" weight="medium" class="hidden sm:block">Show</oct-text>
       <oct-select
         [options]="pageSizeOptions()"
-        [value]="$safeNavigationMigration(activePagination()?.pageSize)"
+        [value]="activePagination()?.pageSize ?? null"
         (selectionChange)="onPageSizeSelectChange($event)"
         size="sm"
         class="w-20"
-        hideHelper="true"
+        [hideHelper]="true"
       />
       <oct-text color="2" variant="sm" weight="medium" class="hidden sm:block">entries</oct-text>
     </div>
@@ -481,12 +481,12 @@
             @if (action.icon) {
               <oct-icon
                 [name]="action.icon"
-                [class]="action.color === 'error' ? 'text-hr-red-500' : action.color === 'success' ? 'text-hr-green-500' : action.color === 'warning' ? 'text-hr-orange-500' : 'text-1'"
+                [class]="action.color === 'error' ? 'text-error' : action.color === 'success' ? 'text-success' : action.color === 'warning' ? 'text-warning' : 'text-1'"
               />
             }
             <span
               class="flex-1 text-base"
-              [class]="action.color === 'error' ? 'text-hr-red-500' : action.color === 'success' ? 'text-hr-green-500' : action.color === 'warning' ? 'text-hr-orange-500' : 'text-1'"
+              [class]="action.color === 'error' ? 'text-error' : action.color === 'success' ? 'text-success' : action.color === 'warning' ? 'text-warning' : 'text-1'"
             >
               {{ action.label | translate }}
             </span>

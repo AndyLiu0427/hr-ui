@@ -39,7 +39,7 @@ import { SearchSelectOption } from './search-select';
       </div>
 
       @if (option().icon && showIcon()) {
-        <oct-icon [name]="option().icon" class="text-1 ml-2"></oct-icon>
+        <oct-icon [name]="option().icon!" class="text-1 ml-2"></oct-icon>
       }
     </div>
   `,

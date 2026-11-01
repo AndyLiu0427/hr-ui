@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   host: {
     '[class]': 'hostClass()'
   },
-  template: `<kbd class="text-xs text-3 font-sans"><ng-content></ng-content></kbd>`
+  template: `<kbd class="text-xs text-2 font-sans"><ng-content></ng-content></kbd>`
 })
 export class KbdComponent {
   /**

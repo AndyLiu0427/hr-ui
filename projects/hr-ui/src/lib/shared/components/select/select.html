@@ -64,7 +64,7 @@
               }
               <!-- Always nowrap: oct-text's truncate does not include white-space:nowrap. -->
               <oct-text
-                [color]="isDisabled() ? 'text-hr-neutral-600' : '1'"
+                [color]="isDisabled() ? 'disabled' : '1'"
                 variant="sm"
                 [truncate]="!bare()"
                 [nowrap]="true"
@@ -86,7 +86,6 @@
             [attr.aria-label]="'Clear all selections'"
             [attr.role]="'button'"
             [attr.tabindex]="'-1'"
-            color="currentColor"
           />
         }
         @if (loading()) {
@@ -96,7 +95,6 @@
           name="ChevronDown"
           [class]="'shrink-0 transition-all duration-300 origin-center' + (isDisabled() ? ' !text-hr-neutral-600' : ' !text-3')"
           [class.rotate-180]="isOpen()"
-          color="currentColor"
         />
       </div>
     </button>

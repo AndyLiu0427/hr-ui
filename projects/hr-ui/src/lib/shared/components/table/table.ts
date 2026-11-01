@@ -28,7 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { IconComponent } from '../icon/icon';
 import { ButtonComponent } from '../button/button';
 import { SelectComponent, SelectOption } from '../select/select';
-import { BadgeComponent } from '../badge/badge';
+import { BadgeColor, BadgeComponent } from '../badge/badge';
 import { TextColor, TextComponent } from '../text/text';
 import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet';
 import {
@@ -635,9 +635,9 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
     }
   }
 
-  onPageSizeSelectChange(option: SelectOption | null): void {
+  onPageSizeSelectChange(option: SelectOption | SelectOption[] | null): void {
     const currentPagination = this.activePagination();
-    if (!option || !currentPagination) return;
+    if (!option || Array.isArray(option) || !currentPagination) return;
 
     const pageSize = Number(option.value);
     if (pageSize !== currentPagination.pageSize) {
@@ -966,10 +966,10 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
   readonly isStatusColumn = (column: TableColumn<T>): boolean => column.key.toLowerCase().includes('status');
   readonly isSelectionColumn = (column: TableColumn<T>): boolean => column.key === '_selection';
 
-  getStatusBadgeColor(row: T, column: TableColumn<T>): string {
+  getStatusBadgeColor(row: T, column: TableColumn<T>): BadgeColor {
     const value = this.getNestedValue(row, column.key)?.toString().toLowerCase() || '';
 
-    const colorMap: Record<string, string> = {
+    const colorMap: Record<string, BadgeColor> = {
       active: 'success',
       available: 'success',
       shortlisted: 'success',

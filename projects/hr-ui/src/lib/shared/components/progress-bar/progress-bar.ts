@@ -13,7 +13,7 @@ import { TextComponent } from '../text/text';
       </div>
       <div class="relative w-full bg-hr-neutral-800 rounded-full h-4 overflow-hidden">
         <div
-          class="absolute top-0 left-0 h-full bg-primary-600 rounded-full transition-all duration-500 ease-out will-change-[width]"
+          class="absolute top-0 left-0 h-full bg-primary-solid rounded-full transition-all duration-500 ease-out will-change-[width]"
           [style.width.%]="progress()"
         ></div>
       </div>

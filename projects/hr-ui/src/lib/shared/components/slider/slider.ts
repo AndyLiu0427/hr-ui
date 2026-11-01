@@ -68,7 +68,7 @@ export interface SliderInputs {
         <!-- Left progress bar -->
         <div
           class="absolute top-1.5 left-0 h-2 rounded-full transition-all duration-300 ease-out"
-          [class.bg-primary-600]="leftColor() === 'primary'"
+          [class.bg-primary-solid]="leftColor() === 'primary'"
           [class.bg-hr-neutral-800]="leftColor() === 'neutral'"
           [style.width.%]="displayLeftPercent()"
         ></div>
@@ -76,7 +76,7 @@ export interface SliderInputs {
         <!-- Right progress bar -->
         <div
           class="absolute top-1.5 right-0 h-2 rounded-full transition-all duration-300 ease-out"
-          [class.bg-primary-600]="rightColor() === 'primary'"
+          [class.bg-primary-solid]="rightColor() === 'primary'"
           [class.bg-hr-neutral-800]="rightColor() === 'neutral'"
           [style.width.%]="displayRightPercent()"
         ></div>
@@ -87,7 +87,7 @@ export interface SliderInputs {
           class="absolute top-0 h-5 w-5 rounded-full transition-all duration-300 ease-out"
           [class.cursor-grab]="!isDragging()"
           [class.cursor-grabbing]="isDragging()"
-          [class.bg-primary-600]="leftColor() === 'primary'"
+          [class.bg-primary-solid]="leftColor() === 'primary'"
           [class.bg-hr-neutral-800]="leftColor() === 'neutral'"
           [style.left.%]="displayLeftPercent()"
           [style.transform]="'translateX(-50%)'"
@@ -110,16 +110,16 @@ export interface SliderInputs {
             <div class="flex flex-col items-center">
               <!-- Tick mark line -->
               <div
-                class="h-2 w-px cursor-pointer transition-colors hover:bg-primary-600"
+                class="h-2 w-px cursor-pointer transition-colors hover:bg-primary-solid"
                 [class.bg-hr-neutral-300]="tick !== displayLeftPercent()"
-                [class.bg-primary-600]="tick === displayLeftPercent()"
+                [class.bg-primary-solid]="tick === displayLeftPercent()"
                 (click)="onTickClick(tick, $event)"
               ></div>
               <!-- Tick label -->
               <span
-                class="mt-1 text-xs cursor-pointer select-none transition-colors hover:text-primary-600"
-                [class.text-hr-neutral-500]="tick !== displayLeftPercent()"
-                [class.text-primary-600]="tick === displayLeftPercent()"
+                class="mt-1 text-xs cursor-pointer select-none transition-colors hover:text-primary"
+                [class.text-3]="tick !== displayLeftPercent()"
+                [class.text-primary]="tick === displayLeftPercent()"
                 [class.font-semibold]="tick === displayLeftPercent()"
                 (click)="onTickClick(tick, $event)"
               >

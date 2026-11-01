@@ -112,10 +112,10 @@ export class ChipComponent {
   // Filled: strong background, white text.
   private static readonly SOLID: Record<ChipColor, string[]> = {
     neutral: ['bg-hr-neutral-100', 'text-hr-neutral-950'],
-    success: ['bg-hr-green-400', 'text-hr-neutral-950'],
-    warning: ['bg-hr-orange-400', 'text-hr-neutral-950'],
-    error: ['bg-hr-red-400', 'text-hr-neutral-950'],
-    info: ['bg-hr-blue-400', 'text-hr-neutral-950']
+    success: ['bg-success-solid', 'text-white'],
+    warning: ['bg-warning-solid', 'text-white'],
+    error: ['bg-error-solid', 'text-white'],
+    info: ['bg-info-solid', 'text-white']
   };
 
   // Soft: tinted background, deep text, hairline ring. The default.
