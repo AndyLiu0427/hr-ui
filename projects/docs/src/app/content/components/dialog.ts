@@ -56,6 +56,7 @@ export const doc: ComponentDoc = {
   ],
   accessibility: [
     'The dialog has role="dialog" and aria-modal="true". Opening it moves focus to its first control, and Tab cannot leave it. When isOpen becomes false, focus goes back to the element that opened it.',
+    'Its accessible name is the title in oct-dialog-header. Without a header, set ariaLabel.',
     'The close button is named "Close dialog". Set closeLabel when closing means something else, as the persistent example does with "Stop import".'
   ],
   api: ['DialogComponent', 'DialogHeaderComponent', 'DialogContentComponent', 'DialogFooterComponent', 'PopupService']

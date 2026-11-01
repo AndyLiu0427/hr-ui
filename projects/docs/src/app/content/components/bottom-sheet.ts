@@ -21,10 +21,13 @@ export const doc: ComponentDoc = {
       description: 'On a phone a sheet replaces a dropdown. Set the value and close the sheet in the same handler.'
     }
   ],
-  keyboard: [{ keys: ['Esc'], action: 'Closes the sheet.' }],
+  keyboard: [
+    { keys: ['Esc'], action: 'Closes the sheet and returns focus to the element that opened it.' },
+    { keys: ['Tab'], action: 'Moves between the controls in the sheet. Focus cannot leave the sheet while it is open.' }
+  ],
   accessibility: [
     'The sheet has role="dialog" and aria-modal="true". Its accessible name is the title. Set ariaLabel when the title is empty.',
-    'Clicking the backdrop, pressing Escape, the close button and a downward swipe of more than 100px all emit closed. Set isOpen to false there.'
+    'Clicking the backdrop, pressing Escape, the close button and a downward swipe (longer than 100px, or a quick flick) all emit closed. Set isOpen to false there.'
   ],
   api: ['BottomSheetComponent']
 };

@@ -26,9 +26,19 @@ export const doc: ComponentDoc = {
       description: 'The menu opens below the trigger, lined up with its right edge by default. Use MenuAlign.LEFT near the left edge of the screen.'
     }
   ],
-  keyboard: [{ keys: ['Esc'], action: 'Closes the menu.' }],
+  keyboard: [
+    { keys: ['↓'], action: 'Moves focus to the next item. Headers and disabled items are skipped.' },
+    { keys: ['↑'], action: 'Moves focus to the previous item.' },
+    { keys: ['Home'], action: 'Moves focus to the first item.' },
+    { keys: ['End'], action: 'Moves focus to the last item.' },
+    { keys: ['Enter'], action: 'Activates the focused item.' },
+    { keys: ['Space'], action: 'Activates the focused item.' },
+    { keys: ['Esc'], action: 'Closes the menu and returns focus to the trigger.' },
+    { keys: ['Tab'], action: 'Closes the menu and returns focus to the trigger.' }
+  ],
   accessibility: [
-    'The panel has role="menu" and each item has role="menuitem". Clicking outside the menu or pressing Escape emits closed.',
+    'The panel has role="menu" and each item has role="menuitem". Opening the menu moves focus to its first enabled item. The trigger gets aria-haspopup="menu" and aria-expanded.',
+    'Clicking outside the menu or pressing Escape emits closed.',
     'An icon-only trigger needs ariaLabel, such as "Account", so screen readers can name it.'
   ],
   api: ['DropdownMenuComponent']
