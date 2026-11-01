@@ -77,7 +77,7 @@
             ],
             "styles": [
               "projects/hr-ui/styles/material-theme.scss",
-              "projects/hr-ui/styles/hr-ui.css"
+              "projects/docs/src/styles.css"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [

@@ -1,7 +1,6 @@
-/* ============================================
-    Tailwind CSS Imports
-   ============================================ */
-@import "tailwindcss";
+/* hr-ui tokens and base styles. Import Tailwind before this file:
+     @import "tailwindcss";
+     @import "ngx-hr-ui/styles/hr-ui.css"; */
 
 /* ============================================
     Theme Configuration
@@ -61,17 +60,17 @@
      ---------------------------------------- */
 
   /* Primary Color Palette */
-  --color-primary-50:  oklch(0.325 0.040 189.8);
-  --color-primary-100: oklch(0.387 0.047 189.8);
-  --color-primary-200: oklch(0.450 0.055 189.8);
-  --color-primary-300: oklch(0.512 0.062 189.8);
-  --color-primary-400: oklch(0.575 0.070 189.8);
-  --color-primary-500: oklch(0.637 0.078 189.8);
-  --color-primary-600: oklch(0.700 0.085 189.8);
-  --color-primary-700: oklch(0.762 0.093 189.8);
-  --color-primary-800: oklch(0.825 0.101 189.8);
-  --color-primary-900: oklch(0.887 0.108 189.8);
-  --color-primary-950: oklch(0.950 0.052 189.8);
+  --color-primary-50:  oklch(0.325 calc(0.040 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-100: oklch(0.387 calc(0.047 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-200: oklch(0.450 calc(0.055 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-300: oklch(0.512 calc(0.062 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-400: oklch(0.575 calc(0.070 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-500: oklch(0.637 calc(0.078 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-600: oklch(0.700 calc(0.085 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-700: oklch(0.762 calc(0.093 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-800: oklch(0.825 calc(0.101 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-900: oklch(0.887 calc(0.108 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-950: oklch(0.950 calc(0.052 * var(--hr-primary-chroma)) var(--hr-primary-hue));
 
   /* Success Color Palette (= Tailwind green) */
   --color-success-50:  #052e16;
@@ -349,6 +348,13 @@
    ============================================ */
 :root {
   /* ----------------------------------------
+      Brand colour: override these two after importing this file.
+      Hue picks the colour (0-360). Chroma scales its strength (1 = default teal).
+     ---------------------------------------- */
+  --hr-primary-hue: 189.8;
+  --hr-primary-chroma: 1;
+
+  /* ----------------------------------------
       Core Brand Colors
      ---------------------------------------- */
   --primary: var(--color-primary-600);
@@ -379,17 +385,17 @@
      ---------------------------------------- */
 
   /* Primary Palette */
-  --color-primary-50:  oklch(0.325 0.040 189.8);
-  --color-primary-100: oklch(0.387 0.047 189.8);
-  --color-primary-200: oklch(0.450 0.055 189.8);
-  --color-primary-300: oklch(0.512 0.062 189.8);
-  --color-primary-400: oklch(0.575 0.070 189.8);
-  --color-primary-500: oklch(0.637 0.078 189.8);
-  --color-primary-600: oklch(0.700 0.085 189.8);
-  --color-primary-700: oklch(0.762 0.093 189.8);
-  --color-primary-800: oklch(0.825 0.101 189.8);
-  --color-primary-900: oklch(0.887 0.108 189.8);
-  --color-primary-950: oklch(0.950 0.052 189.8);
+  --color-primary-50:  oklch(0.325 calc(0.040 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-100: oklch(0.387 calc(0.047 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-200: oklch(0.450 calc(0.055 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-300: oklch(0.512 calc(0.062 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-400: oklch(0.575 calc(0.070 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-500: oklch(0.637 calc(0.078 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-600: oklch(0.700 calc(0.085 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-700: oklch(0.762 calc(0.093 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-800: oklch(0.825 calc(0.101 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-900: oklch(0.887 calc(0.108 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-950: oklch(0.950 calc(0.052 * var(--hr-primary-chroma)) var(--hr-primary-hue));
 
   /* Success Color Palette (= Tailwind green) */
   --color-success-50:  #052e16;
@@ -644,17 +650,17 @@
   --canvas-background: #0A0A0A;
 
   /* Primary Palette - Dark Mode (inverted) */
-  --color-primary-50:  oklch(0.950 0.052 189.8);
-  --color-primary-100: oklch(0.887 0.108 189.8);
-  --color-primary-200: oklch(0.825 0.101 189.8);
-  --color-primary-300: oklch(0.762 0.093 189.8);
-  --color-primary-400: oklch(0.700 0.085 189.8);
-  --color-primary-500: oklch(0.637 0.078 189.8);
-  --color-primary-600: oklch(0.575 0.070 189.8);
-  --color-primary-700: oklch(0.512 0.062 189.8);
-  --color-primary-800: oklch(0.450 0.055 189.8);
-  --color-primary-900: oklch(0.387 0.047 189.8);
-  --color-primary-950: oklch(0.325 0.040 189.8);
+  --color-primary-50:  oklch(0.950 calc(0.052 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-100: oklch(0.887 calc(0.108 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-200: oklch(0.825 calc(0.101 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-300: oklch(0.762 calc(0.093 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-400: oklch(0.700 calc(0.085 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-500: oklch(0.637 calc(0.078 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-600: oklch(0.575 calc(0.070 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-700: oklch(0.512 calc(0.062 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-800: oklch(0.450 calc(0.055 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-900: oklch(0.387 calc(0.047 * var(--hr-primary-chroma)) var(--hr-primary-hue));
+  --color-primary-950: oklch(0.325 calc(0.040 * var(--hr-primary-chroma)) var(--hr-primary-hue));
 
   /* Success Palette - Dark Mode (inverted) (= Tailwind green) */
   --color-success-50:  #f0fdf4;

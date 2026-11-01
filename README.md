@@ -23,9 +23,10 @@ Requires Angular 22 and Tailwind 4.
 
 ## Set up
 
-1. Import the tokens in your global CSS. The `@source` line lets Tailwind find the classes the components use.
+1. In your global CSS, import Tailwind, then the hr-ui tokens. The `@source` line lets Tailwind find the classes the components use.
 
    ```css
+   @import "tailwindcss";
    @import "ngx-hr-ui/styles/hr-ui.css";
    @source "../node_modules/ngx-hr-ui";
    ```
@@ -39,26 +40,39 @@ Requires Angular 22 and Tailwind 4.
 3. Provide animations and the English strings in `app.config.ts`:
 
    ```ts
-   import { importProvidersFrom } from '@angular/core';
    import { provideAnimations } from '@angular/platform-browser/animations';
-   import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+   import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
    import { of } from 'rxjs';
    import en from 'ngx-hr-ui/i18n/en.json';
 
    export const appConfig = {
      providers: [
        provideAnimations(),
-       importProvidersFrom(
-         TranslateModule.forRoot({
-           defaultLanguage: 'en',
-           loader: { provide: TranslateLoader, useValue: { getTranslation: () => of(en) } }
-         })
-       )
+       provideTranslateService({
+         fallbackLang: 'en',
+         lang: 'en',
+         loader: { provide: TranslateLoader, useValue: { getTranslation: () => of(en) } }
+       })
      ]
    };
    ```
 
+   This is the ngx-translate 17 setup. Versions 15 and 16 use `TranslateModule.forRoot` with the same loader.
    If your app already uses ngx-translate, merge the keys from `ngx-hr-ui/i18n/en.json` into your own files.
+
+## Choose your colours
+
+The primary colour comes from 2 variables. Set them after the hr-ui import:
+
+```css
+:root {
+  --hr-primary-hue: 162.5;  /* 0-360, the OKLCH hue. 162.5 is emerald, 189.8 (default) is teal. */
+  --hr-primary-chroma: 2;   /* Strength. 1 is the default teal; 2 doubles it. */
+}
+```
+
+Every shade from `primary-50` to `primary-950` follows, in light and dark mode.
+To change one shade only, set its variable, for example `--color-primary-600`.
 
 ## Use
 
