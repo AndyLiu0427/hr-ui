@@ -12,7 +12,7 @@ export const doc: ComponentDoc = {
     { name: 'progress-bar-no-percentage', title: 'Without the percentage', description: 'Hide the percentage when the label already says how far along the task is.', compact: true }
   ],
   accessibility: [
-    'The bar is drawn with plain elements and has no progressbar role, so assistive technology gets only the label and the percentage text. Keep showPercentage on, or say the progress in the label.',
+    'The bar has role="progressbar" with aria-valuenow from 0 to 100. Its name is label, or "Progress" when there is no label, so give each bar on a page its own label.',
     'A change in progress is not announced. If people must know when a long task finishes, announce it, for example with a snackbar.'
   ],
   api: ['ProgressBarComponent']
