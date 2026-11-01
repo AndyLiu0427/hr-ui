@@ -30,6 +30,7 @@ export interface CardAction {
   position?: 'title' | 'right';
 }
 
+/** A card of labels and values read from one record, such as the employment details of an employee. */
 @Component({
   selector: 'oct-info-card',
   templateUrl: './info-card.html',
@@ -40,13 +41,24 @@ export class InfoCardComponent {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
 
+  /**
+   * The title and the fields. A field reads data[key], where dots read nested values, and can set
+   * formatter (which gets the whole record), defaultValue, visible and preserveLineBreaks.
+   */
   readonly config = input.required<CardConfig>();
+  /** The record to show. Without one, the card says there is no data. */
   readonly data = input<any>(null);
+  /** Shows a loading message instead of the fields. */
   readonly loading = input<boolean>(false);
+  /** Buttons in the header: on the right, or under the title with position 'title'. Below 768px wide they show their icon only. */
   readonly actions = input<CardAction[]>();
+  /** Text of a badge next to the title, such as "Active". */
   readonly status = input<string>();
+  /** The colour of the status badge. */
   readonly statusColor = input<BadgeColor>('neutral');
+  /** The Tailwind gap step between fields, such as '4' or '6'. */
   readonly gapSize = input<string>('6');
+  /** The number of field columns from 768px wide. Narrower screens show one column. */
   readonly gridCols = input<number>(2);
 
   readonly isDesktop = signal<boolean>(true);

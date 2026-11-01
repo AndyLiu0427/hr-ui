@@ -9,6 +9,7 @@ export interface IChoiceOption {
  * Inline choice: a small set of mutually exclusive options rendered as prose, not as a
  * control with a box around it.
  *
+ * @remarks
  *   ( By Gov't / By Employer )
  *
  * For forms that transcribe a paper document, where the choice is part of a sentence the
@@ -38,16 +39,19 @@ export interface IChoiceOption {
   }
 })
 export class IChoiceComponent {
+  /** The options, in reading order. Each one has a value and a label. */
   readonly options = input.required<IChoiceOption[]>();
 
   /** The selected option's value. Undefined means nothing chosen yet, which is a valid state. */
   readonly value = model<string | undefined>(undefined);
 
+  /** Names the group for screen readers: the question the choice answers. */
   readonly ariaLabel = input<string>();
 
   /** Wrap the options in "( )", as the paper form prints them. */
   readonly brackets = input<boolean>(true);
 
+  /** Stops the user from changing the choice. The chosen option stays emphasised. */
   readonly disabled = input<boolean>(false);
 
   /**
