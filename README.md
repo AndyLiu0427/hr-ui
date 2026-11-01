@@ -1,19 +1,26 @@
 # hr-ui
 
-Angular components for HR and payroll apps. The npm package is `ngx-hr-ui`.
-Forms, tables, dialogs, and Tailwind 4 design tokens, with light and dark themes.
+[![npm](https://img.shields.io/npm/v/ngx-hr-ui)](https://www.npmjs.com/package/ngx-hr-ui)
+[![license](https://img.shields.io/npm/l/ngx-hr-ui)](LICENSE)
 
-**Docs and live demos:** https://andyliu0427.github.io/hr-ui/
+Accessible Angular components for HR and payroll apps. The npm package is `ngx-hr-ui`.
+
+**Docs, live examples and API reference:** https://andyliu0427.github.io/hr-ui/
+
+- Over 40 standalone components with signals: forms, tables, dialogs, sheets, menus, notices.
+- WCAG AA contrast in light and dark mode, keyboard focus rings, focus-managed overlays.
+- Your brand color from two CSS variables.
+- Tailwind CSS 4 tokens that never change Tailwind's defaults or your global styles.
 
 ## Install
+
+Requires Angular 22 and Tailwind CSS 4.
 
 ```sh
 npm install ngx-hr-ui @angular/cdk @ngx-translate/core lucide-angular tailwindcss @tailwindcss/postcss
 ```
 
-Requires Angular 22 and Tailwind 4.
-
-`lucide-angular` does not list Angular 22 as a peer yet. Add this to your `package.json` so npm accepts it:
+`lucide-angular` does not list Angular 22 as a peer yet. Add this to your `package.json`:
 
 ```json
 "overrides": {
@@ -21,91 +28,60 @@ Requires Angular 22 and Tailwind 4.
 }
 ```
 
-## Set up
-
-1. In your global CSS, import Tailwind, then the hr-ui tokens. The `@source` line lets Tailwind find the classes the components use.
-
-   ```css
-   @import "tailwindcss";
-   @import "ngx-hr-ui/styles/hr-ui.css";
-   @source "../node_modules/ngx-hr-ui";
-   ```
-
-2. Provide animations and the English strings in `app.config.ts`:
-
-   ```ts
-   import { provideAnimations } from '@angular/platform-browser/animations';
-   import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
-   import { of } from 'rxjs';
-   import en from 'ngx-hr-ui/i18n/en.json';
-
-   export const appConfig = {
-     providers: [
-       provideAnimations(),
-       provideTranslateService({
-         fallbackLang: 'en',
-         lang: 'en',
-         loader: { provide: TranslateLoader, useValue: { getTranslation: () => of(en) } }
-       })
-     ]
-   };
-   ```
-
-   This is the ngx-translate 17 setup. Versions 15 and 16 use `TranslateModule.forRoot` with the same loader.
-   If your app already uses ngx-translate, merge the keys from `ngx-hr-ui/i18n/en.json` into your own files.
-
-## Choose your colors
-
-The primary color comes from 2 variables. Set them after the hr-ui import:
+Import Tailwind, then hr-ui, in your global stylesheet:
 
 ```css
-:root {
-  --hr-primary-hue: 162.5;  /* 0-360, the OKLCH hue. 162.5 is emerald, 189.8 (default) is teal. */
-  --hr-primary-chroma: 2;   /* Strength. 1 is the default teal; 2 doubles it. */
-}
+@import "tailwindcss";
+@import "ngx-hr-ui/styles/hr-ui.css";
+@source "../node_modules/ngx-hr-ui";
 ```
 
-Every shade from `primary-50` to `primary-950` follows, in light and dark mode.
-To change one shade only, set its variable, for example `--color-primary-600`.
-
-hr-ui's other color scales use an `hr-` prefix, for example `bg-hr-red-900`.
-They are reversed so dark mode can flip them: `hr-red-900` is light, `hr-red-100` is dark.
-
-hr-ui does not change any Tailwind default. Its own text sizes, shadows, and animations
-also use the `hr-` prefix (`text-hr-xl`, `shadow-hr-md`, `animate-hr-spin`).
-The font is your app's choice. The docs site uses Inter:
-
-```css
-@theme {
-  --font-sans: Inter, sans-serif;
-}
-```
+Then provide animations and the built-in strings (English and Traditional Chinese ship in
+`ngx-hr-ui/i18n/`). The [Installation guide](https://andyliu0427.github.io/hr-ui/docs/installation)
+has the full `app.config.ts`.
 
 ## Use
 
 ```ts
+import { Component } from '@angular/core';
 import { ButtonComponent } from 'ngx-hr-ui';
 
 @Component({
+  selector: 'app-root',
   imports: [ButtonComponent],
-  template: `<oct-button color="primary" icon="Plus">Add employee</oct-button>`
+  template: `<oct-button icon="Plus">Add employee</oct-button>`
 })
-export class Example {}
+export class App {}
 ```
 
-Dark mode: `ThemeService` puts the `dark` class on `<html>`. Use `<oct-theme-controller />` for a ready-made toggle.
-hr-ui.css makes Tailwind's `dark:` variant follow that class, the same setup shadcn/ui uses.
+## Theme
+
+```css
+:root {
+  --hr-primary-hue: 162.5;  /* OKLCH hue, 0-360. The default 189.8 is teal. */
+  --hr-primary-chroma: 2;   /* Strength. 1 is the default. */
+}
+```
+
+Every primary shade follows, in light and dark mode. Components use roles such as
+`bg-primary-solid` (white text measures 5:1 or more for any hue up to strength 2) and
+`text-primary`, so text stays readable. Try it live on the
+[Theming page](https://andyliu0427.github.io/hr-ui/docs/theming).
+
+Dark mode follows a `dark` class on `<html>`. `ThemeService` and `<oct-theme-controller />` set it.
 
 ## Develop
 
 ```sh
 npm install
-npm start          # docs site on http://localhost:4200
-npm test           # library unit tests
-npm run build      # package `ngx-hr-ui` in dist/hr-ui
+npm start           # docs site on http://localhost:4200 (runs docs:gen first)
+npm test            # library unit tests
+npm run build       # the ngx-hr-ui package in dist/hr-ui
+npm run docs:gen    # regenerate the docs' examples registry and API data
 ```
 
-Releases: see [RELEASING.md](RELEASING.md).
+Docs pages: see [projects/docs/README.md](projects/docs/README.md). Releases: see
+[RELEASING.md](RELEASING.md).
 
 ## License
 
