@@ -2,25 +2,101 @@
 @import "../../hr-ui/styles/hr-ui.css";
 
 @theme {
-  --font-sans: Inter, sans-serif;
+  --font-sans: Geist, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* The docs pages still use a centred container. hr-ui no longer ships one, so Tailwind's own stays untouched. */
-@utility container {
-  margin-inline: auto;
-  padding-inline: 1rem;
-  @media (width >= 640px) { max-width: 640px; }
-  @media (width >= 768px) { max-width: 768px; }
-  @media (width >= 1024px) { max-width: 1024px; }
-  @media (width >= 1280px) { max-width: 1280px; }
-  @media (width >= 1536px) { max-width: 1536px; }
+/* The docs site's own frame (header, sidebar, prose, code). Components keep hr-ui's tokens.
+   Muted text measures 5.7:1 on white and 7.9:1 on #0a0a0a. */
+:root {
+  --docs-bg: #ffffff;
+  --docs-fg: #0a0a0a;
+  --docs-muted: #666666;
+  --docs-border: #ebebeb;
+  --docs-subtle: #fafafa;
+  --docs-hover: #f2f2f2;
+}
+.dark {
+  --docs-bg: #0a0a0a;
+  --docs-fg: #ededed;
+  --docs-muted: #a1a1a1;
+  --docs-border: #262626;
+  --docs-subtle: #111111;
+  --docs-hover: #1a1a1a;
+}
+@theme inline {
+  --color-docs-bg: var(--docs-bg);
+  --color-docs-fg: var(--docs-fg);
+  --color-docs-muted: var(--docs-muted);
+  --color-docs-border: var(--docs-border);
+  --color-docs-subtle: var(--docs-subtle);
+  --color-docs-hover: var(--docs-hover);
 }
 
-/* The page itself follows the theme. Components that inherit text colour (a colour tag's label,
-   a timeline label) read it from here. */
 @layer base {
-  body {
-    background-color: var(--secondary-background);
-    color: var(--1);
+  html {
+    color-scheme: light;
+    /* Anchors land below the sticky header. */
+    scroll-padding-top: 5rem;
   }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    background-color: var(--docs-bg);
+    color: var(--docs-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  ::selection {
+    background-color: color-mix(in oklab, var(--primary) 22%, transparent);
+  }
+}
+
+/* Long-form text on docs pages. */
+.docs-content {
+  & > h2 {
+    @apply mt-14 mb-4 scroll-mt-24 text-xl font-semibold tracking-tight first:mt-0;
+  }
+  & > h3 {
+    @apply mt-10 mb-3 scroll-mt-24 text-base font-semibold tracking-tight;
+  }
+  & > p {
+    @apply mt-4 leading-7 first:mt-0;
+  }
+  & > ul,
+  & > ol {
+    @apply my-4 ml-6 space-y-2 leading-7;
+  }
+  & > ul {
+    @apply list-disc;
+  }
+  & > ol {
+    @apply list-decimal;
+  }
+  & a:not([class]) {
+    @apply font-medium underline underline-offset-4 decoration-docs-border hover:decoration-current;
+  }
+  /* Inline code in running text only; tables and headings keep plain monospace. */
+  & > p code,
+  & > ul code,
+  & > ol code {
+    @apply rounded-md border border-docs-border bg-docs-subtle px-1.5 py-0.5 font-mono text-[0.8125rem];
+  }
+}
+
+/* Shiki emits both themes as CSS variables; the class on <html> picks one. */
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+}
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark);
+}
+.shiki {
+  background-color: transparent;
 }

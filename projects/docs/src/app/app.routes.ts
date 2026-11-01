@@ -1,48 +1,39 @@
 import { Routes } from '@angular/router';
+import { DocsLayoutComponent } from './docs/docs-layout';
+
+// The site's first version served each page at the root (/button, /colors). Keep those links working.
+const MOVED: Record<string, string> = {
+  colors: 'docs/colors',
+  typography: 'docs/typography',
+  icon: 'docs/icons',
+  sidebar: 'docs/components/sidebar',
+  'sidebar/:section': 'docs/components/sidebar'
+};
+const OLD_COMPONENT_PATHS = [
+  'avatar', 'badge', 'bottom-sheet', 'button', 'card', 'career-progression', 'checkbox', 'chip', 'color-tag',
+  'date-timeline', 'dialog', 'divider', 'dropdown-menu', 'file-input', 'filter', 'input', 'input-select',
+  'notice', 'progress-bar', 'radio', 'search-panel', 'search-select', 'select', 'slider', 'snackbar',
+  'switch', 'table', 'tabs', 'textarea', 'theme-controller', 'tooltip'
+];
 
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./design-system/design-system').then(m => m.DesignSystemComponent),
+    component: DocsLayoutComponent,
     children: [
-      { path: '', loadComponent: () => import('./design-system/pages/overview').then(m => m.OverviewPageComponent) },
-      { path: 'avatar', loadComponent: () => import('./design-system/pages/avatar/avatar').then(m => m.AvatarPageComponent) },
-      { path: 'badge', loadComponent: () => import('./design-system/pages/badge/badge').then(m => m.BadgePageComponent) },
-      { path: 'bottom-sheet', loadComponent: () => import('./design-system/pages/bottom-sheet/bottom-sheet').then(m => m.BottomSheetPageComponent) },
-      { path: 'chip', loadComponent: () => import('./design-system/pages/chip/chip').then(m => m.ChipPageComponent) },
-      { path: 'color-tag', loadComponent: () => import('./design-system/pages/color-tag/color-tag').then(m => m.ColorTagPageComponent) },
-      { path: 'button', loadComponent: () => import('./design-system/pages/button/button').then(m => m.ButtonPageComponent) },
-      { path: 'card', loadComponent: () => import('./design-system/pages/card/card').then(m => m.CardPageComponent) },
-      { path: 'checkbox', loadComponent: () => import('./design-system/pages/checkbox/checkbox').then(m => m.CheckboxPageComponent) },
-      { path: 'colors', loadComponent: () => import('./design-system/pages/colors/colors').then(m => m.ColorsPageComponent) },
-      { path: 'dialog', loadComponent: () => import('./design-system/pages/dialog/dialog').then(m => m.DialogPageComponent) },
-      { path: 'divider', loadComponent: () => import('./design-system/pages/divider/divider').then(m => m.DividerPageComponent) },
-      { path: 'dropdown-menu', loadComponent: () => import('./design-system/pages/dropdown-menu/dropdown-menu').then(m => m.DropdownMenuPageComponent) },
-      { path: 'file-input', loadComponent: () => import('./design-system/pages/file-input/file-input').then(m => m.FileInputPageComponent) },
-      { path: 'filter', loadComponent: () => import('./design-system/pages/filter/filter').then(m => m.FilterPageComponent) },
-      { path: 'icon', loadComponent: () => import('./design-system/pages/icon/icon').then(m => m.IconPageComponent) },
-      { path: 'input', loadComponent: () => import('./design-system/pages/input/input').then(m => m.InputPageComponent) },
-      { path: 'notice', loadComponent: () => import('./design-system/pages/notice/notice').then(m => m.NoticePageComponent) },
-      { path: 'progress-bar', loadComponent: () => import('./design-system/pages/progress-bar/progress-bar').then(m => m.ProgressBarPageComponent) },
-      { path: 'radio', loadComponent: () => import('./design-system/pages/radio/radio').then(m => m.RadioPageComponent) },
-      { path: 'search-panel', loadComponent: () => import('./design-system/pages/search-panel/search-panel').then(m => m.SearchPanelPageComponent) },
-      { path: 'search-select', loadComponent: () => import('./design-system/pages/search-select/search-select').then(m => m.SearchSelectPageComponent) },
-      { path: 'select', loadComponent: () => import('./design-system/pages/select/select').then(m => m.SelectPageComponent) },
-      { path: 'input-select', loadComponent: () => import('./design-system/pages/input-select/input-select').then(m => m.InputSelectPageComponent) },
-      { path: 'sidebar', redirectTo: 'sidebar/assignments', pathMatch: 'full' },
-      { path: 'sidebar/:section', loadComponent: () => import('./design-system/pages/sidebar/sidebar').then(m => m.SidebarPageComponent) },
-      { path: 'slider', loadComponent: () => import('./design-system/pages/slider/slider') },
-      { path: 'snackbar', loadComponent: () => import('./design-system/pages/snackbar/snackbar').then(m => m.SnackbarPageComponent) },
-      { path: 'switch', loadComponent: () => import('./design-system/pages/switch/switch').then(m => m.SwitchPageComponent) },
-      { path: 'table', loadComponent: () => import('./design-system/pages/table/table').then(m => m.TablePageComponent) },
-      { path: 'tabs', loadComponent: () => import('./design-system/pages/tabs/tabs').then(m => m.TabsPageComponent) },
-      { path: 'career-progression', loadComponent: () => import('./design-system/pages/career-progression/career-progression').then(m => m.CareerProgressionPageComponent) },
-      { path: 'date-timeline', loadComponent: () => import('./design-system/pages/date-timeline/date-timeline').then(m => m.DateTimelinePageComponent) },
-      { path: 'tooltip', loadComponent: () => import('./design-system/pages/tooltip/tooltip').then(m => m.TooltipPageComponent) },
-      { path: 'textarea', loadComponent: () => import('./design-system/pages/textarea/textarea').then(m => m.TextareaPageComponent) },
-      { path: 'theme-controller', loadComponent: () => import('./design-system/pages/theme-controller/theme-controller').then(m => m.ThemeControllerPageComponent) },
-      { path: 'typography', loadComponent: () => import('./design-system/pages/typography/typography').then(m => m.TypographyPageComponent) }
+      { path: '', pathMatch: 'full', loadComponent: () => import('./pages/home').then(m => m.HomePage) },
+      { path: 'docs', pathMatch: 'full', loadComponent: () => import('./pages/introduction').then(m => m.IntroductionPage) },
+      { path: 'docs/installation', loadComponent: () => import('./pages/installation').then(m => m.InstallationPage) },
+      { path: 'docs/theming', loadComponent: () => import('./pages/theming').then(m => m.ThemingPage) },
+      { path: 'docs/dark-mode', loadComponent: () => import('./pages/dark-mode').then(m => m.DarkModePage) },
+      { path: 'docs/colors', loadComponent: () => import('./pages/foundations/colors').then(m => m.ColorsPage) },
+      { path: 'docs/typography', loadComponent: () => import('./pages/foundations/typography').then(m => m.TypographyPage) },
+      { path: 'docs/icons', loadComponent: () => import('./pages/foundations/icons').then(m => m.IconsPage) },
+      { path: 'docs/components', pathMatch: 'full', loadComponent: () => import('./pages/components-index').then(m => m.ComponentsIndexPage) },
+      { path: 'docs/components/:slug', loadComponent: () => import('./pages/component-page').then(m => m.ComponentPage) },
+      ...Object.entries(MOVED).map(([path, redirectTo]) => ({ path, redirectTo: '/' + redirectTo })),
+      ...OLD_COMPONENT_PATHS.map(path => ({ path, redirectTo: `/docs/components/${path}` })),
+      { path: '**', loadComponent: () => import('./pages/not-found').then(m => m.NotFoundPage) }
     ]
-  },
-  { path: '**', redirectTo: '' }
+  }
 ];
