@@ -16,6 +16,7 @@ export interface ThemeControllerProps {
   iconOnly?: boolean;
 }
 
+/** Switches the app between light and dark mode through ThemeService, which saves the choice in localStorage. */
 @Component({
   selector: 'oct-theme-controller',
   host: { class: 'contents' },
@@ -32,13 +33,19 @@ export class ThemeControllerComponent {
   private readonly toggleCount = signal(0);
 
   // Input properties
+  /** button is an icon button, toggle adds a "Theme" label, and list is a full-width row for menus. */
   readonly variant = input<ThemeControllerVariant>('button');
+  /** Not used yet: every variant renders at one size. */
   readonly size = input<ThemeControllerSize>('md');
+  /** Shows a text label: the current mode for button (with iconOnly false), or "Theme" for toggle. */
   readonly showLabel = input<boolean>(false);
+  /** Disables the control. */
   readonly disabled = input<boolean>(false);
+  /** For the button variant, hides the text label so only the icon shows. */
   readonly iconOnly = input<boolean>(true);
 
   // Output events
+  /** Emits the new mode after the theme switches. */
   readonly themeChanged = output<'light' | 'dark'>();
 
   // Computed properties for reactive UI

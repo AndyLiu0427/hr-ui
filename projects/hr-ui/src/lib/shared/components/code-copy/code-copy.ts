@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, signal, input } from '@angular/core';
 import { ButtonComponent } from '../button/button';
 
+/** A Copy button for a block of code or text. It sits in the top-right corner of its nearest positioned parent. */
 @Component({
   selector: 'oct-code-copy',
   imports: [ButtonComponent],
@@ -25,6 +26,7 @@ import { ButtonComponent } from '../button/button';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodeCopyComponent {
+  /** The text to copy. */
   readonly code = input.required<string>();
 
   copySuccess = signal(false);

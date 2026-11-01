@@ -32,6 +32,7 @@ const SWIPE_CLOSE_THRESHOLD_PX = 100;
 /** px per ms. A short, fast flick closes the sheet as surely as a long drag. */
 const SWIPE_CLOSE_VELOCITY = 0.11;
 
+/** A panel that slides up from the bottom of the screen. Project the body, and put actions in an <ng-template #footer>. */
 @Component({
   selector: 'oct-bottom-sheet',
   templateUrl: './bottom-sheet.html',
@@ -45,11 +46,16 @@ export class BottomSheetComponent {
   private overlayRef?: OverlayRef;
   private closeTimer?: ReturnType<typeof setTimeout>;
 
+  /** Whether the sheet is shown. Set it back to false when closed emits. */
   readonly isOpen = input<boolean>(false);
+  /** The heading at the top of the sheet. It also names the sheet for screen readers. */
   readonly title = input<string>('');
+  /** Names the sheet for screen readers when the title is empty. */
   readonly ariaLabel = input<string>();
+  /** The maximum height of the overlay pane that holds the sheet, as a CSS length. */
   readonly maxHeight = input<string>('70vh');
 
+  /** Emits when the user closes the sheet: close button, backdrop, Escape or a downward swipe. */
   readonly closed = output<void>();
 
   readonly isAnimating = signal(false);

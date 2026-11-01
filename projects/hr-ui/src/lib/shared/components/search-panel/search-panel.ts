@@ -37,9 +37,8 @@ const ROW_BASE =
 const ROW_SELECTED = `${ROW_BASE} bg-primary/15`;
 
 /**
- * Command palette shell. **It never filters**: the consumer passes an already-filtered
- * `items` list and supplies the row markup, which is what lets an async employee search and
- * a synchronous component catalogue share one implementation.
+ * A command palette in a dialog. It never filters: pass the matching items, and the markup of a row as an
+ * octSearchPanelRow template.
  */
 @Component({
   selector: 'oct-search-panel',
@@ -51,20 +50,27 @@ const ROW_SELECTED = `${ROW_BASE} bg-primary/15`;
   }
 })
 export class SearchPanelComponent<T extends SearchPanelItem> {
+  /** Whether the panel is shown. Set it back to false when dialogClose emits. */
   readonly isOpen = input<boolean>(false);
+  /** The results to show, already filtered and in order. */
   readonly items = input.required<readonly T[]>();
+  /** Shows a spinner instead of the results while a search runs. */
   readonly loading = input<boolean>(false);
+  /** Placeholder text in the query box. */
   readonly placeholder = input<string>('Search...');
+  /** Names the query box and the result list for screen readers. */
   readonly ariaLabel = input.required<string>();
   /** Renders the ↑↓ / Enter legend under the results. */
   readonly showHints = input<boolean>(false);
   /** How many matches to render. The rest are counted, not drawn. */
   readonly maxVisibleItems = input<number>(DEFAULT_MAX_VISIBLE_ITEMS);
 
-  /** Two-way so a consumer can clear it from a projected template and stay in sync. */
+  /** The text in the query box. Bind it two-way and filter items from it. */
   readonly query = model<string>('');
 
+  /** Emits the result chosen with Enter or a click, right after dialogClose. */
   readonly itemSelected = output<T>();
+  /** Emits when the panel asks to close: Escape, a click outside, or a selection. */
   readonly dialogClose = output<void>();
   /** Tab or Shift+Tab in the query box, for a consumer that steps through its own scopes. */
   readonly tabKey = output<KeyboardEvent>();

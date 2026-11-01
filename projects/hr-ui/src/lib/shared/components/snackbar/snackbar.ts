@@ -23,6 +23,7 @@ import { prefersReducedMotion } from '../../../utils/reduced-motion';
 /** --ease-smooth-out. The animations package cannot read CSS variables, so the curve is spelled out. */
 const SMOOTH_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
+/** What SnackbarService draws; you do not add it yourself. Most inputs match the SnackbarConfig field of the same name. */
 @Component({
   selector: 'oct-snackbar',
   templateUrl: './snackbar.html',
@@ -62,21 +63,36 @@ export class SnackbarComponent implements OnInit, OnDestroy {
   private readonly document = inject(DOCUMENT);
   private readonly box = viewChild<ElementRef<HTMLElement>>('box');
 
+  /** The main line of text. */
   readonly message = input.required<string>();
+  /** A second, quieter line under the message. */
   readonly description = input<string>();
+  /** Sets the colour and the default icon. */
   readonly type = input<SnackbarType>('neutral');
+  /** The corner or edge of the screen it appears at. */
   readonly position = input<SnackbarPosition>('bottom-center');
+  /** Sets the padding and the icon size. */
   readonly size = input<SnackbarSize>('md');
+  /** Milliseconds before it closes itself. 0 keeps it until it is dismissed. */
   readonly duration = input<number>(5000);
+  /** Shows the close button. */
   readonly dismissible = input<boolean>(true);
+  /** The label of the action button. SnackbarService sets it from action.text. */
   readonly actionText = input<string>();
+  /** A Lucide icon name that replaces the default icon of the type. */
   readonly icon = input<string>();
+  /** Keeps it open after the action is clicked, and stops it closing itself. */
   readonly persistent = input<boolean>(false);
+  /** Its place in the stack at its position. Set by SnackbarService. */
   readonly index = input<number>(0);
+  /** Its distance from the edge of the screen, in pixels, so stacked snackbars do not overlap. Set by SnackbarService. */
   readonly offset = input<number>(0); // Dynamic offset from service
 
+  /** Emits after the close animation ends. */
   readonly dismiss = output<void>();
+  /** Emits when the action button is clicked. */
   readonly actionClick = output<void>();
+  /** Emits the measured height, so SnackbarService can stack snackbars. */
   readonly heightChange = output<number>();
 
   readonly isVisible = signal(false);

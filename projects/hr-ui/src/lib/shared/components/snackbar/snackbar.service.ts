@@ -2,6 +2,7 @@ import { signal, computed, ComponentRef, inject, ApplicationRef, createComponent
 import { SnackbarComponent } from './snackbar';
 import { SnackbarConfig, SnackbarRef, SnackbarPosition } from './snackbar.interface';
 
+/** Shows snackbars from code. Every method returns a SnackbarRef whose dismiss() closes that snackbar. */
 @Service()
 export class SnackbarService {
   private applicationRef = inject(ApplicationRef);
@@ -73,7 +74,7 @@ export class SnackbarService {
   }
 
   /**
-   * Show a success snackbar with optimized defaults
+   * Shows a success snackbar at the top centre. Pass options to change any default.
    */
   success(message: string, options?: Partial<SnackbarConfig>): SnackbarRef {
     return this.show({
@@ -87,7 +88,7 @@ export class SnackbarService {
   }
 
   /**
-   * Show an error snackbar with optimized defaults
+   * Shows an error snackbar at the top centre. It stays until the user closes it.
    */
   error(message: string, options?: Partial<SnackbarConfig>): SnackbarRef {
     return this.show({
@@ -101,7 +102,7 @@ export class SnackbarService {
   }
 
   /**
-   * Show a warning snackbar with optimized defaults
+   * Shows a warning snackbar at the top centre. It stays until the user closes it.
    */
   warning(message: string, options?: Partial<SnackbarConfig>): SnackbarRef {
     return this.show({
@@ -116,7 +117,7 @@ export class SnackbarService {
   }
 
   /**
-   * Show an info snackbar with optimized defaults
+   * Shows an info snackbar at the top centre. Pass options to change any default.
    */
   info(message: string, options?: Partial<SnackbarConfig>): SnackbarRef {
     return this.show({
