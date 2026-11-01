@@ -90,6 +90,12 @@ describe('TabsComponent', () => {
       expect(current).toHaveLength(1);
       expect(current[0].textContent?.trim()).toBe('AMZ-001');
     });
+
+    it('is a navigation with every link in the tab order, because a tablist must hold tabs', () => {
+      expect(els('[role="tablist"]')).toHaveLength(0);
+      expect(els('[role="navigation"]')).toHaveLength(1);
+      for (const anchor of els('a[role="link"]') as HTMLElement[]) expect(anchor.hasAttribute('tabindex')).toBe(false);
+    });
   });
 
   describe('inert mode', () => {

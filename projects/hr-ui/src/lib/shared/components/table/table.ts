@@ -172,7 +172,7 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
   readonly defaultSort = input<DefaultSortConfig | undefined>();
   /**
    * Adds a checkbox column. mode is 'single' or 'multiple'; key names the row field that identifies a row (default 'id');
-   * enabled: false hides the column. Each checkbox is named "Select" and the row's first column.
+   * enabled: false hides the column. Each checkbox is named "Select" and the row's first column, from the i18n files.
    */
   readonly selectionConfig = input<TableSelectionConfig | undefined>();
   /** Lets people drag a column edge to resize it. A column can opt out with resizable: false. */

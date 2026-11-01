@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, computed, model, input, output, viewChild, ElementRef, linkedSignal } from '@angular/core';
 import { FormCheckboxControl, ValidationError, DisabledReason, WithOptionalFieldTree } from '@angular/forms/signals';
+import { TranslateModule } from '@ngx-translate/core';
 import { TextComponent } from '../text/text';
 
 export type SwitchColor = 'primary' | 'success' | 'error' | 'warning' | 'info' | 'neutral';
@@ -25,7 +26,7 @@ export type SwitchColor = 'primary' | 'success' | 'error' | 'warning' | 'info' |
   selector: 'oct-switch',
   templateUrl: './switch.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TextComponent]
+  imports: [TranslateModule, TextComponent]
 })
 export class SwitchComponent implements FormCheckboxControl {
   // FormCheckboxControl
@@ -57,7 +58,7 @@ export class SwitchComponent implements FormCheckboxControl {
   readonly required = input<boolean>(false);
 
   // Component Inputs
-  /** Text next to the switch. It names the switch, and a click on it toggles the switch. */
+  /** Text next to the switch. It names the switch, and a click on it toggles the switch. Without it the name is "Toggle switch" from the i18n files. */
   readonly label = input<string>();
   /** Id of the switch button. One is generated when you do not set it. */
   readonly id = input<string>();

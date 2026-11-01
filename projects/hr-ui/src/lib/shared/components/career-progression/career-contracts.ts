@@ -56,7 +56,8 @@ export function buildCareerContracts(assignments: readonly CareerContractSource[
       contract.endDate = end;
     }
 
-    const name = assignment.clientName || 'Unknown Client';
+    // No name groups under ''. The tree shows the translated "Unknown client" for it.
+    const name = assignment.clientName || '';
     let client = contract.clients.find(candidate => candidate.name === name);
     if (!client) {
       client = { name, assignments: [] };

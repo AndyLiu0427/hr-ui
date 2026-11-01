@@ -1,8 +1,9 @@
+@let present = 'CAREER_PROGRESSION.PRESENT' | translate;
 @if (contracts().length === 0) {
   <div class="text-center py-8">
     <oct-icon [name]="mergedConfig().emptyIcon!" size="lg" class="mb-2" />
     <oct-text color="2" variant="sm">
-      {{ mergedConfig().emptyMessage }}
+      {{ mergedConfig().emptyMessage ?? ('CAREER_PROGRESSION.EMPTY' | translate) }}
     </oct-text>
   </div>
 } @else {
@@ -10,13 +11,13 @@
        a timeline: each dot sits on it and each branch reaches back to it. -->
   <ul
     class="relative list-none p-0 m-0 before:content-[''] before:absolute before:start-1 before:top-[18px] before:bottom-0 before:w-px before:bg-hr-neutral-800"
-    aria-label="Career timeline">
+    [attr.aria-label]="'CAREER_PROGRESSION.TIMELINE' | translate">
     @for (contract of contracts(); track contract.id; let firstContract = $first) {
       <li class="[&+li]:pt-2.5">
         <div class="flex items-center gap-2 py-1.5">
           <span [class]="getNodeClasses(firstContract && isContractOngoing(contract))"></span>
           <oct-text color="1" variant="sm" weight="semibold" class="tabular-nums">
-            {{ formatDateRange(contract.startDate, contract.endDate) }}
+            {{ formatDateRange(contract.startDate, contract.endDate, present) }}
           </oct-text>
         </div>
 
@@ -24,7 +25,7 @@
           @for (client of contract.clients; track client.name) {
             <li class="relative after:content-[''] after:absolute after:-start-[18px] after:top-4 after:w-[14px] after:h-px after:bg-hr-neutral-800">
               <div class="py-1.5">
-                <oct-text color="1" variant="sm" weight="semibold">{{ client.name }}</oct-text>
+                <oct-text color="1" variant="sm" weight="semibold">{{ client.name || ('CAREER_PROGRESSION.UNKNOWN_CLIENT' | translate) }}</oct-text>
               </div>
 
               <ul class="list-none m-0 ps-1 pb-0.5">
@@ -34,7 +35,7 @@
                     <button
                       type="button"
                       class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 w-[calc(100%+18px)] text-start -ms-2 -me-2.5 px-2 py-[5px] rounded-md cursor-pointer transition-[background-color] duration-150 hover:bg-hr-neutral-800/60 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-primary-500 focus-visible:-outline-offset-2"
-                      [attr.aria-label]="assignmentLabel(assignment)"
+                      [attr.aria-label]="assignmentLabel(assignment, present)"
                       (click)="onAssignmentClick(assignment)">
                       <oct-text color="1" variant="sm">{{ assignment.department }}</oct-text>
                       @if (assignment.jobTitle) {
@@ -43,7 +44,7 @@
                       }
                       <oct-text color="3" variant="xs">&middot;</oct-text>
                       <oct-text color="2" variant="xs" class="tabular-nums">
-                        {{ formatDateRange(assignment.startDate, assignment.endDate) }}
+                        {{ formatDateRange(assignment.startDate, assignment.endDate, present) }}
                       </oct-text>
                     </button>
                   </li>

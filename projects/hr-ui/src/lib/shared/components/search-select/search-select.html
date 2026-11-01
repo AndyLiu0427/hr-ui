@@ -42,7 +42,7 @@
               >{{ multiple() ? ('GENERAL.SELECTED_COUNT' | translate: { count: selectedValues().length }) : triggerText() }}</oct-text
             >
           } @else {
-            <oct-text color="3" variant="sm">{{ placeholder() || 'Search and select...' }}</oct-text>
+            <oct-text color="3" variant="sm">{{ placeholder() || ('SEARCH_SELECT.PLACEHOLDER' | translate) }}</oct-text>
           }
         </div>
 
@@ -51,7 +51,7 @@
             name="X"
             [class]="'ml-1 cursor-pointer hover:!text-1 transition-colors duration-300' + (isDisabled() ? ' !text-hr-neutral-600' : ' !text-3')"
             (click)="clearSelection($event)"
-            aria-label="Clear selection"
+            [attr.aria-label]="'COMMON.CLEAR_SELECTION' | translate"
             role="button"
             tabindex="-1"
           />
@@ -93,7 +93,7 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         (keydown)="handleSearchKeyDown($event)"
-        aria-label="Search options"
+        [attr.aria-label]="'COMMON.SEARCH_OPTIONS' | translate"
         role="searchbox"
         aria-autocomplete="list"
         [attr.aria-controls]="listboxId()"
@@ -108,7 +108,7 @@
         class="search-select-options overflow-y-auto p-1"
         role="listbox"
         [id]="listboxId()"
-        [attr.aria-label]="label() || 'Search Options'"
+        [attr.aria-label]="label() || ('COMMON.SEARCH_OPTIONS' | translate)"
         [attr.aria-multiselectable]="multiple() || null">
         <oct-search-select-option
           *cdkVirtualFor="let option of displayOptions(); let i = index; trackBy: trackByValue"
@@ -128,19 +128,19 @@
         cdkScrollable
         role="listbox"
         [id]="listboxId()"
-        [attr.aria-label]="label() || 'Search Options'"
+        [attr.aria-label]="label() || ('COMMON.SEARCH_OPTIONS' | translate)"
         [attr.aria-multiselectable]="multiple() || null">
 
 
         @if (isSearching()) {
           <div class="flex items-center justify-center py-4">
             <oct-icon name="RefreshCw" class="animate-hr-spin text-2 mr-2" />
-            <oct-text color="2" variant="sm">Searching...</oct-text>
+            <oct-text color="2" variant="sm">{{ 'COMMON.SEARCHING' | translate }}</oct-text>
           </div>
         } @else if (isPreloading()) {
           <div class="flex items-center justify-center py-4">
             <oct-icon name="RefreshCw" class="animate-hr-spin text-2 mr-2" />
-            <oct-text color="2" variant="sm">Loading options...</oct-text>
+            <oct-text color="2" variant="sm">{{ 'SEARCH_SELECT.LOADING_OPTIONS' | translate }}</oct-text>
           </div>
         } @else if (searchError()) {
           <div class="flex items-center justify-center py-4">
@@ -154,7 +154,7 @@
           </div>
         } @else if (hasSearchConfig() && searchQuery().length > 0 && searchQuery().length < minSearchLength()) {
           <div class="px-2 py-3 text-center">
-            <oct-text color="3" variant="sm">Type at least {{ minSearchLength() }} characters to search</oct-text>
+            <oct-text color="3" variant="sm">{{ 'SEARCH_SELECT.MIN_SEARCH_LENGTH' | translate: { count: minSearchLength() } }}</oct-text>
           </div>
         } @else if (displayOptions().length === 0) {
           <div class="px-2 py-3 text-center">

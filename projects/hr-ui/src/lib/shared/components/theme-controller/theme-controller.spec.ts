@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { provideTranslateService, TranslateService } from '@ngx-translate/core';
 
 import { ThemeControllerComponent, ThemeControllerVariant } from './theme-controller';
 
@@ -13,13 +12,6 @@ function render(variant: ThemeControllerVariant, size?: 'sm' | 'md' | 'lg'): HTM
 }
 
 describe('ThemeControllerComponent', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [provideTranslateService()] });
-    const translate = TestBed.inject(TranslateService);
-    translate.setTranslation('en', { THEME: { SWITCH_FROM_LIGHT: 'Light mode. Switch to dark mode.', SWITCH_FROM_DARK: 'Dark mode. Switch to light mode.' } });
-    translate.use('en');
-  });
-
   it('leaves no role or state on the oct-button host, where no screen reader would pair it with the button', () => {
     for (const variant of ['button', 'toggle'] as const) {
       const host = render(variant).querySelector('oct-button')!;

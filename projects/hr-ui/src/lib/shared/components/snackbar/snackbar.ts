@@ -14,6 +14,8 @@ import {
   DOCUMENT
 } from '@angular/core';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 import { IconComponent } from '../icon/icon';
 import { SnackbarType, SnackbarPosition, SnackbarSize } from './snackbar.interface';
 import { trigger, transition, style, animate, state, AnimationEvent } from '@angular/animations';
@@ -28,7 +30,7 @@ const SMOOTH_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)';
   selector: 'oct-snackbar',
   templateUrl: './snackbar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IconComponent, ButtonComponent],
+  imports: [TranslateModule, IconComponent, ButtonComponent],
   animations: [
     trigger('slideIn', [
       state(

@@ -39,7 +39,7 @@
     @if (loading()) {
       <div class="flex flex-col items-center justify-center py-12 px-4 gap-2">
         <oct-icon name="LoaderCircle" size="xl" class="text-3 motion-safe:animate-hr-spin"></oct-icon>
-        <oct-text variant="sm" color="3">Searching...</oct-text>
+        <oct-text variant="sm" color="3">{{ 'COMMON.SEARCHING' | translate }}</oct-text>
       </div>
     } @else if (hasResults()) {
       <!-- ARIA wants every option owned directly by the listbox or a role="group" in it, so the
@@ -69,7 +69,7 @@
         <div class="flex items-center gap-2 px-2 pt-3 pb-1">
           <oct-icon name="Info" size="xs" class="text-3 flex-shrink-0" />
           <oct-text variant="xs" color="3">
-            Showing the first {{ visibleItems().length }} of {{ items().length }}. Refine your search to narrow them down.
+            {{ 'SEARCH_PANEL.SHOWING_FIRST' | translate: { shown: visibleItems().length, total: items().length } }}
           </oct-text>
         </div>
       }
@@ -85,17 +85,17 @@
           <oct-kbd variant="secondary">↑</oct-kbd>
           <oct-kbd variant="secondary">↓</oct-kbd>
         </div>
-        <oct-text variant="xs" color="3">Navigate</oct-text>
+        <oct-text variant="xs" color="3">{{ 'SEARCH_PANEL.NAVIGATE' | translate }}</oct-text>
       </div>
       <div class="flex items-center gap-1.5">
         <oct-kbd variant="secondary">Enter</oct-kbd>
-        <oct-text variant="xs" color="3">Open</oct-text>
+        <oct-text variant="xs" color="3">{{ 'SEARCH_PANEL.OPEN' | translate }}</oct-text>
       </div>
     </div>
   }
 
   <!-- Stable region, only its text changes, so repeated filtering announces reliably. -->
-  <div role="status" class="sr-only">{{ resultAnnouncement() }}</div>
+  <div role="status" class="sr-only">{{ resultAnnouncement().key | translate: resultAnnouncement().params }}</div>
 </oct-dialog>
 
 <ng-template #optionRow let-row>

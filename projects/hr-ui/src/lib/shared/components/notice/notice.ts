@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, input, output, computed, signal } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { TextComponent } from '../text/text';
 import { IconComponent } from '../icon/icon';
 import { ButtonComponent } from '../button/button';
@@ -37,7 +38,7 @@ export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
               [disabled]="actionDisabled() || actionLoading()"
               (buttonClick)="onActionClick()"
             >
-              {{ actionLabel() }}
+              {{ actionLabel() ?? ('COMMON.VIEW' | translate) }}
             </oct-button>
           </div>
         }
@@ -51,7 +52,7 @@ export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
               [icon]="'X'"
               [class]="dismissButtonClass()"
               (buttonClick)="onDismiss()"
-              ariaLabel="Dismiss notice"
+              [ariaLabel]="'NOTICE.DISMISS' | translate"
             />
           </div>
         }
@@ -60,7 +61,7 @@ export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [TextComponent, IconComponent, ButtonComponent],
+  imports: [TranslateModule, TextComponent, IconComponent, ButtonComponent],
   animations: [
     trigger('noticeAnimation', [
       state(
@@ -90,7 +91,7 @@ export class NoticeComponent {
   readonly variant = input<NoticeVariant>('info');
   /** Extra classes for the notice box. */
   readonly class = input<string>('');
-  /** Shows a close button that hides the notice and emits dismiss. */
+  /** Shows a close button that hides the notice and emits dismiss. It is named "Dismiss notice" from the i18n files. */
   readonly dismissible = input<boolean>(false);
   /** A Lucide icon name that replaces the icon of the variant. */
   readonly icon = input<keyof typeof icons | null>(null);
@@ -98,8 +99,8 @@ export class NoticeComponent {
   readonly showDefaultIcon = input<boolean>(true);
   /** Shows a link-style action button after the text. */
   readonly showAction = input<boolean>(false);
-  /** The text of the action button. */
-  readonly actionLabel = input<string>('View');
+  /** The text of the action button. The default is "View" from the i18n files. */
+  readonly actionLabel = input<string>();
   /** Spinner on the action itself, for a notice whose action starts the write. */
   readonly actionLoading = input<boolean>(false);
   /** Disables the action button. */

@@ -27,7 +27,8 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/hr-ui/tsconfig.spec.json"
+            "tsConfig": "projects/hr-ui/tsconfig.spec.json",
+            "providersFile": "projects/hr-ui/test-providers.ts"
           }
         }
       }

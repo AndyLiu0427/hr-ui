@@ -3,14 +3,31 @@
     "SELECT_ALL": "Select all",
     "SELECT_PLACEHOLDER": "Select…",
     "SEARCH": "Search…",
-    "REMOVE_LABEL": "Remove {{label}}"
+    "REMOVE_LABEL": "Remove {{label}}",
+    "CLEAR_LABEL": "Clear {{label}}",
+    "CLEAR_SELECTION": "Clear selection",
+    "CLOSE": "Close",
+    "CLOSE_DIALOG": "Close dialog",
+    "COPY": "Copy",
+    "COPIED": "Copied",
+    "HIDE_PASSWORD": "Hide password",
+    "PROGRESS": "Progress",
+    "SEARCHING": "Searching…",
+    "SEARCH_OPTIONS": "Search options",
+    "SHOW_PASSWORD": "Show password",
+    "TABS": "Tabs",
+    "TOGGLE_SWITCH": "Toggle switch",
+    "VIEW": "View"
   },
   "FILTER_COMPONENT": {
     "CLEAR": "Clear",
     "CLEAR_ALL_FILTERS": "Clear all filters",
     "DONE": "Done",
     "NO_OPTIONS": "No options available",
-    "NO_RESULTS": "No results for “{{query}}”"
+    "NO_RESULTS": "No results for “{{query}}”",
+    "TRIGGER": "{{label}} filter",
+    "TRIGGER_SELECTED": "{{label}} filter, {{count}} selected",
+    "MENU": "{{label}} filter menu"
   },
   "GENERAL": {
     "LOADING": "Loading…",
@@ -37,7 +54,16 @@
   },
   "TABLE_COMPONENT": {
     "ACTIONS": "Actions",
-    "NO_ACTIONS": "No actions available"
+    "NO_ACTIONS": "No actions available",
+    "SELECT_ALL_ROWS": "Select all rows",
+    "SELECT_ROW": "Select {{name}}",
+    "INCREASE": "Increase",
+    "DECREASE": "Decrease",
+    "ROWS_PER_PAGE": "Rows per page",
+    "PAGE_RANGE": "{{start}}–{{end}} of {{total}}",
+    "PREVIOUS_PAGE": "Previous",
+    "NEXT_PAGE": "Next",
+    "SCROLL_REGION": "Table"
   },
   "THEME": {
     "LABEL": "Theme",
@@ -45,5 +71,52 @@
     "DARK": "Dark mode",
     "SWITCH_FROM_LIGHT": "Light mode. Switch to dark mode.",
     "SWITCH_FROM_DARK": "Dark mode. Switch to light mode."
+  },
+  "AVATAR": {
+    "USER_AVATAR": "User avatar",
+    "ONLINE": "{{name}}, online",
+    "OFFLINE": "{{name}}, offline",
+    "BUSY": "{{name}}, busy",
+    "AWAY": "{{name}}, away"
+  },
+  "CAREER_PROGRESSION": {
+    "TIMELINE": "Career timeline",
+    "EMPTY": "No items to display",
+    "PRESENT": "Present",
+    "UNKNOWN_CLIENT": "Unknown client"
+  },
+  "FILE_INPUT": {
+    "NO_IMAGE": "No image uploaded",
+    "CHOOSE_FILE": "Choose file",
+    "SUPPORTED_FORMATS": "Supported formats: PNG, JPEG, JPG, SVG",
+    "REMOVE_IMAGE": "Remove image",
+    "TOO_LARGE": "File is too large",
+    "INVALID_TYPE": "Invalid file type"
+  },
+  "INPUT_SELECT": {
+    "UNIT": "Unit",
+    "LABEL_UNIT": "{{label}} unit"
+  },
+  "NOTICE": {
+    "DISMISS": "Dismiss notice"
+  },
+  "SEARCH_PANEL": {
+    "RESULT": "1 result",
+    "RESULTS": "{{count}} results",
+    "SHOWING_FIRST": "Showing the first {{shown}} of {{total}}. Refine your search to narrow them down.",
+    "NO_MATCH": "No match for {{query}}",
+    "NAVIGATE": "Navigate",
+    "OPEN": "Open"
+  },
+  "SEARCH_SELECT": {
+    "PLACEHOLDER": "Search and select…",
+    "LOADING_OPTIONS": "Loading options…",
+    "MIN_SEARCH_LENGTH": "Type at least {{count}} characters to search",
+    "PRELOAD_FAILED": "Preload failed",
+    "SEARCH_FAILED": "Search failed"
+  },
+  "SNACKBAR": {
+    "CLICK_TO_COPY": "Click to copy",
+    "DISMISS": "Dismiss notification"
   }
 }

@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideTranslateService } from '@ngx-translate/core';
 import { disabled, form, required } from '@angular/forms/signals';
 import { InputSelectComponent } from './input-select';
 
@@ -38,8 +37,7 @@ describe('InputSelectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HostComponent],
-      providers: [provideTranslateService()]
+      imports: [HostComponent]
     }).compileComponents();
     fixture = TestBed.createComponent(HostComponent);
     host = fixture.componentInstance;
@@ -188,8 +186,11 @@ describe('InputSelectComponent', () => {
   });
 
   describe('accessible naming', () => {
-    it('names the unit control after the visible label', () => {
-      expect(control.unitAriaLabel()).toBe('Pay Rate unit');
+    it('names the unit control after the visible label', async () => {
+      fixture.detectChanges();
+      await fixture.whenStable();
+      const names = [...element.querySelectorAll('oct-select [aria-label]')].map(node => node.getAttribute('aria-label'));
+      expect(names).toContain('Pay Rate unit');
     });
   });
 

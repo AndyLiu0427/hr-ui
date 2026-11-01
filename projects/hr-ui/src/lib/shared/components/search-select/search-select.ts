@@ -20,7 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ValidationError, WithOptionalFieldTree } from '@angular/forms/signals';
 import { ColorTagColor, ColorTagComponent } from '../color-tag/color-tag';
 import { IconComponent } from '../icon/icon';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounce, distinctUntilChanged, Subject, switchMap, of, catchError, timer } from 'rxjs';
 import { CdkOverlayOrigin } from '@angular/cdk/overlay';
 import { CdkScrollable } from '@angular/cdk/scrolling';
@@ -103,6 +103,7 @@ export class SearchSelectComponent implements AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly viewportRuler = inject(ViewportRuler);
   private readonly overlayService = inject(BaseOverlayService);
+  private readonly translate = inject(TranslateService);
 
   private readonly nav = new ListKeyboardNav<SearchSelectOption>();
   private searchSubject = new Subject<string>();
@@ -122,7 +123,7 @@ export class SearchSelectComponent implements AfterViewInit {
   readonly valueInput = input<SearchSelectValue>(null, { alias: 'value' });
   readonly value = linkedSignal(this.valueInput);
 
-  /** Text in the field while nothing is selected. */
+  /** Text in the field while nothing is selected. The default is "Search and select…" from the i18n files. */
   readonly placeholder = input<string>('');
   /** Text of the label above the field. */
   readonly label = input<string>('');
@@ -526,8 +527,7 @@ export class SearchSelectComponent implements AfterViewInit {
   }
 
   private handlePreloadError(error: unknown): void {
-    const errorMessage = error instanceof Error ? error.message : 'Preload failed';
-    this.preloadError.set(errorMessage);
+    this.preloadError.set((error as Error | undefined)?.message || this.translate.instant('SEARCH_SELECT.PRELOAD_FAILED'));
     this.preloadedOptions.set([]);
     this.isPreloaded.set(false);
   }
@@ -539,10 +539,7 @@ export class SearchSelectComponent implements AfterViewInit {
         debounce(() => timer(this.debounceMs())),
         distinctUntilChanged(),
         switchMap(query => this.executeSearch(query)),
-        catchError(error => {
-          const errorMessage = error instanceof Error ? error.message : 'Search failed';
-          return of({ success: false, error: errorMessage });
-        }),
+        catchError(error => of({ success: false, error: error?.message })),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(result => this.handleSearchResult(result));
@@ -563,13 +560,12 @@ export class SearchSelectComponent implements AfterViewInit {
       if (result instanceof Promise) {
         return result.then(
           options => ({ success: true, options }),
-          error => ({ success: false, error: error.message || 'Search failed' })
+          error => ({ success: false, error: error?.message })
         );
       }
       return of({ success: true, options: result });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Search failed';
-      return of({ success: false, error: errorMessage });
+      return of({ success: false, error: (error as Error | undefined)?.message });
     }
   }
 
@@ -585,7 +581,8 @@ export class SearchSelectComponent implements AfterViewInit {
         this.searchOptions.set(typedResult.options ?? []);
         this.searchError.set(null);
       } else {
-        this.searchError.set(typedResult.error ?? 'Search failed');
+        // One fallback for every way a search can fail: a throw, a rejection or an error without a message.
+        this.searchError.set(typedResult.error || this.translate.instant('SEARCH_SELECT.SEARCH_FAILED'));
         this.searchOptions.set([]);
       }
     }

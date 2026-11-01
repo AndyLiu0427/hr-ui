@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { IconComponent, IconSize } from '../icon/icon';
 
 export type BadgeSize = 'sm' | 'md' | 'lg';
@@ -33,7 +34,7 @@ export interface BadgeProps {
         <button
           type="button"
           class="-m-1.5 inline-flex shrink-0 items-center justify-center rounded-full p-1.5 cursor-pointer hover:opacity-70 transition-opacity duration-150 ease-out oct-focus-ring"
-          [attr.aria-label]="'Remove ' + text()"
+          [attr.aria-label]="'COMMON.REMOVE_LABEL' | translate: { label: text() }"
           (click)="onDismiss($event)">
           <oct-icon name="X" [size]="iconSize()" aria-hidden="true" />
         </button>
@@ -41,7 +42,7 @@ export interface BadgeProps {
     </span>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IconComponent]
+  imports: [TranslateModule, IconComponent]
 })
 export class BadgeComponent {
   /** The text. The default is a placeholder, so always set it. */
@@ -54,7 +55,10 @@ export class BadgeComponent {
   readonly mode = input<BadgeMode>('opacity');
   /** The meaning of the badge, shown as its colour. */
   readonly color = input<BadgeColor>('neutral');
-  /** Shows a close icon that emits dismiss. The icon cannot be reached by keyboard, so use oct-chip for removable values. */
+  /**
+   * Shows a close icon that emits dismiss. It is named "Remove" and the text, from the i18n files.
+   * The icon cannot be reached by keyboard, so use oct-chip for removable values.
+   */
   readonly dismissible = input<boolean>(false);
 
   /** Emits when the close icon is clicked. */

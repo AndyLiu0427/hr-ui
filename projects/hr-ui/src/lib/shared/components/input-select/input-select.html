@@ -1,6 +1,6 @@
 <div [class]="containerClass()">
   <!-- One label, pointed at the amount: it is what the operator types into, and the unit carries
-       its own aria-label so a screen reader does not announce it as "Select an option". -->
+       its own aria-label so a screen reader does not announce it by its placeholder. -->
   @if (label()) {
     <label [for]="amountId()" [class]="labelClass()">
       {{ label() }}
@@ -33,7 +33,7 @@
       [showScrollIndicators]="false"
       [options]="unitOptions()"
       [placeholder]="unitPlaceholder()"
-      [ariaLabel]="unitAriaLabel()"
+      [ariaLabel]="label() ? ('INPUT_SELECT.LABEL_UNIT' | translate: { label: label() }) : ('INPUT_SELECT.UNIT' | translate)"
       [maxHeight]="unitMaxHeight()"
       [overlayMinWidth]="unitOverlayMinWidth"
       [size]="size()"

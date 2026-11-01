@@ -1,15 +1,23 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, input, output, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, output, signal, viewChild } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { ButtonColor, ButtonComponent, ButtonSize, ButtonVariant } from '../button/button';
 import { IconComponent } from '../icon/icon';
 import { TextComponent } from '../text/text';
 
+/** Each text left out comes from the i18n files, in the language of the app. */
 export interface FileInputLabels {
+  /** Text in the empty preview area. The default is "No image uploaded". */
   placeholderText?: string;
+  /** Text of the button. The default is "Choose file". */
   buttonText?: string;
+  /** Text under the button. The default is "Supported formats: PNG, JPEG, JPG, SVG". */
   helpText?: string;
+  /** Name of the button that removes the preview. The default is "Remove image". */
   removeButtonAriaLabel?: string;
+  /** Error for a file over maxFileSize. The default is "File is too large". */
   errorMessageTooLarge?: string;
+  /** Error for a file that accept does not allow. The default is "Invalid file type". */
   errorMessageInvalidType?: string;
 }
 
@@ -24,9 +32,11 @@ export type FileInputMode = 'preview' | 'button';
   selector: 'oct-file-input',
   templateUrl: './file-input.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ButtonComponent, IconComponent, TextComponent]
+  imports: [TranslateModule, ButtonComponent, IconComponent, TextComponent]
 })
 export class FileInputComponent {
+  private readonly translate = inject(TranslateService);
+
   /** preview shows an image preview and checks each file. button shows only a button. */
   readonly mode = input<FileInputMode>('preview');
   /**
@@ -49,7 +59,7 @@ export class FileInputComponent {
   readonly placeholderIcon = input<string>('Image');
   /** Error message under the button, such as an upload failure from your API. */
   readonly error = input<string | null>(null);
-  /** Texts for the button, the help text, the empty preview area and the error messages. */
+  /** Texts for the button, the help text, the empty preview area and the error messages. The defaults come from the i18n files. */
   readonly labels = input<FileInputLabels>({});
 
   /** Colour of the button in button mode. */
@@ -77,22 +87,6 @@ export class FileInputComponent {
   readonly removeFile = output<void>();
   /** Fires when preview-mode validation rejects a file. */
   readonly validationError = output<string>();
-
-  private readonly defaultLabels: FileInputLabels = {
-    placeholderText: 'No image uploaded',
-    buttonText: 'Choose File',
-    helpText: 'Supported formats: PNG, JPEG, JPG, SVG',
-    removeButtonAriaLabel: 'Remove image',
-    errorMessageTooLarge: 'File is too large',
-    errorMessageInvalidType: 'Invalid file type'
-  };
-
-  readonly placeholderText = computed(() => this.labels().placeholderText ?? this.defaultLabels.placeholderText!);
-  readonly buttonText = computed(() => this.labels().buttonText ?? this.defaultLabels.buttonText!);
-  readonly helpText = computed(() => this.labels().helpText ?? this.defaultLabels.helpText!);
-  readonly removeButtonAriaLabel = computed(() => this.labels().removeButtonAriaLabel ?? this.defaultLabels.removeButtonAriaLabel!);
-  readonly errorMessageTooLarge = computed(() => this.labels().errorMessageTooLarge ?? this.defaultLabels.errorMessageTooLarge!);
-  readonly errorMessageInvalidType = computed(() => this.labels().errorMessageInvalidType ?? this.defaultLabels.errorMessageInvalidType!);
 
   private readonly internalPreview = signal<string | null>(null);
   readonly internalError = signal<string | null>(null);
@@ -156,7 +150,7 @@ export class FileInputComponent {
   private validateFile(file: File): string | null {
     const maxSize = this.maxFileSize();
     if (maxSize !== null && file.size > maxSize) {
-      return this.errorMessageTooLarge();
+      return this.labels().errorMessageTooLarge ?? this.translate.instant('FILE_INPUT.TOO_LARGE');
     }
 
     const acceptedTypes = this.accept()
@@ -165,7 +159,7 @@ export class FileInputComponent {
       .filter(Boolean);
 
     if (acceptedTypes.length > 0 && !acceptedTypes.some(type => matchesAcceptedType(file, type))) {
-      return this.errorMessageInvalidType();
+      return this.labels().errorMessageInvalidType ?? this.translate.instant('FILE_INPUT.INVALID_TYPE');
     }
 
     return null;

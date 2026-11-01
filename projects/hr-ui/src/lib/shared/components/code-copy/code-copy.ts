@@ -1,10 +1,14 @@
 import { Component, ChangeDetectionStrategy, signal, input } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '../button/button';
 
-/** A Copy button for a block of code or text. It sits in the top-right corner of its nearest positioned parent. */
+/**
+ * A Copy button for a block of code or text. It sits in the top-right corner of its nearest positioned parent.
+ * Its text, "Copy" and then "Copied", comes from the i18n files.
+ */
 @Component({
   selector: 'oct-code-copy',
-  imports: [ButtonComponent],
+  imports: [TranslateModule, ButtonComponent],
   template: `
     <oct-button
       variant="outline"
@@ -16,11 +20,7 @@ import { ButtonComponent } from '../button/button';
       class="absolute top-4 right-4 z-10"
       (buttonClick)="copyCode()"
     >
-      @if (copySuccess()) {
-        Copied!
-      } @else {
-        Copy
-      }
+      {{ (copySuccess() ? 'COMMON.COPIED' : 'COMMON.COPY') | translate }}
     </oct-button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush

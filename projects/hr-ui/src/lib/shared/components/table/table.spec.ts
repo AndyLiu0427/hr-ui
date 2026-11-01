@@ -5,7 +5,6 @@ import { Location } from '@angular/common';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { TranslateModule } from '@ngx-translate/core';
 import { useTablePagination } from '../../../utils/table-url-state';
 import { URL_STATE_ENABLED } from '../../../utils/url-signal';
 import { TableComponent } from './table';
@@ -50,7 +49,6 @@ class DetailPage {
 
 async function open(url: string): Promise<{ harness: RouterTestingHarness; container: () => HTMLDivElement; table: () => TableComponent }> {
   TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot()],
     providers: [
       provideZonelessChangeDetection(),
       provideRouter([
@@ -127,7 +125,7 @@ describe('TableComponent scroll position', () => {
 
 function createTable(columns: TableColumn[]) {
   TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot(), TableComponent],
+    imports: [TableComponent],
     providers: [provideNoopAnimations()]
   });
   const fixture = TestBed.createComponent(TableComponent);
@@ -198,7 +196,7 @@ describe('TableComponent tableMinWidth', () => {
 describe('TableComponent header sort', () => {
   function render() {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), TableComponent],
+      imports: [TableComponent],
       providers: [provideNoopAnimations()]
     });
     const fixture = TestBed.createComponent(TableComponent);
@@ -245,7 +243,7 @@ describe('TableComponent header sort', () => {
 
 async function renderTable(inputs: Record<string, unknown>) {
   TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot(), TableComponent],
+    imports: [TableComponent],
     providers: [provideNoopAnimations()]
   });
   const fixture = TestBed.createComponent(TableComponent);
@@ -384,5 +382,36 @@ describe('TableComponent inline edit', () => {
     await fixture.whenStable();
 
     expect(document.activeElement).toBe(editButton());
+  });
+});
+
+describe('TableComponent accessible names', () => {
+  async function render() {
+    TestBed.configureTestingModule({ imports: [TableComponent], providers: [provideNoopAnimations()] });
+    const fixture = TestBed.createComponent(TableComponent);
+    fixture.componentRef.setInput('columns', [{ key: 'name', label: 'Name' }, { key: 'actions', label: '' }]);
+    fixture.componentRef.setInput('data', rows);
+    fixture.componentRef.setInput('pagination', { page: 2, pageSize: 10, totalNums: rows.length, totalNumPages: 5 });
+    fixture.componentRef.setInput('rowActions', () => [{ key: 'edit', label: 'Edit', icon: 'Pencil', onClick: () => {} }]);
+    await fixture.whenStable();
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('keeps the words in the previous and next buttons, so they have a name on a phone too', async () => {
+    const words = [...(await render()).querySelectorAll('oct-button button span')].filter(span => !span.children.length && /^(Previous|Next)$/.test(span.textContent?.trim() ?? ''));
+    expect(words).toHaveLength(2);
+    // hidden would drop the word from the accessible name below 640px; sr-only keeps it.
+    for (const word of words) expect(word.classList.contains('hidden')).toBe(false);
+  });
+
+  it('names the actions column, whose cells hold only icon buttons', async () => {
+    const headers = [...(await render()).querySelectorAll('thead th')].map(th => th.textContent?.trim());
+    expect(headers.at(-1)).toBe('Actions');
+  });
+
+  it('lets the keyboard reach the scroll box, so a wide table can be scrolled without a mouse', async () => {
+    const scroller = (await render()).querySelector('[role="region"]');
+    expect(scroller?.getAttribute('tabindex')).toBe('0');
+    expect(scroller?.getAttribute('aria-label')).toBe('Table');
   });
 });

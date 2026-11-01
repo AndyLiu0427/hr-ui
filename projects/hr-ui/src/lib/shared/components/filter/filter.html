@@ -5,7 +5,7 @@
   color="neutral"
   variant="outline"
   shape="square"
-  [ariaLabel]="triggerLabel()"
+  [ariaLabel]="(hasSelections() ? 'FILTER_COMPONENT.TRIGGER_SELECTED' : 'FILTER_COMPONENT.TRIGGER') | translate: { label: label(), count: selectionCount() }"
   (click)="toggleMenu()"
   (keydown)="handleKeydown($event)"
   class="!cursor-pointer"
@@ -35,7 +35,7 @@
   <oct-bottom-sheet
     [isOpen]="isOpen()"
     [title]="label()"
-    [ariaLabel]="label() + ' filter'"
+    [ariaLabel]="'FILTER_COMPONENT.TRIGGER' | translate: { label: label() }"
     (closed)="closeMenu()"
   >
     @if (searchable()) {
@@ -112,7 +112,7 @@
     <div
       class="oct-overlay-enter bg-secondary rounded-xl shadow-hr-lg border border-primary overflow-hidden"
       role="menu"
-      [attr.aria-label]="label() + ' filter menu'"
+      [attr.aria-label]="'FILTER_COMPONENT.MENU' | translate: { label: label() }"
       (click)="$event.stopPropagation()"
       (keydown)="handleMenuKeydown($event)"
     >
