@@ -1,10 +1,10 @@
 {
   "COMMON": {
-    "SELECT_ALL": "Select All"
+    "SELECT_ALL": "Select all"
   },
   "FILTER_COMPONENT": {
     "CLEAR": "Clear",
-    "CLEAR_ALL_FILTERS": "Clear All Filters",
+    "CLEAR_ALL_FILTERS": "Clear all filters",
     "DONE": "Done",
     "NO_OPTIONS": "No options available",
     "NO_RESULTS": "No results found"
