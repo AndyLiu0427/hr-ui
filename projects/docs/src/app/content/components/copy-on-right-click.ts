@@ -15,8 +15,8 @@ export const doc: ComponentDoc = {
     }
   ],
   accessibility: [
-    'Right-click is the only way to copy, and it replaces the browser menu on that element. Keep the value visible, so keyboard and touch users can still read it.',
-    'The "Copied!" message is not announced to screen readers.'
+    'Right-click is the only way to copy, and it replaces the browser menu on that element. With no value to copy, the browser menu opens as usual. Keep the value visible, so keyboard and touch users can still read it.',
+    'A polite live region tells screen readers "Copied" when the copy succeeds.'
   ],
   api: ['CopyOnRightClickDirective']
 };

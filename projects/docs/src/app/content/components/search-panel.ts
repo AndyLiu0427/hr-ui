@@ -27,11 +27,12 @@ export const doc: ComponentDoc = {
     { keys: ['↓'], action: 'Highlights the next result. From the last result it wraps to the first.' },
     { keys: ['↑'], action: 'Highlights the previous result. From the first result it wraps to the last.' },
     { keys: ['Enter'], action: 'Selects the highlighted result and closes the panel.' },
+    { keys: ['Tab'], action: 'Moves focus to a control in the empty state, such as Clear search.' },
     { keys: ['Esc'], action: 'Closes the panel.' }
   ],
   accessibility: [
     'The query box is a combobox. Focus stays in it while the arrow keys move aria-activedescendant through the results, which are options in a listbox.',
-    'A status region announces the number of results, or that a search is running. ariaLabel is required: it names both the query box and the list.'
+    'A status region announces the number of results, or that a search is running. ariaLabel is required: it names the dialog, the query box and the list.'
   ],
   api: ['SearchPanelComponent', 'SearchPanelRowDirective', 'SearchPanelEmptyDirective', 'HighlightPipe']
 };

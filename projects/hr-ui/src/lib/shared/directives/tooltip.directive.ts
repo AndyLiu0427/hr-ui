@@ -66,20 +66,25 @@ const ARROW_COLOR_CLASSES: Record<TooltipColor, string> = {
   amber: 'bg-warning-solid'
 };
 
+/** What can take keyboard focus inside a component host, such as the <button> in oct-button. */
+const FOCUSABLE = 'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 const isTouchPointer = (): boolean =>
   typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(hover: none)').matches;
 
 /**
- * Shows a short text label, or a template, next to its host on hover and when the host element itself is focused.
- * A template is never shown on touch screens, so keep anything essential on the page as well.
+ * Shows a short text label, or a template, next to its host on hover and while the host or a control inside it
+ * has keyboard focus. Escape closes it. A template is never shown on touch screens, so keep anything essential
+ * on the page as well.
  */
 @Directive({
   selector: '[octTooltip], [octTooltipContent]',
   host: {
     '(mouseenter)': 'onMouseEnter()',
     '(mouseleave)': 'onMouseLeave()',
-    '(focus)': 'onMouseEnter()',
-    '(blur)': 'onMouseLeave()'
+    // focusin and focusout bubble, so a component host such as oct-button hears its inner <button>.
+    '(focusin)': 'onMouseEnter()',
+    '(focusout)': 'onFocusOut($event)'
   }
 })
 export class TooltipDirective implements OnDestroy {
@@ -102,6 +107,9 @@ export class TooltipDirective implements OnDestroy {
 
   private wrapperEl: HTMLElement | null = null;
   private arrowEl: HTMLElement | null = null;
+  /** The element that carries aria-describedby while the tooltip shows. */
+  private describedEl: HTMLElement | null = null;
+  private stopEscapeListener: (() => void) | null = null;
   private embeddedView: EmbeddedViewRef<unknown> | null = null;
   private delayTimer: ReturnType<typeof setTimeout> | null = null;
   private visibleBaseClass = '';
@@ -114,6 +122,8 @@ export class TooltipDirective implements OnDestroy {
   }
 
   onMouseEnter(): void {
+    // Already showing: a click on a hovered host also focuses it, and must not pop the tooltip again.
+    if (this.wrapperEl) return;
     if (this.octTooltipDisabled()) return;
     // Rich content has no hover affordance on touch — bail and let the consumer
     // show an inline fallback. (Text path keeps its legacy behaviour.)
@@ -133,6 +143,13 @@ export class TooltipDirective implements OnDestroy {
   onMouseLeave(): void {
     this.clearTimer();
     this.remove();
+  }
+
+  /** Focus that moves between controls inside the host stays inside it. */
+  onFocusOut(event: FocusEvent): void {
+    if (!(this.el.nativeElement as HTMLElement).contains(event.relatedTarget as Node | null)) {
+      this.onMouseLeave();
+    }
   }
 
   ngOnDestroy(): void {
@@ -188,7 +205,12 @@ export class TooltipDirective implements OnDestroy {
     this.renderer.appendChild(document.body, wrapper);
     this.wrapperEl = wrapper;
 
-    this.renderer.setAttribute(this.el.nativeElement, 'aria-describedby', id);
+    this.describedEl = this.focusTarget();
+    this.renderer.setAttribute(this.describedEl, 'aria-describedby', id);
+    // Dismissible without moving the pointer or the focus, as WCAG 1.4.13 asks.
+    this.stopEscapeListener = this.renderer.listen('document', 'keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') this.onMouseLeave();
+    });
     this.positionTooltip(wrapper, position);
 
     if (!instant) {
@@ -197,6 +219,12 @@ export class TooltipDirective implements OnDestroy {
         this.wrapperEl.className = `${this.visibleBaseClass} ${VISIBLE}`;
       });
     }
+  }
+
+  /** The element a screen reader is on when it reads the description: the host, or the control inside a component host. */
+  private focusTarget(): HTMLElement {
+    const host = this.el.nativeElement as HTMLElement;
+    return host.matches(FOCUSABLE) ? host : (host.querySelector<HTMLElement>(FOCUSABLE) ?? host);
   }
 
   /**
@@ -281,7 +309,10 @@ export class TooltipDirective implements OnDestroy {
   private remove(): void {
     if (this.wrapperEl) {
       TooltipDirective.lastClosedAt = performance.now();
-      this.renderer.removeAttribute(this.el.nativeElement, 'aria-describedby');
+      this.renderer.removeAttribute(this.describedEl, 'aria-describedby');
+      this.stopEscapeListener?.();
+      this.stopEscapeListener = null;
+      this.describedEl = null;
       this.wrapperEl.remove();
       this.wrapperEl = null;
       this.arrowEl = null;

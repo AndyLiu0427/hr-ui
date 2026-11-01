@@ -16,7 +16,7 @@ export const doc: ComponentDoc = {
   ],
   accessibility: [
     'The label is a native <label> linked to the input. A required field sets aria-required, and a field in the error state sets aria-invalid.',
-    'To have screen readers read the helper or error text, set ariaDescribedBy. The component gives that id to the text under the field.',
+    'The input points at the helper or error text under it with aria-describedby, so screen readers read that text. Set ariaDescribedBy only to choose its id.',
     'Without a visible label, set ariaLabel. The placeholder is the fallback name, but it disappears when the user types.'
   ],
   api: ['InputComponent']

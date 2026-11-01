@@ -6,7 +6,10 @@ const TOOLTIP_ENTER = 'opacity-0 translate-y-1';
 const TOOLTIP_VISIBLE = 'opacity-100 translate-y-0';
 const TOOLTIP_EXIT = 'opacity-0 -translate-y-1';
 
-/** Copies a value to the clipboard when the user right-clicks the element, and shows "Copied!" by the pointer. */
+/**
+ * Copies a value to the clipboard when the user right-clicks the element, shows "Copied!" by the pointer and tells
+ * screen readers "Copied". With nothing to copy, the browser's own menu opens as usual.
+ */
 @Directive({
   selector: '[octCopyOnRightClick]',
   host: {
@@ -17,6 +20,9 @@ export class CopyOnRightClickDirective implements OnDestroy {
   /** The value to copy. It can differ from the text shown; null or an empty string copies nothing. */
   readonly octCopyOnRightClick = input.required<string | number | null | undefined>();
 
+  /** One polite live region for every copy target on the page: screen readers do not read the visible label. */
+  private static liveRegion: HTMLElement | null = null;
+
   private readonly renderer = inject(Renderer2);
   private tooltipElement: HTMLElement | null = null;
   private dismissTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -26,17 +32,31 @@ export class CopyOnRightClickDirective implements OnDestroy {
   }
 
   async onRightClick(event: MouseEvent): Promise<void> {
-    event.preventDefault();
-
     const value = this.octCopyOnRightClick();
     if (value == null || value === '') return;
+    event.preventDefault();
 
     try {
       await navigator.clipboard.writeText(String(value));
       this.showTooltip(event);
+      this.announce();
     } catch (err) {
       console.error('Failed to copy:', err);
     }
+  }
+
+  private announce(): void {
+    if (!CopyOnRightClickDirective.liveRegion?.isConnected) {
+      const created = this.renderer.createElement('div') as HTMLElement;
+      created.className = 'sr-only';
+      created.setAttribute('aria-live', 'polite');
+      this.renderer.appendChild(document.body, created);
+      CopyOnRightClickDirective.liveRegion = created;
+    }
+    const region = CopyOnRightClickDirective.liveRegion;
+    region.textContent = '';
+    // A beat after clearing, so a second copy is read out again and a new region is in place before it speaks.
+    setTimeout(() => (region.textContent = 'Copied'), 100);
   }
 
   private showTooltip(event: MouseEvent): void {

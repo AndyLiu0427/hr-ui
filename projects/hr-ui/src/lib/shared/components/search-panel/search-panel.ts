@@ -58,7 +58,7 @@ export class SearchPanelComponent<T extends SearchPanelItem> {
   readonly loading = input<boolean>(false);
   /** Placeholder text in the query box. */
   readonly placeholder = input<string>('Search...');
-  /** Names the query box and the result list for screen readers. */
+  /** Names the dialog, the query box and the result list for screen readers. */
   readonly ariaLabel = input.required<string>();
   /** Renders the ↑↓ / Enter legend under the results. */
   readonly showHints = input<boolean>(false);
@@ -72,7 +72,10 @@ export class SearchPanelComponent<T extends SearchPanelItem> {
   readonly itemSelected = output<T>();
   /** Emits when the panel asks to close: Escape, a click outside, or a selection. */
   readonly dialogClose = output<void>();
-  /** Tab or Shift+Tab in the query box, for a consumer that steps through its own scopes. */
+  /**
+   * Tab or Shift+Tab in the query box. Focus moves on as usual, for example to a button in the empty state.
+   * Call preventDefault() on the event to keep focus in the box, for example to step through your own scopes.
+   */
   readonly tabKey = output<KeyboardEvent>();
 
   private readonly rowTemplate = contentChild.required(SearchPanelRowDirective, { read: TemplateRef });
@@ -174,10 +177,11 @@ export class SearchPanelComponent<T extends SearchPanelItem> {
       return;
     }
 
-    // Stopped here, before the dialog's focus trap can move focus out of the query box.
-    event.preventDefault();
-    event.stopPropagation();
     this.tabKey.emit(event);
+    // The consumer kept focus in the box, so the dialog's focus trap must not move it either.
+    if (event.defaultPrevented) {
+      event.stopPropagation();
+    }
   }
 
   /** Called from a consumer's projected empty template via a template reference variable. */

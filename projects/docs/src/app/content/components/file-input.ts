@@ -10,7 +10,7 @@ export const doc: ComponentDoc = {
     { name: 'file-input-demo' },
     { name: 'file-input-button', title: 'As a button', description: 'mode="button" shows only a button, with your text as its label. It skips the preview and the type and size checks.' },
     { name: 'file-input-icon-only', title: 'Icon only', description: 'For a tight row, set iconOnly. An icon-only button needs ariaLabel.', compact: true },
-    { name: 'file-input-validation', title: 'File type and size', description: 'In preview mode, a file of another type or over maxFileSize is rejected, and the error shows under the button. List exact MIME types in accept, and word the messages with labels.' },
+    { name: 'file-input-validation', title: 'File type and size', description: 'In preview mode, a file of another type or over maxFileSize is rejected, and the error shows under the button. accept takes MIME types, wildcards such as image/* and extensions such as .pdf. Word the messages with labels.' },
     { name: 'file-input-states', title: 'Loading and disabled', description: 'A loading button shows a spinner and ignores clicks until the upload finishes.', compact: true }
   ],
   keyboard: [

@@ -202,6 +202,19 @@ describe('SelectComponent', () => {
     });
   });
 
+  it('clears to an empty array in multiple mode, so a value bound as an array stays one', () => {
+    ref.setInput('multiple', true);
+    ref.setInput('options', [
+      { value: 'a', label: 'A' },
+      { value: 'b', label: 'B' }
+    ]);
+    component.selectOption({ value: 'a', label: 'A' });
+
+    component.clearSelection(new Event('click'));
+
+    expect(component.value()).toEqual([]);
+  });
+
   describe('accessible name', () => {
     it('prefers ariaLabel, so a parent-owned label still names this control', () => {
       // With bare + no [label], the fallback chain would announce "Select an option".
@@ -344,5 +357,46 @@ describe('SelectComponent', () => {
     select.selectOption({ value: 'a', label: 'A' });
     expect(fixture.componentInstance.model().company).toBe('a');
     expect(fixture.componentInstance.f.company().touched()).toBe(true);
+  });
+});
+
+describe('SelectComponent — the open list for screen readers', () => {
+  async function openSelect(multiple: boolean) {
+    await TestBed.configureTestingModule({
+      imports: [SelectComponent],
+      providers: [{ provide: TranslateService, useValue: { instant: (key: string) => key } }]
+    }).compileComponents();
+    const fixture = TestBed.createComponent(SelectComponent);
+    fixture.componentRef.setInput('label', 'Department');
+    fixture.componentRef.setInput('multiple', multiple);
+    fixture.componentRef.setInput('options', [
+      { value: 'eng', label: 'Engineering' },
+      { value: 'fin', label: 'Finance' }
+    ]);
+    fixture.detectChanges();
+    // The overlay is set up a microtask after init.
+    await Promise.resolve();
+    fixture.componentInstance.openDropdown();
+    fixture.detectChanges();
+    return { fixture, trigger: fixture.nativeElement.querySelector('button[role="combobox"]') as HTMLButtonElement };
+  }
+
+  it('points aria-activedescendant at an option inside the listbox that the trigger controls', async () => {
+    const { trigger } = await openSelect(false);
+
+    const option = document.getElementById(trigger.getAttribute('aria-activedescendant')!);
+    expect(option?.getAttribute('role')).toBe('option');
+    expect(option?.getAttribute('aria-selected')).toBe('false');
+    const listbox = option?.closest('[role="listbox"]');
+    expect(listbox?.id).toBe(trigger.getAttribute('aria-controls'));
+    expect(listbox?.getAttribute('aria-label')).toBe('Department');
+  });
+
+  it('marks the list multiselectable in multiple mode, with Select All as an option', async () => {
+    const { trigger } = await openSelect(true);
+
+    const selectAll = document.getElementById(trigger.getAttribute('aria-activedescendant')!);
+    expect(selectAll?.getAttribute('role')).toBe('option');
+    expect(selectAll?.closest('[role="listbox"]')?.getAttribute('aria-multiselectable')).toBe('true');
   });
 });

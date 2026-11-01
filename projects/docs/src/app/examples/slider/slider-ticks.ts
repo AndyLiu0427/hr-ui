@@ -10,9 +10,7 @@ import { SliderComponent } from 'ngx-hr-ui';
       leftLabel="Engineering"
       rightLabel="Product"
       [showTicks]="true"
-      [step]="10"
       [leftPercent]="engineeringPercent()"
-      [rightPercent]="100 - engineeringPercent()"
       (percentageChange)="engineeringPercent.set($event.left)"
     />
   `

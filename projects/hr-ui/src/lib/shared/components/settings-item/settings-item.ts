@@ -36,7 +36,7 @@ export type SettingsItemColor = 'neutral' | 'error';
   selector: 'oct-settings-item',
   host: { class: 'contents' },
   template: `
-    <button (click)="itemClick.emit($event)" [class]="buttonClasses()">
+    <button type="button" (click)="itemClick.emit($event)" [class]="buttonClasses()">
       <div [class]="iconContainerClasses()">
         <oct-icon [name]="icon()" size="sm" />
       </div>

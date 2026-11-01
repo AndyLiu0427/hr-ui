@@ -32,8 +32,8 @@ export interface TabItem {
    * A tab with an href renders as a real anchor with `role="link"`, not a `role="tab"` button:
    * a screen reader announcing "tab, selected" for something that changes the page is wrong,
    * and a button silently drops middle-click, cmd-click, hover preview and copy-link-address.
-   * The click handler still fires and still preventDefaults, so in-app navigation stays a
-   * router call — the href exists for the affordances a button cannot offer.
+   * A plain click still preventDefaults, so in-app navigation stays a router call. A click with
+   * Cmd, Ctrl, Shift or Alt is left to the browser, which opens the link in a new tab or window.
    *
    * Same reasoning as the assignments row action in the job order detail page.
    */
@@ -51,6 +51,10 @@ export interface TabItem {
   }
 })
 export class TabsComponent {
+  private static nextId = 0;
+  /** One per strip, so two strips with the same tab ids never share a description id. */
+  protected readonly descriptionId = `oct-tabs-${TabsComponent.nextId++}-description`;
+
   /** The tabs, in order. A tab with href renders as a link; a description shows under the strip while its tab is active. */
   readonly tabs = input.required<TabItem[]>();
   /** The id of the active tab. When empty, the first tab becomes active. */
@@ -172,8 +176,12 @@ export class TabsComponent {
       event?.preventDefault();
       return;
     }
-    // On an anchor tab the href is the fallback, not the mechanism: let the caller route.
     if (this.tabs()[index]?.href) {
+      // A modified click opens the link elsewhere, so this strip stays on its tab.
+      if (event instanceof MouseEvent && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0)) {
+        return;
+      }
+      // On an anchor tab the href is the fallback, not the mechanism: let the caller route.
       event?.preventDefault();
     }
     // Only the click binding passes an event; the keyboard path calls this without one.

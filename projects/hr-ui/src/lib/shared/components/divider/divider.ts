@@ -27,12 +27,12 @@ export interface DividerProps {
   },
   template: `
     @if (text() && orientation() === 'horizontal') {
-      <div [class]="containerClasses()">
-        <div [class]="lineClasses()"></div>
+      <div class="flex items-center w-full">
+        <div [class]="startLineClasses()"></div>
         <oct-text color="3" variant="sm" weight="medium" class="px-3 whitespace-nowrap">
           {{ text() }}
         </oct-text>
-        <div [class]="lineClasses()"></div>
+        <div [class]="endLineClasses()"></div>
       </div>
     } @else {
       <div [class]="lineClasses()"></div>
@@ -77,26 +77,16 @@ export class DividerComponent {
     return classes.join(' ');
   });
 
-  readonly containerClasses = computed(() => {
-    const classes: string[] = ['flex', 'items-center', 'w-full'];
-
-    // Text position affects flex layout
-    const positionMap = {
-      start: 'justify-start',
-      center: 'justify-center',
-      end: 'justify-end'
-    };
-    classes.push(positionMap[this.textPosition()]);
-
-    return classes.join(' ');
-  });
+  /** The lines either side of a label. The one on the label's side is short; the other fills the row. */
+  readonly startLineClasses = computed(() => `${this.lineClasses()} ${this.textPosition() === 'start' ? 'w-6' : 'flex-1'}`);
+  readonly endLineClasses = computed(() => `${this.lineClasses()} ${this.textPosition() === 'end' ? 'w-6' : 'flex-1'}`);
 
   readonly lineClasses = computed(() => {
     const classes: string[] = [];
 
     // Orientation-based sizing
     if (this.orientation() === 'horizontal') {
-      classes.push('h-px', 'flex-1');
+      classes.push('h-px');
     } else {
       classes.push('w-px', 'h-full', 'min-h-[20px]');
     }

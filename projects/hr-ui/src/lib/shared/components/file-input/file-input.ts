@@ -29,7 +29,10 @@ export type FileInputMode = 'preview' | 'button';
 export class FileInputComponent {
   /** preview shows an image preview and checks each file. button shows only a button. */
   readonly mode = input<FileInputMode>('preview');
-  /** Accepted MIME types, separated by commas. Preview mode rejects other types, so list exact types such as image/png. */
+  /**
+   * Accepted file types, separated by commas, as in the native accept attribute: MIME types such as image/png,
+   * wildcards such as image/*, and extensions such as .pdf. Preview mode rejects other files.
+   */
   readonly accept = input<string>('');
   /** Lets the user pick several files. Preview mode checks and shows only the first. */
   readonly multiple = input<boolean>(false);
@@ -158,13 +161,24 @@ export class FileInputComponent {
 
     const acceptedTypes = this.accept()
       .split(',')
-      .map(type => type.trim())
+      .map(type => type.trim().toLowerCase())
       .filter(Boolean);
 
-    if (acceptedTypes.length > 0 && !acceptedTypes.includes(file.type)) {
+    if (acceptedTypes.length > 0 && !acceptedTypes.some(type => matchesAcceptedType(file, type))) {
       return this.errorMessageInvalidType();
     }
 
     return null;
   }
+}
+
+/** One entry of an accept list, matched the way the browser's file picker matches it. */
+function matchesAcceptedType(file: File, type: string): boolean {
+  if (type.startsWith('.')) {
+    return file.name.toLowerCase().endsWith(type);
+  }
+  if (type.endsWith('/*')) {
+    return file.type.toLowerCase().startsWith(type.slice(0, -1));
+  }
+  return file.type.toLowerCase() === type;
 }

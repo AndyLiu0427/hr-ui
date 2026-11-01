@@ -12,7 +12,6 @@ const sgd = (amount: number) => 'SGD ' + amount.toLocaleString('en-SG', { minimu
       leftLabel="Main account"
       rightLabel="Savings account"
       [leftPercent]="mainPercent()"
-      [rightPercent]="100 - mainPercent()"
       (percentageChange)="mainPercent.set($event.left)"
     />
     <p class="text-sm text-2">{{ summary() }}</p>

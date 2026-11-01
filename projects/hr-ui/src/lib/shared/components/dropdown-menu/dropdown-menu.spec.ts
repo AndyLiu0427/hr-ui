@@ -141,3 +141,30 @@ describe('DropdownMenuComponent teardown', () => {
     expect(document.querySelectorAll('.cdk-overlay-pane').length).toBe(0);
   });
 });
+
+@Component({
+  imports: [DropdownMenuComponent],
+  template: `
+    <oct-dropdown-menu alignment="left" [isOpen]="true" [menuSections]="sections">
+      <button type="button">Help</button>
+    </oct-dropdown-menu>
+  `
+})
+class LinkMenuHost {
+  readonly sections: MenuSection[] = [{ items: [{ label: 'Edit' }, { label: 'Payroll guide', href: '/guides/payroll' }] }];
+}
+
+describe('DropdownMenuComponent links', () => {
+  it('renders an item with href as a link, which the arrow keys still reach', async () => {
+    const fixture = TestBed.createComponent(LinkMenuHost);
+    await fixture.whenStable();
+
+    press('ArrowDown');
+
+    const link = document.activeElement as HTMLAnchorElement;
+    expect(link.tagName).toBe('A');
+    expect(link.getAttribute('href')).toBe('/guides/payroll');
+    expect(link.getAttribute('role')).toBe('menuitem');
+    expect(focusedLabel()).toBe('Payroll guide');
+  });
+});

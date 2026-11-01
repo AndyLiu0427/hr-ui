@@ -8,7 +8,7 @@ export const doc: ComponentDoc = {
   usage: `<oct-divider />`,
   examples: [
     { name: 'divider-demo' },
-    { name: 'divider-label', title: 'With a label', description: 'Set text to put a short label, such as "or", in the middle of a horizontal line.' },
+    { name: 'divider-label', title: 'With a label', description: 'Set text to put a short label, such as "or", in the middle of a horizontal line. textPosition moves it to the start or the end.' },
     { name: 'divider-variants', title: 'Variants' },
     { name: 'divider-colors', title: 'Colors', description: 'Neutral suits most screens. Use a status colour only when the line itself carries that meaning.' }
   ],

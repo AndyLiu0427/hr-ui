@@ -37,7 +37,7 @@
           [attr.aria-current]="isActive(tab.id) ? 'page' : null"
           [attr.aria-disabled]="interactive() ? null : 'true'"
           [attr.aria-label]="tab.label"
-          [attr.aria-describedby]="tab.description ? 'tab-desc-' + tab.id : null"
+          [attr.aria-describedby]="isActive(tab.id) && tab.description ? descriptionId : null"
           [attr.tabindex]="!interactive() ? -1 : (isActive(tab.id) ? 0 : -1)"
           (click)="onTabClick(tab.id, i, $event)"
           (keydown)="onKeyDown($event, i)">
@@ -50,13 +50,16 @@
           #tabButton
           type="button"
           role="tab"
-          class="relative z-10 flex-1 basis-full sm:basis-0 grow flex items-center justify-center px-3 py-1.5 text-sm font-medium transition-colors duration-300 cursor-pointer select-none oct-focus-ring rounded-sm"
+          class="relative z-10 flex-1 basis-full sm:basis-0 grow flex items-center justify-center px-3 py-1.5 text-sm font-medium transition-colors duration-300 select-none oct-focus-ring rounded-sm"
+          [class.cursor-pointer]="interactive()"
+          [class.cursor-default]="!interactive()"
           [class.text-hr-neutral-50]="isActive(tab.id)"
           [class.text-2]="!isActive(tab.id)"
+          [class.opacity-60]="!interactive()"
           [attr.aria-selected]="isActive(tab.id)"
           [attr.aria-disabled]="interactive() ? null : 'true'"
           [attr.aria-label]="tab.label"
-          [attr.aria-describedby]="tab.description ? 'tab-desc-' + tab.id : null"
+          [attr.aria-describedby]="isActive(tab.id) && tab.description ? descriptionId : null"
           [attr.tabindex]="isActive(tab.id) ? 0 : -1"
           (click)="onTabClick(tab.id, i, $event)"
           (keydown)="onKeyDown($event, i)">
@@ -72,7 +75,7 @@
     <oct-text
       color="3"
       variant="sm"
-      [id]="'tab-desc-' + activeTab()"
+      [id]="descriptionId"
       role="region"
       aria-live="polite">
       {{ activeTabDescription() }}

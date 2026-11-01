@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
@@ -80,5 +80,21 @@ describe('BottomSheetComponent drag to close', () => {
     TestBed.tick();
 
     expect(panel.style.transform).toBe('translateY(-40px)');
+  });
+});
+
+describe('BottomSheetComponent pointer capture', () => {
+  it('still drags, and reports no error, when the browser refuses capture for a pointer that is no longer active', async () => {
+    const { host, handle, drag } = await openSheet();
+    handle.setPointerCapture = () => {
+      throw new DOMException('No active pointer with the given id is found.', 'NotFoundError');
+    };
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    await drag(200, 300);
+
+    expect(consoleError).not.toHaveBeenCalled();
+    expect(host.closes).toBe(1);
+    consoleError.mockRestore();
   });
 });

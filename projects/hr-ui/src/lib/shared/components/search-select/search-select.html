@@ -19,8 +19,7 @@
       [attr.aria-label]="label() || placeholder() || 'Select an option'"
       [attr.aria-required]="required() ? 'true' : null"
       [attr.aria-invalid]="hasError() ? 'true' : null"
-      [attr.aria-owns]="isOpen() ? searchSelectId() + '-listbox' : null"
-      [attr.aria-activedescendant]="isOpen() && activeIndex() >= 0 ? searchSelectId() + '-option-' + activeIndex() : null"
+      [attr.aria-controls]="isOpen() ? listboxId() : null"
       role="combobox"
       tabindex="0"
       (keydown)="handleKeyDown($event)"
@@ -83,12 +82,7 @@
 </div>
 
 <ng-template #overlayTemplate>
-  <div
-    [class]="menuClasses()"
-    [attr.id]="searchSelectId() + '-listbox'"
-    role="listbox"
-    [attr.aria-label]="label() || 'Search Options'"
-    [attr.aria-multiselectable]="multiple()">
+  <div [class]="menuClasses()">
 
     <div class="p-1 border-b border-primary">
       <input
@@ -102,7 +96,8 @@
         aria-label="Search options"
         role="searchbox"
         aria-autocomplete="list"
-        [attr.aria-controls]="searchSelectId() + '-listbox'">
+        [attr.aria-controls]="listboxId()"
+        [attr.aria-activedescendant]="activeOptionId()">
     </div>
 
     @if (hasVirtualScroll()) {
@@ -110,7 +105,11 @@
         #virtualViewport
         [itemSize]="itemSize()"
         [style.height.px]="getVirtualScrollHeight()"
-        class="search-select-options overflow-y-auto p-1">
+        class="search-select-options overflow-y-auto p-1"
+        role="listbox"
+        [id]="listboxId()"
+        [attr.aria-label]="label() || 'Search Options'"
+        [attr.aria-multiselectable]="multiple() || null">
         <oct-search-select-option
           *cdkVirtualFor="let option of displayOptions(); let i = index; trackBy: trackByValue"
           [option]="option"
@@ -118,12 +117,19 @@
           [highlighted]="i === activeIndex()"
           [showCheckIcon]="true"
           [showIcon]="showIcon()"
-          [attr.id]="searchSelectId() + '-option-' + i"
+          [optionId]="searchSelectId() + '-option-' + i"
           (optionClick)="selectOption($event)"
           (optionHover)="onOptionHover($event)" />
       </cdk-virtual-scroll-viewport>
     } @else {
-      <div class="search-select-options relative overflow-y-auto p-1" [style.maxHeight]="maxHeight()" cdkScrollable>
+      <div
+        class="search-select-options relative overflow-y-auto p-1"
+        [style.maxHeight]="maxHeight()"
+        cdkScrollable
+        role="listbox"
+        [id]="listboxId()"
+        [attr.aria-label]="label() || 'Search Options'"
+        [attr.aria-multiselectable]="multiple() || null">
 
 
         @if (isSearching()) {
@@ -162,7 +168,7 @@
               [highlighted]="i === activeIndex()"
               [showCheckIcon]="true"
               [showIcon]="showIcon()"
-              [attr.id]="searchSelectId() + '-option-' + i"
+              [optionId]="searchSelectId() + '-option-' + i"
               (optionClick)="selectOption($event)"
               (optionHover)="onOptionHover($event)" />
           }

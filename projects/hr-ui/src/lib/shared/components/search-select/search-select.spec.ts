@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Component, ComponentRef, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { form, FormField } from '@angular/forms/signals';
@@ -385,5 +385,117 @@ describe('SearchSelectComponent - label search matches any part of the label', (
     fixture.componentInstance.onSearchInput({ target: { value: '24' } } as unknown as Event);
 
     expect(fixture.componentInstance.displayOptions().map(option => option.value)).toEqual(['2024-12', '2024-11', '2024-01']);
+  });
+});
+
+describe('SearchSelectComponent — search timing, focus and active option', () => {
+  let component: SearchSelectComponent;
+  let ref: ComponentRef<SearchSelectComponent>;
+  let fixture: ReturnType<typeof TestBed.createComponent<SearchSelectComponent>>;
+
+  const input = (value: string): Event => ({ target: { value } }) as unknown as Event;
+  const key = (k: string) => new KeyboardEvent('keydown', { key: k, cancelable: true });
+  const trigger = () => fixture.nativeElement.querySelector('[role="combobox"]') as HTMLElement;
+  const searchBox = () => document.querySelector('.cdk-overlay-container input[type="text"]') as HTMLInputElement;
+  const OPTIONS: SearchSelectOption[] = [
+    { value: 'E1031', label: 'Kenji Watanabe' },
+    { value: 'E1047', label: 'Priya Nair' }
+  ];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [SearchSelectComponent],
+      providers: [{ provide: TranslateService, useValue: { instant: (k: string) => k } }]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SearchSelectComponent);
+    component = fixture.componentInstance;
+    ref = fixture.componentRef;
+  });
+  afterEach(() => vi.useRealTimers());
+
+  /** Opens the list and puts focus in its search box, as the open does a frame later. */
+  function openWithFocusInSearch(): void {
+    ref.setInput('options', OPTIONS);
+    fixture.detectChanges();
+    component.openDropdown();
+    fixture.detectChanges();
+    searchBox().focus();
+  }
+
+  it('waits the debounce from searchConfig, not a fixed 300 ms', () => {
+    vi.useFakeTimers();
+    const searchFn = vi.fn().mockReturnValue([]);
+    ref.setInput('searchConfig', { searchFn, debounceMs: 50 });
+    ref.setInput('preloadConfig', { loadFn: () => [] });
+
+    component.onSearchInput(input('ke'));
+    vi.advanceTimersByTime(60);
+
+    expect(searchFn).toHaveBeenCalledWith('ke');
+  });
+
+  it('waits the debounce from the debounceTime shorthand too', () => {
+    vi.useFakeTimers();
+    const searchFn = vi.fn().mockReturnValue([]);
+    ref.setInput('apiSearchFn', searchFn);
+    ref.setInput('debounceTime', 1000);
+
+    component.onSearchInput(input('ke'));
+    vi.advanceTimersByTime(300);
+    expect(searchFn).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(700);
+    expect(searchFn).toHaveBeenCalledWith('ke');
+  });
+
+  it('searches with searchConfig alone, without preloadConfig, and logs no error', () => {
+    vi.useFakeTimers();
+    const consoleError = vi.spyOn(console, 'error');
+    ref.setInput('searchConfig', { searchFn: () => [OPTIONS[0]], debounceMs: 0 });
+
+    component.onSearchInput(input('ke'));
+    vi.advanceTimersByTime(0);
+
+    expect(component.displayOptions().map(option => option.value)).toEqual(['E1031']);
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
+  it('puts focus back on the field after Escape in the search box', () => {
+    openWithFocusInSearch();
+
+    component.handleSearchKeyDown(key('Escape'));
+
+    expect(document.activeElement).toBe(trigger());
+  });
+
+  it('puts focus back on the field after a pick, even when the click took focus off the search box', () => {
+    openWithFocusInSearch();
+    searchBox().blur();
+
+    component.selectOption(OPTIONS[1]);
+
+    expect(document.activeElement).toBe(trigger());
+  });
+
+  it('leaves focus on another control the user moved to', () => {
+    openWithFocusInSearch();
+    const other = document.body.appendChild(document.createElement('button'));
+    other.focus();
+
+    component.closeDropdown();
+
+    expect(document.activeElement).toBe(other);
+    other.remove();
+  });
+
+  it('names the highlighted option on the search box, which has focus, and not on the field', () => {
+    openWithFocusInSearch();
+
+    const activeId = searchBox().getAttribute('aria-activedescendant')!;
+    const option = document.getElementById(activeId);
+    expect(option?.getAttribute('role')).toBe('option');
+    expect(option?.closest('[role="listbox"]')?.id).toBe(searchBox().getAttribute('aria-controls'));
+    expect(trigger().hasAttribute('aria-activedescendant')).toBe(false);
   });
 });

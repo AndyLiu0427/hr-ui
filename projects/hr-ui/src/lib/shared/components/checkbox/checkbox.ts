@@ -1,9 +1,6 @@
 import { Component, ChangeDetectionStrategy, computed, model, input, output, viewChild, ElementRef, linkedSignal } from '@angular/core';
-import { FormCheckboxControl, ValidationError, DisabledReason } from '@angular/forms/signals';
+import { FormCheckboxControl, ValidationError, DisabledReason, WithOptionalFieldTree } from '@angular/forms/signals';
 import { TextComponent } from '../text/text';
-
-/** Checkbox visual state for simple usage without Signal Forms */
-export type CheckboxState = 'default' | 'checked' | 'disabled' | 'disabled-checked';
 
 /**
  * A checkbox with a label and an optional description. Bind it with [formField] or [(checked)].
@@ -42,13 +39,13 @@ export class CheckboxComponent implements FormCheckboxControl {
   /** Invalid state from the form field. The error state shows after the checkbox is touched. */
   readonly invalid = input<boolean>(false);
   /** Validation errors from the form field. The first message shows in the error state. */
-  readonly errors = input<readonly ValidationError.WithField[]>([]);
+  readonly errors = input<readonly ValidationError.WithOptionalFieldTree[]>([]);
 
   // FormUiControl - Availability State
   /** Disables the checkbox. */
   readonly disabled = input<boolean>(false);
   /** Reasons from the form field for why the checkbox is disabled. The checkbox does not show them. */
-  readonly disabledReasons = input<readonly DisabledReason[]>([]);
+  readonly disabledReasons = input<readonly WithOptionalFieldTree<DisabledReason>[]>([]);
 
   // FormUiControl - Constraints
   /** Adds an asterisk to the label and sets the native required attribute. */
@@ -76,8 +73,6 @@ export class CheckboxComponent implements FormCheckboxControl {
   readonly error = input<boolean>();
   /** Manual error message - prefer [formField] directive for Signal Forms */
   readonly errorText = input<string>();
-  /** Has no effect. Set checked and disabled instead. */
-  readonly state = input<CheckboxState>('default');
 
   // Internal
   private readonly uniqueId = `checkbox-${Math.random().toString(36).substring(2, 11)}`;
@@ -123,7 +118,8 @@ export class CheckboxComponent implements FormCheckboxControl {
       'appearance-none',
       'cursor-pointer',
       'border',
-      'border-hr-neutral-800',
+      // #737373 in both themes: 4.7:1 on white and 4.2:1 on the dark surface, over the 3:1 a control boundary needs.
+      'border-hr-neutral-500',
       'bg-hr-neutral-900',
       'flex-shrink-0',
       'inline-block',
@@ -156,6 +152,8 @@ export class CheckboxComponent implements FormCheckboxControl {
       'checked:before:opacity-100',
       'checked:before:[clip-path:polygon(20%_100%,20%_80%,50%_80%,50%_0%,70%_0%,70%_100%)]',
       'disabled:cursor-not-allowed',
+      // A disabled box keeps its faint border: the 3:1 boundary is for controls you can use.
+      'disabled:not-checked:border-hr-neutral-800',
       'disabled:hover:border-hr-neutral-800',
       'w-4',
       'h-4',

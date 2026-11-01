@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, computed, model, input, output, viewChild, ElementRef, linkedSignal } from '@angular/core';
-import { FormCheckboxControl, ValidationError, DisabledReason } from '@angular/forms/signals';
+import { FormCheckboxControl, ValidationError, DisabledReason, WithOptionalFieldTree } from '@angular/forms/signals';
 import { TextComponent } from '../text/text';
 
 export type SwitchColor = 'primary' | 'success' | 'error' | 'warning' | 'info' | 'neutral';
@@ -44,13 +44,13 @@ export class SwitchComponent implements FormCheckboxControl {
   /** Invalid state from the form field. The error state shows after the switch is touched. */
   readonly invalid = input<boolean>(false);
   /** Validation errors from the form field. The first message shows in the error state. */
-  readonly errors = input<readonly ValidationError.WithField[]>([]);
+  readonly errors = input<readonly ValidationError.WithOptionalFieldTree[]>([]);
 
   // FormUiControl - Availability State
   /** Disables the switch. */
   readonly disabled = input<boolean>(false);
   /** Reasons from the form field for why the switch is disabled. The switch does not show them. */
-  readonly disabledReasons = input<readonly DisabledReason[]>([]);
+  readonly disabledReasons = input<readonly WithOptionalFieldTree<DisabledReason>[]>([]);
 
   // FormUiControl - Constraints
   /** Adds an asterisk to the label and sets aria-required. */

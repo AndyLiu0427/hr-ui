@@ -19,10 +19,10 @@
       [attr.aria-expanded]="isOpen()"
       [attr.aria-haspopup]="'listbox'"
       [attr.aria-disabled]="isDisabled()"
-      [attr.aria-label]="ariaLabel() || label() || placeholder() || 'Select an option'"
+      [attr.aria-label]="accessibleName()"
       [attr.aria-required]="required() ? 'true' : null"
       [attr.aria-invalid]="hasError() ? 'true' : null"
-      [attr.aria-owns]="isOpen() ? selectId() + '-listbox' : null"
+      [attr.aria-controls]="isOpen() ? listboxId() : null"
       [attr.aria-activedescendant]="isOpen() ? (selectAllHighlighted() ? selectId() + '-option-select-all' : (activeIndex() >= 0 ? selectId() + '-option-' + activeIndex() : null)) : null"
       [attr.role]="'combobox'"
       [disabled]="isDisabled()"
@@ -114,7 +114,11 @@
 
 <ng-template #overlayTemplate>
   <div
-    [class]="menuClasses">
+    [class]="menuClasses"
+    role="listbox"
+    [id]="listboxId()"
+    [attr.aria-label]="accessibleName()"
+    [attr.aria-multiselectable]="multiple() || null">
 
     @if (loading()) {
       <div class="p-1 flex items-center justify-center py-4">
@@ -141,7 +145,7 @@
             [highlighted]="i === activeIndex()"
             [showCheckIcon]="true"
             [showIcon]="showIcon()"
-            [attr.id]="selectId() + '-option-' + i"
+            [optionId]="selectId() + '-option-' + i"
             (optionClick)="onOptionSelect($event)"
             (optionHover)="onOptionHover($event)">
           </oct-select-option>
@@ -164,7 +168,7 @@
             [highlighted]="i === activeIndex()"
             [showCheckIcon]="true"
             [showIcon]="showIcon()"
-            [attr.id]="selectId() + '-option-' + i"
+            [optionId]="selectId() + '-option-' + i"
             (optionClick)="onOptionSelect($event)"
             (optionHover)="onOptionHover($event)">
           </oct-select-option>

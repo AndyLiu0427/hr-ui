@@ -33,6 +33,15 @@
               (click)="handleItemClick(item, sectionIndex, itemIndex)">
               <ng-container [ngTemplateOutlet]="itemContent" [ngTemplateOutletContext]="{ $implicit: item }" />
             </div>
+          } @else if (item.href) {
+            <!-- A real link: Enter, a middle click and Cmd+click follow it. The arrow keys still move through the menu. -->
+            <a
+              cdkMenuItem
+              [href]="item.href"
+              class="flex items-center gap-2 px-2 py-2 rounded-lg font-normal text-1 cursor-pointer hover:bg-hr-neutral-900 focus-visible:bg-hr-neutral-900 oct-focus-ring"
+              (cdkMenuItemTriggered)="handleItemClick(item, sectionIndex, itemIndex)">
+              <ng-container [ngTemplateOutlet]="itemContent" [ngTemplateOutletContext]="{ $implicit: item }" />
+            </a>
           } @else {
             <div
               cdkMenuItem

@@ -15,7 +15,6 @@ import { FileInputComponent, FileInputLabels } from 'ngx-hr-ui';
   `
 })
 export default class FileInputValidation {
-  // List exact MIME types: the check compares them one by one with the file's type.
   readonly labels: FileInputLabels = {
     buttonText: 'Upload profile photo',
     placeholderText: 'No photo yet',

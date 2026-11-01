@@ -10,6 +10,7 @@ import { SelectOption } from './select';
   template: `
     <div
       [class]="optionClasses()"
+      [attr.id]="optionId()"
       [attr.aria-selected]="selected()"
       [attr.aria-disabled]="option().disabled"
       role="option"
@@ -54,6 +55,8 @@ export class SelectOptionComponent {
   readonly highlighted = input<boolean>(false);
   readonly showCheckIcon = input<boolean>(true);
   readonly showIcon = input<boolean>(true);
+  /** Id of the element with role="option", which the select's aria-activedescendant names. */
+  readonly optionId = input<string>();
 
   readonly optionClick = output<SelectOption>();
   readonly optionHover = output<SelectOption>();

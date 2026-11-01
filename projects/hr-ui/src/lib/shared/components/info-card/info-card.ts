@@ -6,6 +6,13 @@ import { isPlatformBrowser } from '@angular/common';
 import { Component, computed, DestroyRef, inject, input, PLATFORM_ID, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
+/** Whole class names, never built at runtime, so Tailwind finds them when it scans this file. */
+const GRID_COLS_CLASS = { 1: 'md:grid-cols-1', 2: 'md:grid-cols-2', 3: 'md:grid-cols-3', 4: 'md:grid-cols-4' } as const;
+const GAP_CLASS = { '2': 'gap-2', '3': 'gap-3', '4': 'gap-4', '5': 'gap-5', '6': 'gap-6', '8': 'gap-8' } as const;
+
+export type InfoCardColumns = keyof typeof GRID_COLS_CLASS;
+export type InfoCardGap = keyof typeof GAP_CLASS;
+
 export interface FieldConfig {
   key: string;
   label: string;
@@ -50,16 +57,21 @@ export class InfoCardComponent {
   readonly data = input<any>(null);
   /** Shows a loading message instead of the fields. */
   readonly loading = input<boolean>(false);
-  /** Buttons in the header: on the right, or under the title with position 'title'. Below 768px wide they show their icon only. */
+  /**
+   * Buttons in the header: on the right, or under the title with position 'title'. Below 768px wide an action
+   * with an icon shows the icon only, and its label stays its accessible name.
+   */
   readonly actions = input<CardAction[]>();
   /** Text of a badge next to the title, such as "Active". */
   readonly status = input<string>();
   /** The colour of the status badge. */
   readonly statusColor = input<BadgeColor>('neutral');
-  /** The Tailwind gap step between fields, such as '4' or '6'. */
-  readonly gapSize = input<string>('6');
+  /** The Tailwind gap step between fields. */
+  readonly gapSize = input<InfoCardGap>('6');
   /** The number of field columns from 768px wide. Narrower screens show one column. */
-  readonly gridCols = input<number>(2);
+  readonly gridCols = input<InfoCardColumns>(2);
+
+  readonly gridClass = computed(() => `grid grid-cols-1 ${GRID_COLS_CLASS[this.gridCols()]} ${GAP_CLASS[this.gapSize()]}`);
 
   readonly isDesktop = signal<boolean>(true);
 
@@ -126,8 +138,4 @@ export class InfoCardComponent {
     return String(value);
   }
 
-  getGridColsClass(): string {
-    const cols = this.gridCols();
-    return `grid-cols-1 md:grid-cols-${cols}`;
-  }
 }
