@@ -22,7 +22,7 @@ import { CodeLang, highlight } from './highlighter';
         <div class="code-scroll max-h-[32rem] overflow-auto"><pre><code>{{ trimmed() }}</code></pre></div>
       }
       <oct-button
-        class="absolute right-2"
+        class="absolute right-2 rounded-lg bg-docs-subtle"
         [style.top.px]="title() ? 48 : 10"
         variant="ghost"
         color="neutral"

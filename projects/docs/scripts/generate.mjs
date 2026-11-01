@@ -194,12 +194,14 @@ for (const sf of program.getSourceFiles()) {
         const publicName = alias && ts.isStringLiteralLike(alias) ? alias.text : memberName;
         const type = checker.getTypeAtLocation(member);
         if (callee === 'input' || callee === 'input.required' || callee === 'model' || callee === 'model.required') {
-          const hasTransform = !!objectProp(options, 'transform');
-          // InputSignalWithTransform<Read, Write>: callers pass the write type
-          const valueType = hasTransform ? signalArg(type, 1) ?? signalArg(type, 0) : signalArg(type, 0);
+          const transform = objectProp(options, 'transform');
+          // InputSignalWithTransform<Read, Write>: callers pass the write type. Angular's attribute
+          // transforms take `unknown`, which says nothing; the value they produce is what matters.
+          const attributeTransform = transform && { booleanAttribute: 'boolean', numberAttribute: 'number' }[transform.getText()];
+          const valueType = transform ? signalArg(type, 1) ?? signalArg(type, 0) : signalArg(type, 0);
           entry.inputs.push({
             name: publicName,
-            type: valueType ? typeText(valueType) : 'unknown',
+            type: attributeTransform ?? (valueType ? typeText(valueType) : 'unknown'),
             default: callee.endsWith('.required') ? null : call.arguments[0] ? call.arguments[0].getText() : 'undefined',
             required: callee.endsWith('.required'),
             twoWay: callee.startsWith('model'),
