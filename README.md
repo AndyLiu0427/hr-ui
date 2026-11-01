@@ -8,7 +8,7 @@ Forms, tables, dialogs, and Tailwind 4 design tokens, with light and dark themes
 ## Install
 
 ```sh
-npm install ngx-hr-ui @angular/cdk @angular/material @ngx-translate/core lucide-angular tailwindcss @tailwindcss/postcss
+npm install ngx-hr-ui @angular/cdk @ngx-translate/core lucide-angular tailwindcss @tailwindcss/postcss
 ```
 
 Requires Angular 22 and Tailwind 4.
@@ -31,13 +31,7 @@ Requires Angular 22 and Tailwind 4.
    @source "../node_modules/ngx-hr-ui";
    ```
 
-2. Add the Material theme to `styles` in `angular.json`:
-
-   ```json
-   "styles": ["node_modules/ngx-hr-ui/styles/material-theme.scss", "src/styles.css"]
-   ```
-
-3. Provide animations and the English strings in `app.config.ts`:
+2. Provide animations and the English strings in `app.config.ts`:
 
    ```ts
    import { provideAnimations } from '@angular/platform-browser/animations';

@@ -1,11 +1,12 @@
 import { Service } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { MatDateFormats } from '@angular/material/core';
 import { addDays as addDaysFns } from 'date-fns';
 
 /**
  * Unified Date Service
- * Combines date formatting, Material UI configuration, and utility functions
+ * Combines date formatting, date-picker format configuration, and utility functions.
+ * `display` and `parse` have the shape of Angular Material's MatDateFormats, so an app that uses
+ * the Material datepicker can provide this service as MAT_DATE_FORMATS.
  *
  * Standard Formats:
  * - Date: DD MMM YYYY (e.g., 24 Jul 2025)
@@ -16,7 +17,7 @@ import { addDays as addDaysFns } from 'date-fns';
  * All dates are formatted using standard formats defined below.
  */
 @Service()
-export class DateService implements MatDateFormats {
+export class DateService {
   private readonly datePipe = new DatePipe('en-US');
 
   // Standard format constants
