@@ -245,9 +245,6 @@
   --color-primary-background: var(--primary-background);
   --color-secondary: var(--secondary);
   --color-secondary-background: var(--secondary-background);
-  --color-1: var(--1);
-  --color-2: var(--2);
-  --color-3: var(--3);
   --color-success: var(--success);
   --color-error: var(--error);
   --color-warning: var(--warning);
@@ -887,6 +884,19 @@
 /* ============================================
     CDK Overlay Fixes
    ============================================ */
+/* Text colors by role: text-1 (primary), text-2 (secondary), text-3 (hints). They are utilities, not
+   theme colors: a theme color named 1, 2 or 3 would turn Tailwind's outline-2, ring-2, border-2 and
+   decoration-2 into colors instead of widths, in hr-ui and in the app that imports it. */
+@utility text-1 {
+  color: var(--1);
+}
+@utility text-2 {
+  color: var(--2);
+}
+@utility text-3 {
+  color: var(--3);
+}
+
 /* The keyboard focus ring every hr-ui control uses: 2px, 2px away, in the primary text colour
    (5:1 or more against the page in both themes). Mouse clicks do not show it. */
 @utility oct-focus-ring {
