@@ -328,7 +328,7 @@
               <button
                 type="button"
                 (click)="startEdit(rowIndex, column, row, $event)"
-                class="group/edit flex w-full items-center gap-1 -mx-1 px-1 py-0.5 rounded-sm cursor-pointer hover:bg-hr-neutral-800/60 transition-[background-color] duration-150"
+                class="group/edit oct-focus-ring flex w-full items-center gap-1 -mx-1 px-1 py-0.5 rounded-sm cursor-pointer hover:bg-hr-neutral-800/60 transition-[background-color] duration-150"
                 [class.justify-end]="column.align === 'right'"
                 [class.justify-center]="column.align === 'center'"
                 [title]="getColumnValue(row, column)"

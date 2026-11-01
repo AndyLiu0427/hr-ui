@@ -78,6 +78,7 @@ export const doc: ComponentDoc = {
     }
   ],
   keyboard: [
+    { keys: ['Enter'], action: 'On the header of a sortable column, sorts by it. Press again to change the direction.' },
     { keys: ['Space'], action: 'Selects or clears the row of the focused checkbox.' },
     { keys: ['Enter'], action: 'On a row made clickable with clickableRows, emits rowClick. Space does the same.' },
     { keys: ['Enter'], action: 'On an editable cell, opens it for editing.' },
