@@ -145,8 +145,10 @@ export class ButtonComponent implements OnDestroy, AfterViewInit {
           'text-sm',
           'font-medium',
           'cursor-pointer',
-          'transition-all',
-          'duration-300',
+          'transition-colors',
+          'duration-150',
+          'ease-out',
+          'motion-reduce:transition-none',
           'disabled:cursor-not-allowed',
           'disabled:!pointer-events-none',
           'oct-focus-ring'
@@ -161,8 +163,10 @@ export class ButtonComponent implements OnDestroy, AfterViewInit {
           'font-medium',
           'whitespace-nowrap',
           'cursor-pointer',
-          'transition-all',
-          'duration-300',
+          // Colours and the press scale only: the focus ring's width and offset must snap, not grow.
+          'transition-[background-color,color,border-color,outline-color,scale]',
+          'duration-150',
+          'ease-out',
           'disabled:cursor-not-allowed',
           'disabled:!pointer-events-none',
           'disabled:bg-hr-neutral-900',
@@ -173,7 +177,7 @@ export class ButtonComponent implements OnDestroy, AfterViewInit {
           'overflow-hidden',
           'select-none',
           'motion-reduce:transition-none',
-          'active:brightness-97',
+          'active:scale-[0.97]',
           'oct-focus-ring'
         ];
 
@@ -233,37 +237,28 @@ export class ButtonComponent implements OnDestroy, AfterViewInit {
         // Not !important: the keyboard focus ring has to be able to recolour this outline.
         'outline outline-hr-neutral-800 -outline-offset-1',
         'hover:!bg-hr-neutral-800',
-        'hover:!brightness-100',
         'active:outline-hr-neutral-800'
       ]
     };
 
     // Ghost variant styles - with very subtle color-specific shadows on hover
     const ghostColorClasses = {
-      primary: ['bg-transparent hover:bg-hr-neutral-800', 'text-primary', 'hover:brightness-100'],
-      success: ['bg-transparent hover:bg-hr-neutral-800', 'text-success', 'hover:!brightness-100'],
-      error: ['bg-transparent hover:bg-hr-neutral-800', 'text-error', 'hover:!brightness-100'],
-      warning: ['bg-transparent hover:bg-hr-neutral-800', 'text-warning', 'hover:!brightness-100'],
-      info: ['bg-transparent hover:bg-hr-neutral-800', 'text-info', 'hover:!brightness-100'],
-      neutral: ['bg-transparent hover:bg-hr-neutral-800', 'text-1', 'hover:!brightness-100']
+      primary: ['bg-transparent hover:bg-hr-neutral-800', 'text-primary'],
+      success: ['bg-transparent hover:bg-hr-neutral-800', 'text-success'],
+      error: ['bg-transparent hover:bg-hr-neutral-800', 'text-error'],
+      warning: ['bg-transparent hover:bg-hr-neutral-800', 'text-warning'],
+      info: ['bg-transparent hover:bg-hr-neutral-800', 'text-info'],
+      neutral: ['bg-transparent hover:bg-hr-neutral-800', 'text-1']
     };
 
     // Link variant styles - mimics oct-text link styling
     const linkColorClasses = {
-      primary: [
-        'bg-transparent',
-        'text-primary',
-        'underline',
-        'decoration-1',
-        'underline-offset-2',
-        'hover:decoration-2',
-        'hover:brightness-100'
-      ],
-      success: ['bg-transparent', 'text-success', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
-      error: ['bg-transparent', 'text-error', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
-      warning: ['bg-transparent', 'text-warning', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
-      info: ['bg-transparent', 'text-info', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100'],
-      neutral: ['bg-transparent', 'text-1', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2', 'hover:brightness-100']
+      primary: ['bg-transparent', 'text-primary', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2'],
+      success: ['bg-transparent', 'text-success', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2'],
+      error: ['bg-transparent', 'text-error', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2'],
+      warning: ['bg-transparent', 'text-warning', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2'],
+      info: ['bg-transparent', 'text-info', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2'],
+      neutral: ['bg-transparent', 'text-1', 'underline', 'decoration-1', 'underline-offset-2', 'hover:decoration-2']
     };
 
     // Determine which color classes to use based on variant
@@ -273,7 +268,7 @@ export class ButtonComponent implements OnDestroy, AfterViewInit {
       colorClasses = outlineColorClasses[this.color()] || [];
     } else if (this.variant() === 'ghost') {
       colorClasses = ghostColorClasses[this.color()] || [];
-      // Both outline-transparent classes are required: transition-all animates outline-color,
+      // Both outline-transparent classes are required: the transition animates outline-color,
       // and the disabled: duplicate outranks disabled:!outline-hr-neutral-800 from base.
       colorClasses.push('disabled:bg-transparent', 'outline-transparent', 'disabled:!outline-transparent');
     } else if (this.variant() === 'link') {

@@ -53,7 +53,7 @@ export class BadgeComponent {
   readonly dismiss = output<void>();
 
   readonly badgeClasses = computed(() => {
-    const baseClasses = ['inline-flex', 'items-center', 'justify-center', 'font-medium', 'rounded-full', 'transition-all', 'duration-300'];
+    const baseClasses = ['inline-flex', 'items-center', 'justify-center', 'font-medium', 'rounded-full'];
 
     const sizeClasses: Record<BadgeSize, string[]> = {
       sm: ['px-1.5', 'py-0.5', 'text-xs', 'leading-4'],

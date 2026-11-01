@@ -117,9 +117,6 @@ export class AvatarComponent {
       'overflow-hidden',
       'rounded-full',
       'select-none',
-      'transition-all',
-      'duration-200',
-      'ease-out',
       this.sizeClasses().container
     ];
 

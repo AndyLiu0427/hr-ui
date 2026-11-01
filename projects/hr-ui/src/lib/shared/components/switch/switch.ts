@@ -116,9 +116,11 @@ export class SwitchComponent implements FormCheckboxControl {
       'rounded-full',
       'p-[2px]',
 
-      'transition-all',
-      'duration-300',
-      'ease-in-out',
+      // The track only changes colour; the focus ring snaps.
+      'transition-[background-color]',
+      'duration-150',
+      'ease-[ease]',
+      'motion-reduce:transition-none',
 
       'focus-visible:outline-none',
       'focus-visible:outline-2',
@@ -165,8 +167,9 @@ export class SwitchComponent implements FormCheckboxControl {
       'bg-white',
       'shadow-hr-sm',
       'transition-transform',
-      'duration-300',
-      'ease-in-out',
+      'duration-180',
+      'ease-[cubic-bezier(0.77,0,0.175,1)]',
+      'motion-reduce:transition-none',
 
       this.computedChecked() ? 'translate-x-[20px]' : 'translate-x-0'
     ];

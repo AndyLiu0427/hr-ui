@@ -29,9 +29,9 @@ import { groupSearchPanelItems } from './search-panel.util';
 const DEFAULT_MAX_VISIBLE_ITEMS = 100;
 
 // scroll-mt clears the sticky group heading when the arrow keys scroll a row into view.
+// No transition: the arrow keys move the highlight, and a keyboard move shows at once.
 const ROW_BASE =
   'flex items-center gap-3 px-2 py-1.5 w-full rounded cursor-pointer text-left scroll-mt-8 ' +
-  'transition-[background-color,filter] duration-300 motion-reduce:transition-none ' +
   'active:brightness-97';
 // No hover colour: the pointer moves the selection, so one row is lit at a time.
 const ROW_SELECTED = `${ROW_BASE} bg-primary/15`;

@@ -136,7 +136,7 @@ export class NoticeComponent {
   });
 
   readonly combinedClasses = computed(() => {
-    const baseClasses = 'flex items-start gap-2 p-4 rounded-xl transition-all duration-300';
+    const baseClasses = 'flex items-start gap-2 p-4 rounded-xl';
     const variantClass = this.noticeClasses();
     const customClass = this.class();
 

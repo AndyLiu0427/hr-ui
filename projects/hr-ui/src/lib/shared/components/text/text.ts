@@ -69,8 +69,8 @@ export class TextComponent implements TextInputs {
   // Computed signal for optimized class calculation
   textClasses = computed(() => {
     const baseClasses = this.truncate()
-      ? (['block', 'duration-300', 'transition-all', 'overflow-hidden', 'text-ellipsis'] as const)
-      : (['block', 'duration-300', 'transition-all', 'min-w-0', 'break-words'] as const);
+      ? (['block', 'overflow-hidden', 'text-ellipsis'] as const)
+      : (['block', 'min-w-0', 'break-words'] as const);
 
     // Color classes based on design system colors
     const colorClasses = {

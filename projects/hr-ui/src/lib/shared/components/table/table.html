@@ -2,7 +2,7 @@
   <div class="relative">
     <div
       #tableContainer
-      class="hide-scrollbars relative border border-primary rounded-lg bg-secondary transition-all duration-300"
+      class="hide-scrollbars relative border border-primary rounded-lg bg-secondary"
       [class.overflow-auto]="!loading() && paginatedData().length > 0"
       [class.overflow-x-auto]="!loading() && paginatedData().length === 0"
       [class.overflow-y-hidden]="!loading() && paginatedData().length === 0"
@@ -28,7 +28,7 @@
         [style.min-width.px]="tableMinWidth()"
       >
         <thead
-          class="sticky top-0 z-5 transition-color duration-300 bg-secondary shadow-[inset_0_-1px_0_theme(colors.neutral.800)]"
+          class="sticky top-0 z-5 bg-secondary shadow-[inset_0_-1px_0_theme(colors.neutral.800)]"
           [class.min-h-10]="!dense()"
           [class.min-h-8]="dense()"
         >
@@ -118,11 +118,11 @@
           </tr>
         </thead>
 
-        <tbody class="transition-all duration-300">
+        <tbody>
           @for (row of paginatedData(); track trackByRow($index, row); let
           isEven = $even; let isLast = $last; let rowIndex = $index) {
           <tr
-            class="group/row border-primary transition-all duration-300"
+            class="group/row border-primary"
             [class.border-b]="!isLast"
             [class.bg-hr-neutral-900]="striped() && isEven"
             [class.cursor-pointer]="clickableRows()"
@@ -353,9 +353,9 @@
         </tbody>
 
         @if (footerTemplate(); as template) {
-        <tfoot class="sticky bottom-0 z-5 outline outline-hr-neutral-800 transition-color duration-300">
+        <tfoot class="sticky bottom-0 z-5 outline outline-hr-neutral-800">
           <tr>
-            <td [attr.colspan]="enhancedColumns().length" class="p-2 bg-secondary transition-color duration-300">
+            <td [attr.colspan]="enhancedColumns().length" class="p-2 bg-secondary">
               <ng-container
                 [ngTemplateOutlet]="template"
                 [ngTemplateOutletContext]="{

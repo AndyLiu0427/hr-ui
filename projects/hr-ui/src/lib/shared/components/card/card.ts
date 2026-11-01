@@ -45,8 +45,6 @@ export class CardComponent {
       'rounded-xl',
       'bg-secondary',
       'shadow-hr-sm',
-      'transition-all',
-      'duration-300',
       'h-full',
       'justify-center',
       STATUS_CLASSES[this.status()],

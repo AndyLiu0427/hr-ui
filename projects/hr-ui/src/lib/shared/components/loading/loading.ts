@@ -19,7 +19,7 @@ export class LoadingComponent {
   readonly customClasses = input<string>();
 
   readonly containerClasses = computed(() => {
-    const classes = ['flex', 'flex-col', 'items-center', 'animate-bounce-in'];
+    const classes = ['flex', 'flex-col', 'items-center'];
     if (this.centered()) classes.push('justify-center');
     if (this.customClasses()) classes.push(this.customClasses()!);
     return classes.join(' ');
