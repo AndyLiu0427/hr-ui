@@ -91,11 +91,11 @@ const SEARCH_ITEMS: SearchItem[] = NAV.flatMap(s => s.items.map(i => ({ id: i.hr
             type="button"
             (click)="searchOpen.set(true)"
             class="oct-focus-ring flex h-9 items-center gap-2 rounded-lg border border-docs-border bg-docs-subtle px-2.5 text-sm text-docs-muted transition-colors duration-150 hover:bg-docs-hover hover:text-docs-fg sm:w-60 sm:px-3"
-            aria-label="Search the documentation"
+            aria-keyshortcuts="Meta+K Control+K /"
           >
             <oct-icon name="Search" [size]="16" />
-            <span class="hidden flex-1 text-left sm:inline">Search docs…</span>
-            <span class="hidden sm:inline-flex"><oct-kbd>⌘K</oct-kbd></span>
+            <span class="sr-only sm:not-sr-only sm:flex-1 sm:text-left">Search docs…</span>
+            <span class="hidden sm:inline-flex" aria-hidden="true"><oct-kbd>⌘K</oct-kbd></span>
           </button>
           <a
             href="https://github.com/AndyLiu0427/hr-ui"

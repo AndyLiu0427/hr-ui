@@ -51,7 +51,7 @@ export class DocsCodeComponent {
   private readonly sanitizer = inject(DomSanitizer);
 
   readonly code = input.required<string>();
-  readonly lang = input<CodeLang>('angular-ts');
+  readonly language = input<CodeLang>('angular-ts');
   /** A file name or label shown above the code. */
   readonly title = input<string>();
 
@@ -62,7 +62,7 @@ export class DocsCodeComponent {
   constructor() {
     effect(() => {
       const code = this.trimmed();
-      const lang = this.lang();
+      const lang = this.language();
       this.html.set(null);
       // Shiki escapes the code; the markup is ours, so trusting it keeps the color variables.
       highlight(code, lang).then(markup => {

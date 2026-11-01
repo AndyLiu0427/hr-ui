@@ -13,19 +13,19 @@ import { DocsHeadingDirective } from '../docs/toc';
       <p>You need Angular 22 and Tailwind CSS 4. The steps below take about five minutes.</p>
 
       <h2 docsHeading>1. Install the packages</h2>
-      <docs-code lang="shellscript" [code]="install" />
+      <docs-code language="shellscript" [code]="install" />
       <p>
         <code>lucide-angular</code> does not list Angular 22 as a supported version yet. Add an
         <code>overrides</code> block to your <code>package.json</code> so npm accepts it:
       </p>
-      <docs-code lang="json" title="package.json" [code]="overrides" />
+      <docs-code language="json" title="package.json" [code]="overrides" />
 
       <h2 docsHeading>2. Add the styles</h2>
       <p>
         In your global stylesheet, import Tailwind first and hr-ui second. The <code>&#64;source</code>
         line lets Tailwind find the classes the components use inside <code>node_modules</code>.
       </p>
-      <docs-code lang="css" title="src/styles.css" [code]="styles" />
+      <docs-code language="css" title="src/styles.css" [code]="styles" />
 
       <h2 docsHeading>3. Provide animations and translations</h2>
       <p>

@@ -23,12 +23,12 @@ import { NotFoundPage } from './not-found';
           }
 
           <h2 docsHeading>Installation</h2>
-          <docs-code lang="shellscript" [code]="'npm install ngx-hr-ui'" />
+          <docs-code language="shellscript" [code]="'npm install ngx-hr-ui'" />
           <p>Then import what you use. Tailwind, styles and translations are set up once, on the <a routerLink="/docs/installation">Installation</a> page.</p>
 
           <h2 docsHeading>Usage</h2>
-          <docs-code lang="angular-ts" [code]="importLine()" />
-          <div class="mt-3"><docs-code lang="angular-html" [code]="d.usage" /></div>
+          <docs-code language="angular-ts" [code]="importLine()" />
+          <div class="mt-3"><docs-code language="angular-html" [code]="d.usage" /></div>
 
           @if (d.examples.length > 1) {
             <h2 docsHeading>Examples</h2>

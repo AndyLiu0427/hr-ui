@@ -58,7 +58,7 @@ let nextId = 0;
     </div>
     <div role="tabpanel" [id]="id + '-code-panel'" [attr.aria-labelledby]="id + '-code'" [hidden]="view() !== 'code'" class="mt-4">
       @if (view() === 'code' || codeSeen()) {
-        <docs-code [code]="source()" lang="angular-ts" />
+        <docs-code [code]="source()" language="angular-ts" />
       }
     </div>
   `

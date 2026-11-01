@@ -62,7 +62,7 @@ const DEFAULT: Preset = { name: 'Teal', hue: 189.8, chroma: 1 };
 
       <h2 docsHeading>Your CSS</h2>
       <p>Put this after the hr-ui import in your global stylesheet:</p>
-      <docs-code lang="css" title="src/styles.css" [code]="css()" />
+      <docs-code language="css" title="src/styles.css" [code]="css()" />
 
       <h2 docsHeading>How it stays readable</h2>
       <p>
@@ -84,7 +84,7 @@ const DEFAULT: Preset = { name: 'Teal', hue: 189.8, chroma: 1 };
         To set a single shade by hand, override its variable. Do it for both themes, because the
         scale flips in dark mode:
       </p>
-      <docs-code lang="css" [code]="singleShade" />
+      <docs-code language="css" [code]="singleShade" />
 
       <h2 docsHeading>Status colors</h2>
       <p>

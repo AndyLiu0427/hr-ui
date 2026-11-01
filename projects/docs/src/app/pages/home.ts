@@ -1,15 +1,18 @@
 import { NgComponentOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal, Type } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Type } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { IconComponent } from 'ngx-hr-ui';
 import { DocsCodeComponent } from '../docs/docs-code';
-import { EXAMPLES } from '../generated/examples';
+import ShowcaseEmployee from '../examples/showcase/showcase-employee';
+import ShowcaseLeaveRequest from '../examples/showcase/showcase-leave-request';
+import ShowcaseNotifications from '../examples/showcase/showcase-notifications';
+import ShowcasePayRun from '../examples/showcase/showcase-pay-run';
 
-// Two columns, top to bottom.
-const SHOWCASE = [
-  ['showcase-pay-run', 'showcase-notifications'],
-  ['showcase-employee', 'showcase-leave-request']
+// Two columns, top to bottom. Not lazy, so the page does not jump when they arrive.
+const SHOWCASE: Type<unknown>[][] = [
+  [ShowcasePayRun, ShowcaseNotifications],
+  [ShowcaseEmployee, ShowcaseLeaveRequest]
 ];
 
 @Component({
@@ -46,7 +49,7 @@ const SHOWCASE = [
           >
         </div>
         <div class="mt-8 w-full max-w-sm text-left">
-          <docs-code lang="shellscript" [code]="'npm install ngx-hr-ui'" />
+          <docs-code language="shellscript" [code]="'npm install ngx-hr-ui'" />
         </div>
       </div>
     </section>
@@ -54,11 +57,11 @@ const SHOWCASE = [
     <section aria-labelledby="showcase-title" class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6">
       <h2 id="showcase-title" class="sr-only">Examples built with hr-ui</h2>
       <div class="grid items-start gap-4 lg:grid-cols-[1.15fr_1fr]">
-        @for (column of columns(); track $index) {
+        @for (column of columns; track $index) {
           <div class="flex min-w-0 flex-col gap-4">
-            @for (item of column; track item.name) {
+            @for (component of column; track $index) {
               <div class="min-w-0 overflow-hidden rounded-2xl border border-docs-border bg-docs-bg p-5 sm:p-6">
-                <ng-container *ngComponentOutlet="item.component" />
+                <ng-container *ngComponentOutlet="component" />
               </div>
             }
           </div>
@@ -80,7 +83,7 @@ const SHOWCASE = [
   `
 })
 export class HomePage {
-  protected readonly columns = signal<{ name: string; component: Type<unknown> }[][]>([]);
+  protected readonly columns = SHOWCASE;
 
   protected readonly features = [
     { icon: 'Accessibility', title: 'Accessible', text: 'WCAG AA contrast in both themes, focus rings for keyboard users, and dialogs and menus that manage focus.' },
@@ -91,10 +94,5 @@ export class HomePage {
 
   constructor() {
     inject(Title).setTitle('hr-ui · Components for HR and payroll apps');
-    Promise.all(
-      SHOWCASE.map(column =>
-        Promise.all(column.filter(name => EXAMPLES[name]).map(async name => ({ name, component: await EXAMPLES[name].load() })))
-      )
-    ).then(columns => this.columns.set(columns));
   }
 }

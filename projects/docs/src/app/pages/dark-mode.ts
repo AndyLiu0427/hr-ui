@@ -30,14 +30,14 @@ import { DocsHeadingDirective } from '../docs/toc';
         Set the class before Angular starts, so the first paint is already in the right theme. This
         snippet also follows the reader's system setting on their first visit:
       </p>
-      <docs-code lang="angular-html" title="src/index.html" [code]="script" />
+      <docs-code language="angular-html" title="src/index.html" [code]="script" />
 
       <h2 docsHeading>Your own colors</h2>
       <p>
         Give your page a background and text color that follow the theme. hr-ui's tokens work well
         for this, and components that inherit text color pick it up:
       </p>
-      <docs-code lang="css" title="src/styles.css" [code]="base" />
+      <docs-code language="css" title="src/styles.css" [code]="base" />
     </docs-page>
   `
 })
