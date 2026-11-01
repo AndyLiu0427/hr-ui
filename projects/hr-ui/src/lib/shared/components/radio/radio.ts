@@ -24,15 +24,20 @@ import { TextComponent } from '../text/text';
   imports: [TextComponent]
 })
 export class RadioComponent {
+  /** Whether this radio is checked. The parent sets it. */
   readonly checked = input<boolean>(false);
+  /** Disables the radio. */
   readonly disabled = input<boolean>(false);
 
+  /** Text next to the radio. A click on it checks the radio. */
   readonly label = input<string>();
   /** Always-visible helper text rendered under the label (needs `label` to show). */
   readonly description = input<string>();
+  /** Id of the native input. One is generated when you do not set it. */
   readonly id = input<string>();
   /** Groups radios so the browser enforces single-select within the same name. */
   readonly name = input<string>();
+  /** Value of the native input, sent when a native form submits. */
   readonly htmlValue = input<string>();
   /** Accessible label when no visible `label` is provided (e.g. inside a table cell). */
   readonly ariaLabel = input<string>();

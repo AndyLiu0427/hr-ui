@@ -13,7 +13,7 @@ import { InputComponent, InputType } from '../input/input';
 import { SelectComponent, SelectOption } from '../select/select';
 import { TextComponent } from '../text/text';
 
-/**
+/*
  * An amount and the unit it is measured in, as ONE control: `[ 27475 | WD+PH v ]`.
  *
  * Two signal-forms fields, not one composite value. That is the idiom everywhere else in this app
@@ -24,6 +24,10 @@ import { TextComponent } from '../text/text';
  * contribute no border, no label and no helper row of their own. Rendering two helper rows would
  * make the control 20px taller than the plain field beside it in a form grid, which is what
  * misaligns their borders.
+ */
+/**
+ * An amount and its unit in one field, such as a notice period of 3 months.
+ * Bind each half to its own signal-forms field with amountField and unitField.
  */
 @Component({
   selector: 'oct-input-select',
@@ -36,13 +40,20 @@ export class InputSelectComponent {
   readonly amountField = input.required<FieldTree<string>>();
   /** The unit half. */
   readonly unitField = input.required<FieldTree<string>>();
+  /** Units to pick from. */
   readonly unitOptions = input<SelectOption[]>([]);
 
+  /** Text of the label above the field. The unit is named after it too. */
   readonly label = input<string>();
+  /** Hint in the amount half while it is empty. */
   readonly placeholder = input<string>('');
+  /** Text in the unit half while no unit is picked. */
   readonly unitPlaceholder = input<string>('');
+  /** Text under the field. An error message replaces it. */
   readonly helperText = input<string>();
+  /** Height of the field. */
   readonly size = input<FieldSize>('md');
+  /** Removes the row under the field that holds the helper and error text. */
   readonly hideHelper = input<boolean>(false);
 
   /**

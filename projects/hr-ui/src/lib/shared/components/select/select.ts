@@ -47,6 +47,7 @@ export interface SelectOption {
   colorTag?: ColorTagColor;
 }
 
+/** A dropdown for picking one option, or several with multiple. Bind it with [formField] or [(value)]. */
 @Component({
   selector: 'oct-select',
   templateUrl: './select.html',
@@ -87,19 +88,32 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
 
   readonly selectId = signal(`oct-select-${Math.random().toString(36).substring(2, 9)}`);
 
+  /** Options in the list. */
   readonly options = input<SelectOption[]>([]);
+  /** Text on the trigger while nothing is selected. */
   readonly placeholder = input<string>('Select an option');
+  /** Text of the label above the select. */
   readonly label = input<string>();
+  /** Text under the select. An error message replaces it. */
   readonly helperText = input<string>();
+  /** Error message under the select. Setting it shows the error state. */
   readonly errorText = input<string>();
+  /** Height of the trigger. */
   readonly size = input<'sm' | 'md' | 'lg'>('md');
 
+  /** Shows the icon of each option in the list. */
   readonly showIcon = input<boolean>(true);
+  /** Adds an X that clears the selection. */
   readonly clearable = input<boolean>(false);
+  /** Lets the user pick several options. The value is then an array. */
   readonly multiple = input<boolean>(false);
+  /** Shows a spinner and disables the select. */
   readonly loading = input<boolean>(false);
+  /** Maximum height of the list before it scrolls, as a CSS length. */
   readonly maxHeight = input<string>('240px');
+  /** Makes the select fill the width of its container. */
   readonly fullWidth = input<boolean>(false);
+  /** Shows arrows at the top and bottom of the list when it can scroll. */
   readonly showScrollIndicators = input<boolean>(true);
   /** Drops the trigger's border, radius, background and outline so it sits inside a shared shell. */
   readonly bare = input<boolean>(false);
@@ -107,33 +121,52 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
   readonly overlayMinWidth = input<number>(0);
   /** Accessible name when a parent owns the visible label, so this is not announced as "Select an option". */
   readonly ariaLabel = input<string>();
+  /** Removes the row under the select that holds the helper and error text. */
   readonly hideHelper = input<boolean>(false);
   /** Maximum badges shown in multi-select. Undefined = show all. */
   readonly maxDisplay = input<number | undefined>(undefined);
 
+  /** Renders only the options in view, for long lists. */
   readonly virtualScrolling = input<boolean>(false);
+  /** Height of one option in pixels, for virtual scrolling. */
   readonly itemSize = input<number>(40);
 
+  /** Selected value. In multiple mode, an array of values. */
   readonly value: ModelSignal<SelectValue> = model<SelectValue>(null);
+  /** Validation errors from the form field. The first message shows after the select is touched. */
   readonly errors = input<readonly WithOptionalFieldTree<ValidationError>[]>([]);
+  /** Disables the select. */
   readonly disabled = input<boolean>(false);
+  /** Adds an asterisk to the label and sets aria-required. */
   readonly required = input<boolean>(false);
+  /** Touched state from the form field. */
   readonly touched = input<boolean>(false);
   /** Tells the bound form field that the user has left this control. */
   readonly touch = output<void>();
   /** Local copy of `touched`, so the control still tracks its own blur when no form field is bound. */
   readonly isTouched = linkedSignal(this.touched);
+  /** Invalid state from the form field. The error state shows after the select is touched. */
   readonly invalid = input<boolean>(false);
+  /** Field name from the form field. The select does not use it. */
   readonly name = input<string>('');
+  /** Dirty state from the form field. The select does not show it. */
   readonly dirty = input<boolean>(false);
+  /** Async validation state from the form field. The select does not show it. */
   readonly pending = input<boolean>(false);
 
-  /** @deprecated Use errors array or errorText instead */
+  /**
+   * Turns the error state on or off. Deprecated: use errorText or validation with [formField].
+   * @deprecated Use errors array or errorText instead
+   */
   readonly error = input<boolean>();
 
+  /** Emits the new value when the user changes the selection. */
   readonly selectChange = output<SelectChangeValue>();
+  /** Emits the selected option, or all selected options in multiple mode. */
   readonly selectionChange = output<SelectOption | SelectOption[] | null>();
+  /** Emits when the trigger gets focus. */
   readonly selectFocus = output<FocusEvent>();
+  /** Emits when the trigger loses focus. */
   readonly selectBlur = output<FocusEvent>();
 
   readonly selectValue = signal<SelectValue>(null);

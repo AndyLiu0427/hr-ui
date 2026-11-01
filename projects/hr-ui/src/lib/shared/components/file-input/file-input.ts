@@ -16,20 +16,9 @@ export interface FileInputLabels {
 export type FileInputMode = 'preview' | 'button';
 
 /**
- * FileInputComponent — unified file picker with two visual modes.
- *
- * - `mode="preview"` (default): full dropzone + image preview + button + helpText.
- *   Suited for single-file workflows that benefit from a visible drop target and
- *   inline preview (e.g. company logo upload). MIME type and size validation run
- *   here when configured.
- *
- * - `mode="button"`: a bare {@link ButtonComponent} that opens the native file
- *   picker. No preview, no validation, no helper UI. Suited for compact toolbars
- *   like attachment headers. Label is provided via projected `<ng-content>`.
- *
- * Selected files are always emitted as an array via `filesSelected`. Single-file
- * callers can take `event[0]`. The hidden `<input>` value is reset after every
- * emit so the same file can be re-picked.
+ * A file picker with two modes. In preview mode (the default) it shows an image preview, a button
+ * and help text, and it checks the file type and size. In button mode it is one button, labelled by
+ * its content, with no preview and no checks. Both modes emit an array, and the same file can be picked again.
  */
 @Component({
   selector: 'oct-file-input',
@@ -38,30 +27,50 @@ export type FileInputMode = 'preview' | 'button';
   imports: [ButtonComponent, IconComponent, TextComponent]
 })
 export class FileInputComponent {
+  /** preview shows an image preview and checks each file. button shows only a button. */
   readonly mode = input<FileInputMode>('preview');
+  /** Accepted MIME types, separated by commas. Preview mode rejects other types, so list exact types such as image/png. */
   readonly accept = input<string>('');
+  /** Lets the user pick several files. Preview mode checks and shows only the first. */
   readonly multiple = input<boolean>(false);
+  /** Disables the picker. */
   readonly disabled = input<boolean>(false);
+  /** Disables the picker. In button mode the button also shows a spinner. */
   readonly loading = input<boolean>(false);
 
+  /** Image URL to show before the user picks a file, such as the current logo. */
   readonly preview = input<string | null>(null);
+  /** Largest file, in bytes, that preview mode accepts. Set null to turn the check off. */
   readonly maxFileSize = input<number | null>(5 * 1024 * 1024);
+  /** Name of the icon in the empty preview area. */
   readonly placeholderIcon = input<string>('Image');
+  /** Error message under the button, such as an upload failure from your API. */
   readonly error = input<string | null>(null);
+  /** Texts for the button, the help text, the empty preview area and the error messages. */
   readonly labels = input<FileInputLabels>({});
 
+  /** Colour of the button in button mode. */
   readonly color = input<ButtonColor>('primary');
+  /** Style of the button in button mode. */
   readonly variant = input<ButtonVariant>('outline');
+  /** Size of the button in button mode. */
   readonly size = input<ButtonSize>('md');
+  /** Name of the button icon in button mode. */
   readonly icon = input<string>('Upload');
+  /** Side of the button that the icon is on, in button mode. */
   readonly iconPosition = input<'left' | 'right'>('left');
+  /** Shows only the icon in button mode. 'mobile' hides the text on screens narrower than 768px. */
   readonly iconOnly = input<boolean | 'mobile'>(false);
+  /** Makes the button fill the width of its container, in button mode. */
   readonly fullWidth = input<boolean>(false);
+  /** Accessible name of the button in button mode. Set it when iconOnly is on. */
   readonly ariaLabel = input<string>();
 
   /** Selected files. Single-file callers can read `event[0]`. */
   readonly filesSelected = output<File[]>();
+  /** Emits the preview as a data URL after the user picks an image, or null after they remove it. */
   readonly previewChanged = output<string | null>();
+  /** Emits when the user removes the previewed file. */
   readonly removeFile = output<void>();
   /** Fires when preview-mode validation rejects a file. */
   readonly validationError = output<string>();

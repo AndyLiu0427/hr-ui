@@ -15,6 +15,7 @@ import { FormValueControl, ValidationError, DisabledReason } from '@angular/form
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { TextComponent } from '../text/text';
 
+/** A multi-line text field with a label, helper text and an error message. It starts at four rows and grows with its content. */
 @Component({
   selector: 'oct-textarea',
   templateUrl: './textarea.html',
@@ -22,6 +23,7 @@ import { TextComponent } from '../text/text';
   imports: [TextComponent, CdkTextareaAutosize]
 })
 export class TextareaComponent implements FormValueControl<string> {
+  /** Text in the field. Spaces at the start and end are removed. */
   readonly value = model<string>('');
 
   // FormUiControl - Interaction
@@ -33,39 +35,65 @@ export class TextareaComponent implements FormValueControl<string> {
   readonly isTouched = linkedSignal(this.touched);
 
   // FormUiControl - Validation State
+  /** Invalid state from the form field. The error state shows after the field is touched. */
   readonly invalid = input<boolean>(false);
+  /** Validation errors from the form field. The first message shows in the error state. */
   readonly errors = input<readonly ValidationError.WithField[]>([]);
+  /** Async validation state from the form field. The textarea does not show it. */
   readonly pending = input<boolean>(false);
 
   // FormUiControl - Availability State
+  /** Disables the field. */
   readonly disabled = input<boolean>(false);
+  /** Reasons from the form field for why the field is disabled. The textarea does not show them. */
   readonly disabledReasons = input<readonly DisabledReason[]>([]);
+  /** Lets the user select and copy the text, but not change it. */
   readonly readonly = input<boolean>(false);
 
   // FormUiControl - Constraints
+  /** Adds an asterisk to the label. */
   readonly required = input<boolean>(false);
+  /** Sets the native minlength attribute. */
   readonly minLength = input<number | undefined>(undefined);
+  /** Sets the native maxlength attribute, which stops typing at the limit. */
   readonly maxLength = input<number | undefined>(undefined);
 
   // Component Inputs
+  /** Id of the native textarea. One is generated when you do not set it. */
   readonly id = input<string>();
+  /** Name of the native textarea. It falls back to the id. */
   readonly name = input<string>('');
+  /** Text of the label above the field. */
   readonly label = input<string>();
+  /** Hint that shows while the field is empty. */
   readonly placeholder = input<string>('');
+  /** Text under the field. An error message replaces it. */
   readonly helperText = input<string>();
+  /** Removes the row under the field that holds the helper and error text. */
   readonly hideHelper = input<boolean>(false);
 
   // Legacy Inputs
-  /** @deprecated Use Signal Forms validation with [formField] directive */
+  /**
+   * Turns the error state on or off. Deprecated: use validation with [formField].
+   * @deprecated Use Signal Forms validation with [formField] directive
+   */
   readonly error = input<boolean>();
-  /** @deprecated Use Signal Forms validation with [formField] directive */
+  /**
+   * Error message under the field. Deprecated: use validation with [formField].
+   * @deprecated Use Signal Forms validation with [formField] directive
+   */
   readonly errorText = input<string>();
 
   // Outputs
+  /** Emits the value when the user types in the field. */
   readonly textareaChange = output<string>();
+  /** Emits when the field gets focus. */
   readonly textareaFocus = output<FocusEvent>();
+  /** Emits when the field loses focus. */
   readonly textareaBlur = output<FocusEvent>();
+  /** Emits each keydown event from the field. */
   readonly textareaKeydown = output<KeyboardEvent>();
+  /** Emits each keyup event from the field. */
   readonly textareaKeyup = output<KeyboardEvent>();
 
   // Internal

@@ -75,6 +75,7 @@ export interface SearchSelectSearchEvent {
 import { SearchSelectOptionComponent } from './search-select-option';
 import { BaseOverlayService } from '../../services/base-overlay';
 
+/** A select with a search box, for long lists. Options can be static, or loaded and searched through your API. */
 @Component({
   selector: 'oct-search-select',
   templateUrl: './search-select.html',
@@ -108,7 +109,7 @@ export class SearchSelectComponent implements AfterViewInit {
 
   readonly searchSelectId = signal(`oct-search-select-${Math.random().toString(36).substring(2, 11)}`);
 
-  /** Static options array (ignored if searchConfig or preloadConfig is provided) */
+  /** Options to search in the browser. Ignored when searchConfig is set. */
   readonly options = input<SearchSelectOption[]>([]);
 
   /** Selected value: a scalar, or an array when `[multiple]` is true. */
@@ -117,34 +118,53 @@ export class SearchSelectComponent implements AfterViewInit {
   readonly valueInput = input<SearchSelectValue>(null, { alias: 'value' });
   readonly value = linkedSignal(this.valueInput);
 
+  /** Text in the field while nothing is selected. */
   readonly placeholder = input<string>('');
+  /** Text of the label above the field. */
   readonly label = input<string>('');
+  /** Disables the field. */
   readonly disabled = input<boolean>(false);
+  /** Shows the error state when true. */
   readonly error = input<boolean>(false);
+  /** Error message under the field. Setting it shows the error state. */
   readonly errorText = input<string>();
+  /** Height of the field. */
   readonly size = input<'sm' | 'md' | 'lg'>('md');
+  /** Adds an X that clears the selection. */
   readonly clearable = input<boolean>(false);
+  /** Adds an asterisk to the label and sets aria-required. */
   readonly required = input<boolean>(false);
+  /** Lets the user pick several options. The value is then an array. */
   readonly multiple = input<boolean>(false);
 
+  /** Validation errors from the form field. The first message shows after the field is touched. */
   readonly errors = input<readonly WithOptionalFieldTree<ValidationError>[]>([]);
+  /** Touched state from the form field. */
   readonly touched = input<boolean>(false);
   /** Tells the bound form field that the user has left this control. */
   readonly touch = output<void>();
   /** Local copy of `touched`, so the control still tracks its own blur when no form field is bound. */
   readonly isTouched = linkedSignal(this.touched);
+  /** Invalid state from the form field. The error state shows after the field is touched. */
   readonly invalid = input<boolean>(false);
+  /** Field name from the form field. The component does not use it. */
   readonly name = input<string>();
+  /** Dirty state from the form field. The component does not show it. */
   readonly dirty = input<boolean>(false);
+  /** Async validation state from the form field. The component does not show it. */
   readonly pending = input<boolean>(false);
 
   /** Helper text description shown below the input */
   readonly description = input<string>('');
+  /** Shows the icon of each option in the list. */
   readonly showIcon = input<boolean>(false);
   /** External loading state (combines with internal search/preload loading) */
   readonly loading = input<boolean>(false);
+  /** Makes the field fill the width of its container. */
   readonly fullWidth = input<boolean>(false);
+  /** Maximum height of the list before it scrolls, as a CSS length. */
   readonly maxHeight = input<string>('15rem');
+  /** Removes the row under the field that holds the helper and error text. */
   readonly hideHelper = input<boolean>(false);
   /** API search function - shorthand for searchConfig.searchFn */
   readonly apiSearchFn = input<((query: string) => Promise<SearchSelectOption[]> | SearchSelectOption[]) | undefined>(undefined);
@@ -191,11 +211,17 @@ export class SearchSelectComponent implements AfterViewInit {
    */
   readonly virtualScrollConfig = input<SearchSelectVirtualScrollConfig | undefined>(undefined);
 
+  /** Emits the new value when the user picks or clears an option. */
   readonly valueChange = output<SearchSelectValue>();
+  /** Emits the option the user picked or toggled, or null when the selection is cleared. */
   readonly selectionChange = output<SearchSelectOption | null>();
+  /** Emits true when the list opens and false when it closes. */
   readonly openChange = output<boolean>();
+  /** Emits the search text each time the user types in the search box. */
   readonly searchChange = output<SearchSelectSearchEvent>();
+  /** Emits when the field gets focus. */
   readonly searchSelectFocus = output<FocusEvent>();
+  /** Emits when the field loses focus. */
   readonly searchSelectBlur = output<FocusEvent>();
 
   readonly searchSelectTrigger = viewChild.required<ElementRef<HTMLDivElement>>('searchSelectTrigger');

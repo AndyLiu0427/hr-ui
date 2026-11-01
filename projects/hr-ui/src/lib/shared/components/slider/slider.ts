@@ -22,6 +22,7 @@ export interface SliderInputs {
   rightColor?: SliderColorVariant;
 }
 
+/** Splits 100% between a left and a right part with one knob, such as a salary across two bank accounts. */
 @Component({
   selector: 'oct-slider',
   imports: [TextComponent],
@@ -144,21 +145,36 @@ export interface SliderInputs {
   ]
 })
 export class SliderComponent {
+  /** Share of the left part, from 0 to 100. */
   leftPercent = input.required<number>();
+  /** Share of the right part. It is not read: the slider always shows 100 minus leftPercent. */
   rightPercent = input.required<number>();
+  /** Name of the left part. It also names the slider for screen readers. */
   leftLabel = input.required<string>();
+  /** Name of the right part. */
   rightLabel = input.required<string>();
+  /** Colour of the left bar and the knob. */
   leftColor = input<SliderColorVariant>('primary');
+  /** Colour of the right bar. */
   rightColor = input<SliderColorVariant>('neutral');
+  /** Shows both labels and their percentages above the track. */
   showLabels = input<boolean>(true);
+  /** Shows a scale from 0 to 100 and snaps the split to steps of 10. */
   showTicks = input<boolean>(false);
+  /** Snaps the split to multiples of this value. An arrow key moves one step. */
   step = input<number>(1);
+  /** Makes the left label clickable. A click emits leftLabelClick. */
   leftLabelClickable = input<boolean>(false);
+  /** Makes the right label clickable. A click emits rightLabelClick. */
   rightLabelClickable = input<boolean>(false);
 
+  /** Emits the new split 300 ms after the last change. */
   percentageChange = output<PercentageChangeEvent>();
+  /** Emits when the user presses and releases the knob without dragging it. */
   sliderClick = output<void>();
+  /** Emits when the user clicks the left label, if leftLabelClickable is set. */
   leftLabelClick = output<void>();
+  /** Emits when the user clicks the right label, if rightLabelClickable is set. */
   rightLabelClick = output<void>();
 
   // View children
