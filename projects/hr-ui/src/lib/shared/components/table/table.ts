@@ -84,6 +84,7 @@ const HEADER_TEXT_STYLES = [
   'textTransform'
 ] as const;
 
+/** Shows records in rows and columns, with sorting, pagination, row selection, row actions and inline editing. */
 @Component({
   selector: 'oct-table',
   templateUrl: './table.html',
@@ -135,39 +136,67 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
   readonly footerTemplate = contentChild<TemplateRef<any>>('footerTemplate');
   readonly printActionTemplate = contentChild<TemplateRef<any>>('printActionTemplate');
 
+  /** The columns: key and label, plus optional width, alignment, sorting, rendering and editing. */
   readonly columns = input<TableColumn<T>[]>([]);
+  /** The rows. With client-side pagination pass every row; with server-side pagination pass the current page. */
   readonly data = input<T[]>([]);
   /** When true, Enter commits the cell then moves editing to the next editable
    *  cell (the row's next editable column, then the first editable column of a
    *  later row). Off by default so Enter just commits and closes, preserving the
    *  original behaviour for existing inline-edit tables. */
   readonly editAdvanceOnEnter = input(false);
+  /** Covers the rows with a spinner while data loads. */
   readonly loading = input(false);
+  /** Has no effect at present. Use dense for tighter rows. */
   readonly size = input<TableSize>('md');
+  /** Shades every other row. */
   readonly striped = input(false);
+  /** Has no effect at present: the table always draws its border. */
   readonly bordered = input(true);
+  /** Draws lines between the columns. */
   readonly cellLines = input(false);
+  /** Has no effect at present: the header row always stays in view while the rows scroll. */
   readonly fixedHeader = input(true);
+  /** The tallest the table gets, as a CSS length. Longer content scrolls inside it. */
   readonly maxHeight = input('min(530px, calc(100dvh - 22rem))');
+  /** Turns sorting on or off for the whole table. A column also needs sortable: true. */
   readonly sortable = input(true);
+  /** Paging state. With totalNumPages 0 the table pages data itself; above 0, data is already one page. */
   readonly pagination = input<TablePagination | undefined>();
+  /** Text shown when there are no rows. */
   readonly emptyMessage = input('No data available');
+  /** Hides the icon in the empty state, which makes the empty table shorter. */
   readonly hideEmptyIcon = input(false);
+  /** Has no effect at present: the loading overlay shows a spinner only. */
   readonly loadingMessage = input('Loading...');
+  /** Makes rows look clickable and emits rowClick when one is clicked. */
   readonly clickableRows = input(false);
+  /** The sort to start with. Takes priority over a column's defaultSort. */
   readonly defaultSort = input<DefaultSortConfig | undefined>();
+  /** Adds a checkbox column. mode is 'single' or 'multiple'; key names the row field that identifies a row (default 'id'). */
   readonly selectionConfig = input<TableSelectionConfig | undefined>();
+  /** Lets people drag a column edge to resize it. A column can opt out with resizable: false. */
   readonly resizableColumns = input(true);
+  /** Reduces the cell padding, for long lists. */
   readonly dense = input(false);
+  /** Returns the action buttons for a row, shown in the column whose key is 'actions'. On a phone they open in a bottom sheet. */
   readonly rowActions = input<RowActionsFn<T> | undefined>();
+  /** Name of the button that opens the row actions on a phone, and title of their sheet. Defaults to "Actions". */
   readonly rowActionsTitle = input<string>();
 
+  /** Emits the row that was clicked, when clickableRows is on. */
   readonly rowClick = output<T>();
+  /** Emits the column key and its new width in px after a resize. */
   readonly columnResize = output<{ key: string; width: number }>();
+  /** Emits the new sort, including the default sort when the table starts. */
   readonly sortChange = output<TableSort>();
+  /** Emits the new page number. */
   readonly pageChange = output<number>();
+  /** Emits the new page size. The table then goes back to page 1 and emits pageChange too. */
   readonly pageSizeChange = output<number>();
+  /** Not emitted at present. Use rowActions for buttons in a row. */
   readonly actionClick = output<{ action: 'detail' | 'delete'; row: T }>();
+  /** Emits the selected rows and their keys after every change to the selection. */
   readonly selectionChange = output<TableSelection<T>>();
   /** Emitted when an editable cell commits a new value (see {@link TableColumn.editable}). */
   readonly cellValueChange = output<TableCellEdit<T>>();

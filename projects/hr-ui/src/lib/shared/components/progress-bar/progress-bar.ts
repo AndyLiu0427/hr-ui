@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TextComponent } from '../text/text';
 
+/** A bar that shows how far a task has got, with a label and an optional percentage. */
 @Component({
   selector: 'oct-progress-bar',
   template: `
@@ -25,8 +26,11 @@ import { TextComponent } from '../text/text';
 })
 export class ProgressBarComponent {
   readonly Math = Math;
+  /** How far the task has got, from 0 to 100. */
   readonly progress = input.required<number>();
+  /** Text above the bar. */
   readonly label = input<string>('Processing...');
+  /** Shows the rounded percentage beside the label. */
   readonly showPercentage = input<boolean>(true);
 
   protected readonly filled = computed(() => Math.min(100, Math.max(0, this.progress())));

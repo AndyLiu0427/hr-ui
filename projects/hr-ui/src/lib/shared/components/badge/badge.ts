@@ -14,6 +14,7 @@ export interface BadgeProps {
   dismissible?: boolean;
 }
 
+/** A small label for a status or attribute that people cannot change, such as Approved or Full-time. */
 @Component({
   selector: 'oct-badge',
   host: {
@@ -43,13 +44,20 @@ export interface BadgeProps {
   imports: [IconComponent]
 })
 export class BadgeComponent {
+  /** The text. The default is a placeholder, so always set it. */
   readonly text = input<string>('Badge text');
+  /** Icon shown before the text. */
   readonly icon = input<string>();
+  /** Size of the badge. */
   readonly size = input<BadgeSize>('sm');
+  /** 'opacity' tints the badge; 'solid' fills it, for more emphasis. */
   readonly mode = input<BadgeMode>('opacity');
+  /** The meaning of the badge, shown as its colour. */
   readonly color = input<BadgeColor>('neutral');
+  /** Shows a close icon that emits dismiss. The icon cannot be reached by keyboard, so use oct-chip for removable values. */
   readonly dismissible = input<boolean>(false);
 
+  /** Emits when the close icon is clicked. */
   readonly dismiss = output<void>();
 
   readonly badgeClasses = computed(() => {

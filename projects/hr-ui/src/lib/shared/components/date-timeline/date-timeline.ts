@@ -65,6 +65,7 @@ export class DateTimelineComponent {
 
   private readonly dateService = inject(DateService);
 
+  /** The dates to place, each with an optional emphasis. A node without a valid date is left out. */
   readonly nodes = input.required<DateTimelineNode[]>();
 
   /** 'center' (default) centers each date under its dot and pads both sides to

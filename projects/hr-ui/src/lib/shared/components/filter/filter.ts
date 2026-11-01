@@ -43,6 +43,7 @@ export function enumToFilterOptions<T>(enumObj: Record<string, T>): FilterOption
     }));
 }
 
+/** A button that opens a menu of checkboxes, to narrow a list to one or more values. On a phone the menu opens as a bottom sheet. */
 @Component({
   selector: 'oct-filter',
   templateUrl: './filter.html',
@@ -72,17 +73,25 @@ export class FilterComponent<T> {
 
   readonly isMobile = signal<boolean>(false);
 
+  /** Text on the button, and the title of the menu. */
   label = input.required<string>();
+  /** Icon shown before the label. */
   icon = input<string>();
+  /** Size of the button. */
   size = input<'sm' | 'md' | 'lg'>('md');
-  // undefined falls back to the default, so a config object can leave these out.
+  /** Width of the menu, as a CSS length or a number of px. undefined falls back to the default, so a config object can leave it out. */
   width = input<number | string, number | string | undefined>('280px', { transform: v => v ?? '280px' });
+  /** Gap between the button and the menu, in px. */
   offsetY = input<number>(8);
 
+  /** The values people can pick, each with a label. */
   options = input<FilterOption<T>[]>([]);
+  /** Adds a search box that filters the options by label. */
   searchable = input<boolean>(false);
+  /** Placeholder of the search box. undefined falls back to the default. */
   searchPlaceholder = input<string, string | undefined>('Search...', { transform: v => v ?? 'Search...' });
 
+  /** The values of the selected options. Supports two-way binding. */
   selectedValues = model<unknown[]>([]);
 
   searchQuery = signal<string>('');
@@ -92,8 +101,11 @@ export class FilterComponent<T> {
     this.searchQuery.set(target.value);
   }
 
+  /** Emits the selected values after each change. */
   readonly filterChange = output<unknown[]>();
+  /** Emits when the menu opens. */
   readonly menuOpened = output<void>();
+  /** Emits when the menu closes. */
   readonly menuClosed = output<void>();
 
   isOpen = signal<boolean>(false);

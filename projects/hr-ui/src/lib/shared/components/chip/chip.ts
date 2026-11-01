@@ -70,8 +70,11 @@ export class ChipComponent {
   readonly label = input<string>();
   /** Optional leading icon. */
   readonly icon = input<OctIconName>();
+  /** 'soft' tints the chip, 'outline' draws a ring only, 'solid' fills it. */
   readonly variant = input<ChipVariant>('soft');
+  /** The meaning of the chip, shown as its colour. */
   readonly color = input<ChipColor>('neutral');
+  /** Size of the chip. */
   readonly size = input<ChipSize>('sm');
   /** Show the trailing X that emits `(remove)`. Bare attribute works: `removable`. */
   readonly removable = input(false, { transform: booleanAttribute });
