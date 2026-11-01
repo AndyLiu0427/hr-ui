@@ -35,6 +35,18 @@ export class TocService {
     this._entries.update(list =>
       [...list, entry].sort((a, b) => (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1))
     );
+    // A link to a section can arrive before the section exists (the API loads its data later),
+    // so the router's own anchor scroll finds nothing. Scroll when the heading shows up.
+    // Examples above it load in after that and push it down, so scroll again while the page
+    // settles, unless the reader has started scrolling.
+    if (decodeURIComponent(location.hash.slice(1)) === id) {
+      let readerScrolled = false;
+      const stop = () => (readerScrolled = true);
+      for (const type of ['wheel', 'touchmove', 'keydown']) window.addEventListener(type, stop, { once: true, passive: true });
+      for (const delay of [0, 300, 900]) {
+        setTimeout(() => readerScrolled || el.scrollIntoView({ block: 'start' }), delay);
+      }
+    }
     return id;
   }
 
