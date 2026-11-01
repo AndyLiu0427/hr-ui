@@ -98,6 +98,8 @@ export class UnifiedSidebarComponent {
 
   readonly collapsed = input<boolean>(false);
   readonly config = input.required<SidebarConfig>();
+  /** Shows an item's `preview` card on hover. Turn off to keep `preview` only as data, such as for search. */
+  readonly showPreview = input<boolean>(true);
   /** Routes of the open groups. Every group starts closed; the host decides what to remember. */
   readonly openGroups = model<string[]>([]);
 
