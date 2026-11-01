@@ -2,8 +2,8 @@ import { inject, Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 /**
- * Highlights matching text within a string by wrapping matches in <mark> tags.
- * Used for search result highlighting in the global search dialog.
+ * Wraps each match of a search query in <mark>, ignoring case. The text is HTML-escaped first,
+ * so bind the result with [innerHTML]. A query shorter than 2 characters marks nothing.
  *
  * @example
  * <span [innerHTML]="employee.name | highlight:searchQuery()"></span>

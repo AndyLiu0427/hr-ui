@@ -6,6 +6,7 @@ const TOOLTIP_ENTER = 'opacity-0 translate-y-1';
 const TOOLTIP_VISIBLE = 'opacity-100 translate-y-0';
 const TOOLTIP_EXIT = 'opacity-0 -translate-y-1';
 
+/** Copies a value to the clipboard when the user right-clicks the element, and shows "Copied!" by the pointer. */
 @Directive({
   selector: '[octCopyOnRightClick]',
   host: {
@@ -13,6 +14,7 @@ const TOOLTIP_EXIT = 'opacity-0 -translate-y-1';
   }
 })
 export class CopyOnRightClickDirective implements OnDestroy {
+  /** The value to copy. It can differ from the text shown; null or an empty string copies nothing. */
   readonly octCopyOnRightClick = input.required<string | number | null | undefined>();
 
   private readonly renderer = inject(Renderer2);
