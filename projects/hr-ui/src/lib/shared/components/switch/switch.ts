@@ -5,7 +5,7 @@ import { TextComponent } from '../text/text';
 export type SwitchColor = 'primary' | 'success' | 'error' | 'warning' | 'info' | 'neutral';
 
 /**
- * Angular Signal Forms Switch Component
+ * A toggle for a setting that takes effect at once. Bind it with [formField] or [(checked)].
  *
  * @example
  * ```typescript
@@ -29,6 +29,7 @@ export type SwitchColor = 'primary' | 'success' | 'error' | 'warning' | 'info' |
 })
 export class SwitchComponent implements FormCheckboxControl {
   // FormCheckboxControl
+  /** Whether the switch is on. */
   readonly checked = model<boolean>(false);
 
   // FormUiControl - Interaction
@@ -40,29 +41,43 @@ export class SwitchComponent implements FormCheckboxControl {
   readonly isTouched = linkedSignal(this.touched);
 
   // FormUiControl - Validation State
+  /** Invalid state from the form field. The error state shows after the switch is touched. */
   readonly invalid = input<boolean>(false);
+  /** Validation errors from the form field. The first message shows in the error state. */
   readonly errors = input<readonly ValidationError.WithField[]>([]);
 
   // FormUiControl - Availability State
+  /** Disables the switch. */
   readonly disabled = input<boolean>(false);
+  /** Reasons from the form field for why the switch is disabled. The switch does not show them. */
   readonly disabledReasons = input<readonly DisabledReason[]>([]);
 
   // FormUiControl - Constraints
+  /** Adds an asterisk to the label and sets aria-required. */
   readonly required = input<boolean>(false);
 
   // Component Inputs
+  /** Text next to the switch. It names the switch, and a click on it toggles the switch. */
   readonly label = input<string>();
+  /** Id of the switch button. One is generated when you do not set it. */
   readonly id = input<string>();
+  /** Name of the switch button. */
   readonly name = input<string>('');
+  /** Colour of the track when the switch is on. */
   readonly color = input<SwitchColor>('primary');
 
   // Outputs
+  /** Emits the new state when the user toggles the switch. */
   readonly switchChange = output<boolean>();
+  /** Emits when the switch gets focus. */
   readonly switchFocus = output<FocusEvent>();
+  /** Emits when the switch loses focus. */
   readonly switchBlur = output<FocusEvent>();
 
   // Legacy Inputs (prefer [formField] directive for Signal Forms)
+  /** Turns the error state on or off. It overrides the form field. */
   readonly error = input<boolean>();
+  /** Error message under the switch. It shows only in the error state. */
   readonly errorText = input<string>();
 
   // Internal

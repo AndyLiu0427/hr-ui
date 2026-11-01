@@ -6,7 +6,7 @@ import { TextComponent } from '../text/text';
 export type CheckboxState = 'default' | 'checked' | 'disabled' | 'disabled-checked';
 
 /**
- * Angular Signal Forms Checkbox Component
+ * A checkbox with a label and an optional description. Bind it with [formField] or [(checked)].
  *
  * @example
  * ```typescript
@@ -27,6 +27,7 @@ export type CheckboxState = 'default' | 'checked' | 'disabled' | 'disabled-check
 })
 export class CheckboxComponent implements FormCheckboxControl {
   // FormCheckboxControl
+  /** Whether the box is checked. */
   readonly checked = model<boolean>(false);
 
   // FormUiControl - Interaction
@@ -38,26 +39,36 @@ export class CheckboxComponent implements FormCheckboxControl {
   readonly isTouched = linkedSignal(this.touched);
 
   // FormUiControl - Validation State
+  /** Invalid state from the form field. The error state shows after the checkbox is touched. */
   readonly invalid = input<boolean>(false);
+  /** Validation errors from the form field. The first message shows in the error state. */
   readonly errors = input<readonly ValidationError.WithField[]>([]);
 
   // FormUiControl - Availability State
+  /** Disables the checkbox. */
   readonly disabled = input<boolean>(false);
+  /** Reasons from the form field for why the checkbox is disabled. The checkbox does not show them. */
   readonly disabledReasons = input<readonly DisabledReason[]>([]);
 
   // FormUiControl - Constraints
+  /** Adds an asterisk to the label and sets the native required attribute. */
   readonly required = input<boolean>(false);
 
   // Component Inputs
+  /** Text next to the box. A click on it toggles the checkbox. */
   readonly label = input<string>();
   /** Optional helper text shown below the label in a fainter colour. Use for
    *  a longer explanation of a complex toggle (what happens when on/off). */
   readonly description = input<string>();
+  /** Id of the native input. One is generated when you do not set it. */
   readonly id = input<string>();
+  /** Name of the native input. */
   readonly name = input<string>('');
+  /** Value of the native input, sent when a native form submits. */
   readonly htmlValue = input<string>();
 
   // Outputs
+  /** Emits the new checked state when the user toggles the checkbox. */
   readonly checkboxChange = output<boolean>();
 
   // Legacy/Simple Inputs (prefer [formField] directive for Signal Forms)
@@ -65,7 +76,7 @@ export class CheckboxComponent implements FormCheckboxControl {
   readonly error = input<boolean>();
   /** Manual error message - prefer [formField] directive for Signal Forms */
   readonly errorText = input<string>();
-  /** Visual state for simple usage - prefer [formField] directive for Signal Forms */
+  /** Has no effect. Set checked and disabled instead. */
   readonly state = input<CheckboxState>('default');
 
   // Internal
