@@ -21,7 +21,7 @@ export const doc: ComponentDoc = {
     {
       name: 'tabs-links',
       title: 'As links',
-      description: 'A tab with href renders as a link, for tabs that change the URL. A click selects the tab without navigating, so you do the routing in tabChange.'
+      description: 'A tab with href renders as a link, for tabs that change the URL. A click selects the tab without navigating, so you do the routing in tabChange. Cmd, Ctrl or Shift and click opens the link in a new tab or window.'
     },
     {
       name: 'tabs-locked',

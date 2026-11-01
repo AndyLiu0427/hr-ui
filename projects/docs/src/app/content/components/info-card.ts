@@ -16,7 +16,7 @@ export const doc: ComponentDoc = {
     {
       name: 'info-card-actions',
       title: 'Actions',
-      description: 'Actions sit on the right of the header, or under the title with position: \'title\'. Below 768px wide they show their icon only, so give each one an icon.'
+      description: 'Actions sit on the right of the header, or under the title with position: \'title\'. Below 768px wide an action with an icon shows the icon only.'
     },
     {
       name: 'info-card-states',
@@ -27,7 +27,7 @@ export const doc: ComponentDoc = {
   ],
   accessibility: [
     'Labels and values are plain text in a grid, so screen readers read each label before its value.',
-    'Below 768px wide, an action button shows its icon only and has no accessible name. Screen readers announce it as "button" there.'
+    'Below 768px wide, an action with an icon shows the icon only. Its label stays the accessible name of the button.'
   ],
   api: ['InfoCardComponent']
 };

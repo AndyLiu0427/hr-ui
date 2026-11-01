@@ -23,9 +23,11 @@
                 [variant]="action.variant || 'outline'"
                 size="sm"
                 [icon]="action.icon"
+                [ariaLabel]="action.label ? (action.label | translate) : undefined"
                 [disabled]="!!action.disabled"
                 (buttonClick)="action.handler()">
-                @if (isDesktop() && action.label) {
+                <!-- Below 768px the icon stands in for the label. An action without an icon keeps it. -->
+                @if (action.label && (isDesktop() || !action.icon)) {
                   {{ action.label | translate }}
                 }
               </oct-button>
@@ -41,9 +43,11 @@
               [variant]="action.variant || 'outline'"
               size="sm"
               [icon]="action.icon"
+              [ariaLabel]="action.label ? (action.label | translate) : undefined"
               [disabled]="!!action.disabled"
               (buttonClick)="action.handler()">
-              @if (isDesktop() && action.label) {
+              <!-- Below 768px the icon stands in for the label. An action without an icon keeps it. -->
+              @if (action.label && (isDesktop() || !action.icon)) {
                 {{ action.label | translate }}
               }
             </oct-button>
@@ -61,7 +65,7 @@
         </oct-text>
       </div>
     } @else if (data()) {
-      <div class="grid" [class]="getGridColsClass() + ' gap-' + (gapSize() || '6')">
+      <div [class]="gridClass()">
         @for (field of config().fields; track field.key + '_' + $index) {
           @if (isFieldVisible(field)) {
             <div class="flex flex-col gap-0.5">
@@ -78,7 +82,7 @@
           }
         }
       </div>
-      <div class="grid" [class]="getGridColsClass() + ' gap-' + (gapSize() || '6')">
+      <div [class]="gridClass()">
         <ng-content></ng-content>
       </div>
     } @else {

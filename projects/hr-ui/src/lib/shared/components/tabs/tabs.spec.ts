@@ -123,6 +123,61 @@ describe('TabsComponent', () => {
     });
   });
 
+  it('leaves a Cmd, Ctrl or Shift click on a link tab to the browser, so it opens in a new tab', () => {
+    host.tabs = LINK_TABS;
+    host.active = 'a';
+    fixture.detectChanges();
+
+    let emitted: string | null = null;
+    const tabs = fixture.debugElement.children[0].componentInstance as TabsComponent;
+    tabs.tabChange.subscribe((id: string) => (emitted = id));
+
+    for (const modifier of ['metaKey', 'ctrlKey', 'shiftKey'] as const) {
+      const click = new MouseEvent('click', { bubbles: true, cancelable: true, [modifier]: true });
+      (els('a')[1] as HTMLElement).dispatchEvent(click);
+      expect(click.defaultPrevented, modifier).toBe(false);
+    }
+    expect(emitted).toBeNull();
+
+    const plain = new MouseEvent('click', { bubbles: true, cancelable: true });
+    (els('a')[1] as HTMLElement).dispatchEvent(plain);
+    expect(plain.defaultPrevented).toBe(true);
+    expect(emitted).toBe('b');
+  });
+
+  it('dims inert button tabs and drops their pointer cursor, as it does for link tabs', () => {
+    host.tabs = BUTTON_TABS;
+    host.active = 'a';
+    host.interactive = false;
+    fixture.detectChanges();
+
+    for (const tab of els('button[role="tab"]') as HTMLElement[]) {
+      expect(tab.classList).toContain('opacity-60');
+      expect(tab.classList).toContain('cursor-default');
+      expect(tab.classList).not.toContain('cursor-pointer');
+    }
+  });
+
+  it('describes only the active tab, by an id that two strips with the same tab ids do not share', () => {
+    const DESCRIBED: TabItem[] = [
+      { id: 'a', label: 'Details', description: 'Name, job title and department' },
+      { id: 'b', label: 'History', description: 'Every change to this record' }
+    ];
+    host.tabs = DESCRIBED;
+    host.active = 'a';
+    fixture.detectChanges();
+    const second = TestBed.createComponent(HostComponent);
+    second.componentInstance.tabs = DESCRIBED;
+    second.componentInstance.active = 'a';
+    second.detectChanges();
+
+    const [active, inactive] = els('button[role="tab"]') as HTMLElement[];
+    const describedBy = active.getAttribute('aria-describedby')!;
+    expect(fixture.nativeElement.querySelector('#' + describedBy)?.textContent?.trim()).toBe('Name, job title and department');
+    expect(inactive.hasAttribute('aria-describedby')).toBe(false);
+    expect(second.nativeElement.querySelector('button[role="tab"]').getAttribute('aria-describedby')).not.toBe(describedBy);
+  });
+
   it('emits the clicked tab id when interactive', () => {
     host.tabs = LINK_TABS;
     host.active = 'a';
