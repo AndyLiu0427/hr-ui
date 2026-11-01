@@ -207,18 +207,10 @@ describe('InputComponent', () => {
   });
 
   describe('padding by size', () => {
-    it('is p-2 at every size when NOT bare, which is what all 50 call sites render today', () => {
-      for (const size of ['sm', 'md', 'lg'] as const) {
-        ref.setInput('size', size);
-        expect(component.inputClass(), size).toContain('p-2');
-      }
-    });
+    // These are oct-select triggerClasses()' own sizeMap values, so an input and a select of one size are one height.
+    const bySize: Record<string, string> = { sm: 'py-1.5', md: 'py-2', lg: 'py-2.5' };
 
-    it('follows size when bare, so a shell can match oct-select height', () => {
-      // The amount box is the taller child in oct-input-select, so it sets the shell height.
-      // These are oct-select triggerClasses()' own sizeMap values.
-      ref.setInput('bare', true);
-      const bySize: Record<string, string> = { sm: 'py-1.5', md: 'py-2', lg: 'py-2.5' };
+    it('follows size without an icon, so sm, md and lg are three heights', () => {
       for (const [size, expected] of Object.entries(bySize)) {
         ref.setInput('size', size);
         expect(component.inputClass(), size).toContain(expected);
@@ -226,10 +218,67 @@ describe('InputComponent', () => {
       }
     });
 
-    it('drops the size-agnostic p-2 when bare, or the two paddings fight', () => {
+    it('follows size when bare too, so a shell can match oct-select height', () => {
+      // The amount box is the taller child in oct-input-select, so it sets the shell height.
       ref.setInput('bare', true);
-      ref.setInput('size', 'sm');
-      expect(component.inputClass().split(' ')).not.toContain('p-2');
+      for (const [size, expected] of Object.entries(bySize)) {
+        ref.setInput('size', size);
+        expect(component.inputClass(), size).toContain(expected);
+      }
+    });
+  });
+
+  describe('helper text id', () => {
+    const helper = () => element.querySelector('.min-h-5 oct-text') as HTMLElement;
+
+    it('gives the helper text a real id and points the input at it', () => {
+      ref.setInput('helperText', 'As shown on the payslip');
+      fixture.detectChanges();
+
+      expect(helper().id).toMatch(/^input-.+-helper$/);
+      expect(input().getAttribute('aria-describedby')).toBe(helper().id);
+    });
+
+    it('gives two inputs two ids, so no id repeats on the page', () => {
+      const other = TestBed.createComponent(InputComponent);
+      other.componentRef.setInput('helperText', 'Second field');
+      other.detectChanges();
+      ref.setInput('helperText', 'First field');
+      fixture.detectChanges();
+
+      const otherHelper = other.nativeElement.querySelector('.min-h-5 oct-text') as HTMLElement;
+      expect(helper().id).not.toBe(otherHelper.id);
+    });
+
+    it('describes the input by nothing while the helper row is empty', () => {
+      expect(input().hasAttribute('aria-describedby')).toBe(false);
+    });
+
+    it('keeps an id the caller sets', () => {
+      ref.setInput('ariaDescribedBy', 'nric-hint');
+      ref.setInput('helperText', 'As on the NRIC');
+      fixture.detectChanges();
+
+      expect(helper().id).toBe('nric-hint');
+      expect(input().getAttribute('aria-describedby')).toBe('nric-hint');
+    });
+  });
+
+  describe('accessible name', () => {
+    it('leaves the name to a label outside a bare input, instead of naming it after the placeholder', () => {
+      ref.setInput('bare', true);
+      ref.setInput('placeholder', '0.00');
+      fixture.detectChanges();
+
+      expect(input().hasAttribute('aria-label')).toBe(false);
+    });
+
+    it('still prefers ariaLabel', () => {
+      ref.setInput('ariaLabel', 'Monthly salary');
+      ref.setInput('placeholder', '0.00');
+      fixture.detectChanges();
+
+      expect(input().getAttribute('aria-label')).toBe('Monthly salary');
     });
   });
 

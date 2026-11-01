@@ -31,8 +31,8 @@
       [attr.step]="step()"
       [attr.inputmode]="inputMode()"
       [attr.pattern]="inputPattern()"
-      [attr.aria-label]="ariaLabel() || label() || placeholder()"
-      [attr.aria-describedby]="ariaDescribedBy()"
+      [attr.aria-label]="ariaLabel() || label() || null"
+      [attr.aria-describedby]="describedBy()"
       [attr.aria-required]="required() ? 'true' : null"
       [attr.aria-invalid]="hasError() ? 'true' : null"
       (input)="handleInput($event)"
@@ -83,7 +83,7 @@
   @if (!hideHelper() && !bare()) {
   <div class="min-h-5">
     <oct-text
-      [id]="ariaDescribedBy()"
+      [id]="helperId()"
       [color]="hasError() ? 'error' : '2'"
       variant="sm"
     >

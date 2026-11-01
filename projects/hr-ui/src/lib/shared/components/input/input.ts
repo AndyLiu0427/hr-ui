@@ -26,8 +26,8 @@ import { TextComponent } from '../text/text';
 
 export type InputType = 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search' | 'date';
 
-/** Mirrors the sizeMap in select.ts triggerClasses(), so a shell holding both is one height. */
-const BARE_PADDING_BY_SIZE = {
+/** Mirrors the sizeMap in select.ts triggerClasses(), so an input and a select of one size are one height. */
+const PADDING_BY_SIZE = {
   sm: 'px-2 py-1.5',
   md: 'px-2 py-2',
   lg: 'px-2 py-2.5'
@@ -62,7 +62,7 @@ export class InputComponent implements FormValueControl<string> {
   readonly helperText = input<string>();
   /** Type of the native input. */
   readonly type = input<InputType>('text');
-  /** Padding of the icon and text slots, and the height of a bare input. */
+  /** Height of the field, the same as an oct-select of the same size. */
   readonly size = input<InputSize>('md');
   /** Shows the error or disabled state without a form field. */
   readonly state = input<InputState>('default');
@@ -70,7 +70,7 @@ export class InputComponent implements FormValueControl<string> {
   readonly readonly = input<boolean>(false);
   /** Accessible name for a field without a visible label. */
   readonly ariaLabel = input<string>();
-  /** Id for the text under the field. The input points at it, so screen readers read that text. */
+  /** Id for the text under the field. One is generated when you do not set it. The input points at that text. */
   readonly ariaDescribedBy = input<string>();
   /** Removes the row under the field that holds the helper and error text. */
   readonly hideHelper = input<boolean>(false);
@@ -138,6 +138,9 @@ export class InputComponent implements FormValueControl<string> {
   readonly passwordVisible = signal<boolean>(false);
 
   readonly inputId = computed(() => this.id() || `input-${Math.random().toString(36).substring(2, 9)}`);
+
+  /** Id of the helper or error text under the field. */
+  readonly helperId = computed(() => this.ariaDescribedBy() || `${this.inputId()}-helper`);
 
   readonly inputType = computed(() => {
     if (this.type() === 'password' && this.passwordVisible()) {
@@ -224,12 +227,10 @@ export class InputComponent implements FormValueControl<string> {
   });
 
   readonly inputClass = computed(() => {
-    // Bare padding follows size() on oct-select's scale, so a shared shell keeps one height.
-    const padding = this.bare() ? BARE_PADDING_BY_SIZE[this.size()] : 'p-2';
     const baseClasses = [
       'flex-1',
       'min-w-0',
-      padding,
+      PADDING_BY_SIZE[this.size()],
       'text-1',
       // 16px on phones: iOS Safari zooms the page into any focused field under 16px.
       'text-base',
@@ -256,6 +257,12 @@ export class InputComponent implements FormValueControl<string> {
   readonly helperTextClass = computed(() => fieldHelperTextClass(this.hasError()));
 
   readonly displayHelperText = computed(() => (this.hasError() ? this.errorMessage() : this.helperText() || ''));
+
+  /** What aria-describedby names: the caller's id, or the text under the field while it has any. */
+  readonly describedBy = computed(() => {
+    if (this.ariaDescribedBy()) return this.ariaDescribedBy();
+    return this.displayHelperText() && !this.hideHelper() && !this.bare() ? this.helperId() : null;
+  });
 
   readonly showPrefix = computed(() => !!this.leftIcon() || !!this.leftText());
   readonly showSuffix = computed(() => (!!this.rightIcon() || !!this.rightText()) && !(this.type() === 'password' && this.showPasswordToggle()));
