@@ -28,8 +28,8 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 export class KbdComponent {
   /**
    * Background variant
-   * - 'tertiary': Lighter background (default, for prominent keys like ESC, ⌘K)
-   * - 'secondary': Darker background (for grouped keys like arrows, Enter)
+   * - 'tertiary': grey fill (default, for prominent keys like ESC, ⌘K)
+   * - 'secondary': surface colour (for grouped keys like arrows, Enter)
    */
   readonly variant = input<'tertiary' | 'secondary'>('tertiary');
 

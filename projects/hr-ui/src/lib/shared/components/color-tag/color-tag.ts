@@ -186,7 +186,9 @@ const FILL_CLASS: Record<ColorTagColor, string> = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ColorTagComponent {
+  /** One of six colours, or null for no mark. */
   readonly color = input<ColorTagColor | null>(null);
+  /** How the mark attaches: 'cut' takes a card's corner, 'corner' pins to a table cell's corner, 'inline' sits beside the text. */
   readonly variant = input<ColorTagVariant>('inline');
 
   /**

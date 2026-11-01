@@ -48,6 +48,7 @@ const AVATAR_SIZE_CLASSES = {
 export type AvatarSize = keyof typeof AVATAR_SIZE_CLASSES;
 export type AvatarStatus = 'online' | 'offline' | 'busy' | 'away' | 'none';
 
+/** A person's photo, or their initials when there is no photo, with an optional status dot. */
 @Component({
   selector: 'oct-avatar',
   templateUrl: './avatar.html',
@@ -59,12 +60,19 @@ export type AvatarStatus = 'online' | 'offline' | 'busy' | 'away' | 'none';
   }
 })
 export class AvatarComponent {
+  /** Size, from xs (16px) to 2xl (64px). */
   readonly size = input<AvatarSize>('md');
+  /** URL of the photo. If it fails to load, the avatar shows the initials of name. */
   readonly src = input<string>('');
+  /** Accessible name of the avatar. Falls back to name. */
   readonly alt = input<string>('');
+  /** The person's name. Gives the initials, and the accessible name when alt is empty. */
   readonly name = input<string>('');
+  /** Shows a status dot on the corner. 'none' hides it. */
   readonly status = input<AvatarStatus>('none');
+  /** Shows the name under the avatar while the pointer rests on it. */
   readonly showTooltip = input<boolean>(false);
+  /** Adds a pointer cursor, a hover ring, role="button" and a tab stop. Enter and Space do not activate it. */
   readonly clickable = input<boolean>(false);
 
   protected readonly imageLoaded = signal(false);
