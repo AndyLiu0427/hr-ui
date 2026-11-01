@@ -246,7 +246,7 @@
                         <ng-container [ngTemplateOutlet]="pinButton" [ngTemplateOutletContext]="{ $implicit: item, inPinnedBlock: false }" />
                       }
                       @if (showPreview() && !collapsed() && componentPreview() === item && item.preview) {
-                        <div class="pointer-events-none absolute top-0 left-full z-40 ml-2 w-64 rounded-lg border bg-popover p-4 shadow-hr-lg">
+                        <div class="pointer-events-none absolute top-0 left-full z-40 ml-2 w-64 rounded-xl border border-primary bg-secondary p-4 shadow-hr-lg">
                           <div class="space-y-2">
                             <oct-text color="1" variant="sm" weight="medium">{{ item.preview.title }}</oct-text>
                             <oct-text color="3" variant="xs" weight="regular">{{ item.preview.description }}</oct-text>

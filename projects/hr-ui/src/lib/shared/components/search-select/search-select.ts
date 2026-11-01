@@ -389,7 +389,7 @@ export class SearchSelectComponent implements AfterViewInit {
     return classes.join(' ');
   });
 
-  readonly menuClasses = computed(() => 'oct-overlay-enter bg-secondary border border-primary rounded-xl shadow-hr-sm overflow-hidden');
+  readonly menuClasses = computed(() => 'oct-overlay-enter bg-secondary border border-primary rounded-xl shadow-hr-lg overflow-hidden');
 
   private readonly wasEverOpened = signal(false);
 
