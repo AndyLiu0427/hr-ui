@@ -1,5 +1,6 @@
-import { Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, Routes } from '@angular/router';
 import { DocsLayoutComponent } from './docs/docs-layout';
+import { COMPONENT_DOCS } from './generated/component-docs';
 
 // The site's first version served each page at the root (/button, /colors). Keep those links working.
 const MOVED: Record<string, string> = {
@@ -30,7 +31,12 @@ export const routes: Routes = [
       { path: 'docs/typography', loadComponent: () => import('./pages/foundations/typography').then(m => m.TypographyPage) },
       { path: 'docs/icons', loadComponent: () => import('./pages/foundations/icons').then(m => m.IconsPage) },
       { path: 'docs/components', pathMatch: 'full', loadComponent: () => import('./pages/components-index').then(m => m.ComponentsIndexPage) },
-      { path: 'docs/components/:slug', loadComponent: () => import('./pages/component-page').then(m => m.ComponentPage) },
+      {
+        path: 'docs/components/:slug',
+        loadComponent: () => import('./pages/component-page').then(m => m.ComponentPage),
+        // The page renders once, with its content, so nothing below it jumps when the content arrives.
+        resolve: { doc: (route: ActivatedRouteSnapshot) => COMPONENT_DOCS.find(c => c.slug === route.paramMap.get('slug'))?.load() }
+      },
       ...Object.entries(MOVED).map(([path, redirectTo]) => ({ path, redirectTo: '/' + redirectTo })),
       ...OLD_COMPONENT_PATHS.map(path => ({ path, redirectTo: `/docs/components/${path}` })),
       { path: '**', loadComponent: () => import('./pages/not-found').then(m => m.NotFoundPage) }
