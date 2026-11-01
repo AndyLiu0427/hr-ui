@@ -688,8 +688,7 @@ export class PopupService {
   }
 
   private stripHtmlTags(html: string): string {
-    const tmp = document.createElement('DIV');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
+    // An inert document: markup in the text is never loaded or run.
+    return new DOMParser().parseFromString(html, 'text/html').body.textContent ?? '';
   }
 }
