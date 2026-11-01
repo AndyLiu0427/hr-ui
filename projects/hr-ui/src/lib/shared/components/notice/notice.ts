@@ -3,7 +3,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TextComponent } from '../text/text';
 import { IconComponent } from '../icon/icon';
 import { ButtonComponent } from '../button/button';
-import { icons } from 'lucide-angular';
+import type { icons } from 'lucide-angular';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { prefersReducedMotion } from '../../../utils/reduced-motion';
 

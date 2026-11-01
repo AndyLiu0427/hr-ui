@@ -27,11 +27,16 @@ import { DocsHeadingDirective } from '../docs/toc';
       </p>
       <docs-code language="css" title="src/styles.css" [code]="styles" />
 
-      <h2 docsHeading>3. Provide animations and translations</h2>
+      <h2 docsHeading>3. Provide animations, translations and icons</h2>
       <p>
         Components show a few built-in strings, such as "Clear" in a filter or "Select…" in an empty select. They come from
         <code>&#64;ngx-translate/core</code>. hr-ui ships English and Traditional Chinese files that you
         can use as they are or merge into your own.
+      </p>
+      <p>
+        <code>oct-icon</code> draws a Lucide icon by name. Register each name your templates use with
+        <code>provideHrIcons</code>, and only those icons go into your bundle. hr-ui registers the icons its
+        own components draw, so you never list those.
       </p>
       <docs-code title="src/app/app.config.ts" [code]="config" />
 
@@ -63,12 +68,16 @@ export class InstallationPage {
   protected readonly config = `import { ApplicationConfig } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
+import { Plus } from 'lucide-angular';
+import { provideHrIcons } from 'ngx-hr-ui';
 import { of } from 'rxjs';
 import en from 'ngx-hr-ui/i18n/en.json';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAnimations(),
+    // Each Lucide icon your templates name, such as <oct-button icon="Plus">.
+    provideHrIcons({ Plus }),
     provideTranslateService({
       fallbackLang: 'en',
       lang: 'en',

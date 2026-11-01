@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, input, computed } from '@angular/core';
-import { LucideAngularModule, icons } from 'lucide-angular';
+import { ChangeDetectionStrategy, Component, input, computed, inject } from '@angular/core';
+import { LucideAngularModule } from 'lucide-angular';
+import type { icons } from 'lucide-angular';
 import { HrIconComponent, type IconDefinition, Client, Invoice, Onboarding, PayRun, Payslip, Team, Timesheet } from 'hr-icons/angular';
+import { IconRegistry } from './icon-registry';
 
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type IconColor = 'error' | 'success' | 'disabled' | 'primary' | 'neutral';
@@ -25,7 +27,7 @@ export const HR_ICON_OVERRIDES = {
   Timesheet
 } satisfies Record<string, IconDefinition>;
 
-/** Anything `oct-icon` will accept: every lucide name, plus the marks above. */
+/** Anything `oct-icon` will accept: every lucide name, plus the marks above. A lucide name draws only once it is registered. */
 export type OctIconName = keyof typeof icons | keyof typeof HR_ICON_OVERRIDES;
 
 @Component({
@@ -109,11 +111,13 @@ export class IconComponent {
 
   hrIcon = computed(() => HR_ICON_OVERRIDES[this.name() as keyof typeof HR_ICON_OVERRIDES] ?? null);
 
+  private readonly registry = inject(IconRegistry);
+
   iconImg = computed(() => {
     const iconName = this.name();
-    const icon = icons[iconName as keyof typeof icons];
+    const icon = this.registry.get(iconName);
     if (!icon) {
-      console.warn(`Icon "${iconName}" not found in lucide-angular icons`);
+      console.warn(`Icon "${iconName}" is not registered. Import it from lucide-angular and add it with provideHrIcons({ ${iconName} }).`);
     }
     return icon;
   });

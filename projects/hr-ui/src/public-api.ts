@@ -24,6 +24,7 @@ export * from './lib/shared/components/form/field-shell';
 export * from './lib/shared/components/formula/formula';
 export * from './lib/shared/components/ichoice/ichoice';
 export * from './lib/shared/components/icon/icon';
+export * from './lib/shared/components/icon/icon-registry';
 export * from './lib/shared/components/info-card/info-card';
 export * from './lib/shared/components/input-select/input-select';
 export * from './lib/shared/components/input/input';

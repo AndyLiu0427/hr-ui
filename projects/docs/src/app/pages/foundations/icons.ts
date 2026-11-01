@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
-import { icons } from 'lucide-angular';
-import { HR_ICON_OVERRIDES, IconComponent } from 'ngx-hr-ui';
+// The full set comes from lucide's second entry point, a separate file. From the main entry it would
+// share a chunk with the few icons every page registers, and every page would download all of them.
+import { icons } from 'lucide-angular/src/icons';
+import { HR_ICON_OVERRIDES, IconComponent, IconRegistry } from 'ngx-hr-ui';
 import { DocsApiComponent } from '../../docs/docs-api';
 import { DocsCodeComponent } from '../../docs/docs-code';
 import { DocsPageComponent } from '../../docs/docs-page';
@@ -15,7 +17,16 @@ const SHOWN = 240;
   imports: [DocsPageComponent, DocsCodeComponent, DocsApiComponent, DocsHeadingDirective, IconComponent],
   template: `
     <docs-page source="projects/docs/src/app/pages/foundations/icons.ts" title="Icons" description="Every Lucide icon by name, plus HR marks from hr-icons that replace their Lucide namesakes.">
-      <docs-code [code]="usage" />
+      <docs-code language="angular-html" [code]="usage" />
+
+      <h2 docsHeading>Register the icons you use</h2>
+      <p>
+        <code>oct-icon</code> looks a Lucide icon up by name, so each name must be registered first. Only
+        registered icons go into your bundle, which keeps an app from shipping all {{ total }} of them. hr-ui
+        registers the icons its own components draw, and the HR marks need no registration.
+      </p>
+      <docs-code language="angular-ts" title="src/app/app.config.ts" [code]="register" />
+      <p>A lazy route can register its own icons in its <code>providers</code>, so they load with that route.</p>
 
       <h2 docsHeading>HR marks</h2>
       <p>
@@ -34,7 +45,7 @@ const SHOWN = 240;
       </ul>
 
       <h2 docsHeading>All icons</h2>
-      <p>{{ total }} icons from Lucide. Search by name, then click one to copy its tag.</p>
+      <p>{{ total }} icons from Lucide. Search by name, then click one to copy its tag. Remember to register the name.</p>
       <label class="mt-4 flex h-10 items-center gap-2 rounded-lg border border-docs-border bg-docs-subtle px-3 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--primary)]">
         <oct-icon name="Search" [size]="16" class="text-docs-muted" />
         <span class="sr-only">Search icons</span>
@@ -73,6 +84,13 @@ const SHOWN = 240;
 export class IconsPage {
   protected readonly usage = `<oct-icon name="Calendar" />
 <oct-icon name="Payslip" [size]="20" color="primary" />`;
+  protected readonly register = `import { ApplicationConfig } from '@angular/core';
+import { Calendar } from 'lucide-angular';
+import { provideHrIcons } from 'ngx-hr-ui';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideHrIcons({ Calendar })]
+};`;
   protected readonly hrMarks = Object.keys(HR_ICON_OVERRIDES);
   protected readonly total = ALL.length;
   protected readonly shown = SHOWN;
@@ -88,6 +106,8 @@ export class IconsPage {
   private timer?: ReturnType<typeof setTimeout>;
 
   constructor() {
+    // This page shows every icon, so it registers the full set. It loads only with this page.
+    inject(IconRegistry).add(icons);
     inject(DestroyRef).onDestroy(() => clearTimeout(this.timer));
   }
 

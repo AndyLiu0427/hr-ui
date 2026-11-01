@@ -36,9 +36,19 @@ Import Tailwind, then hr-ui, in your global stylesheet:
 @source "../node_modules/ngx-hr-ui";
 ```
 
-Then provide animations and the built-in strings (English and Traditional Chinese ship in
-`ngx-hr-ui/i18n/`). The [Installation guide](https://andyliu0427.github.io/hr-ui/docs/installation)
-has the full `app.config.ts`.
+Then provide animations, the built-in strings (English and Traditional Chinese ship in
+`ngx-hr-ui/i18n/`) and the icons your templates name. `oct-icon` draws a Lucide icon by name, and only
+registered icons go into your bundle:
+
+```ts
+import { Plus } from 'lucide-angular';
+import { provideHrIcons } from 'ngx-hr-ui';
+
+// in app.config.ts providers
+provideHrIcons({ Plus })
+```
+
+The [Installation guide](https://andyliu0427.github.io/hr-ui/docs/installation) has the full `app.config.ts`.
 
 ## Use
 
