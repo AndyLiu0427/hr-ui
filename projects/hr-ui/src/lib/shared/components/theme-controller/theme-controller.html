@@ -2,14 +2,14 @@
   @case ('list') {
     <button (click)="toggleTheme($event)"
             class="flex items-center gap-3 w-full px-4 py-4 hover:bg-hr-neutral-800 transition-colors"
-            [attr.aria-label]="getAriaLabel()"
+            [attr.aria-label]="accessibleName() | translate"
             [disabled]="disabled()">
       <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-hr-neutral-800">
         <oct-icon [name]="themeIcon()" size="sm"
                   class="text-hr-neutral-400 transition-transform duration-500 ease-out"
                   [style.transform]="iconRotation()" />
       </div>
-      <oct-text color="1" variant="md" class="flex-1 text-left">{{ themeLabel() }}</oct-text>
+      <oct-text color="1" variant="md" class="flex-1 text-left">{{ themeLabel() | translate }}</oct-text>
     </button>
   }
   @case ('button') {
@@ -21,13 +21,13 @@
         [shape]="iconOnly() ? 'round' : 'square'"
         [disabled]="disabled()"
         [icon]="themeIcon()"
-        [ariaLabel]="getAriaLabel()"
-        [attr.title]="themeLabel()"
+        [ariaLabel]="accessibleName() | translate"
+        [attr.title]="themeLabel() | translate"
         (buttonClick)="cycleTheme($event)"
       >
         @if (!iconOnly() && showLabel()) {
           <span class="truncate">
-            {{ themeLabel() }}
+            {{ themeLabel() | translate }}
           </span>
         }
       </oct-button>
@@ -37,9 +37,7 @@
     <div [class]="containerClasses">
       <div class="flex items-center gap-3">
         @if (showLabel()) {
-          <label class="text-sm font-medium text-foreground">
-            Theme
-          </label>
+          <span class="text-sm font-medium text-1">{{ 'THEME.LABEL' | translate }}</span>
         }
 
         <oct-button
@@ -49,12 +47,12 @@
           [shape]="'round'"
           [disabled]="disabled()"
           [icon]="themeIcon()"
-          [ariaLabel]="getAriaLabel()"
-          [attr.title]="themeLabel()"
+          [ariaLabel]="accessibleName() | translate"
+          [attr.title]="themeLabel() | translate"
           (buttonClick)="toggleTheme($event)">
 
           <!-- Screen reader text -->
-          <span class="sr-only">{{ themeLabel() }}</span>
+          <span class="sr-only">{{ themeLabel() | translate }}</span>
         </oct-button>
       </div>
     </div>
@@ -67,6 +65,6 @@
   aria-live="polite"
   aria-atomic="true">
   @if (isTransitioning()) {
-    Switching to {{ themeLabel().toLowerCase() }}
+    {{ themeLabel() | translate }}
   }
 </div>

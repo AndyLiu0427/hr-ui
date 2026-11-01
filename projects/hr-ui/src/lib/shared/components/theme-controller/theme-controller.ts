@@ -1,5 +1,7 @@
 import { Component, ChangeDetectionStrategy, computed, inject, input, output, signal, DOCUMENT } from '@angular/core';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 import { ThemeService } from '../../../core/services/theme.service';
 import { ButtonComponent } from '../button/button';
 import { IconComponent } from '../icon/icon';
@@ -23,7 +25,7 @@ export interface ThemeControllerProps {
   templateUrl: './theme-controller.html',
   styleUrl: './theme-controller.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ButtonComponent, IconComponent, TextComponent]
+  imports: [TranslateModule, ButtonComponent, IconComponent, TextComponent]
 })
 export class ThemeControllerComponent {
   private readonly document = inject(DOCUMENT);
@@ -53,10 +55,10 @@ export class ThemeControllerComponent {
     return this.themeService.themeMode();
   });
   readonly isTransitioning = computed(() => this.themeService.isTransitioning());
-  readonly themeLabel = computed(() => {
-    const theme = this.currentTheme();
-    return theme === 'dark' ? 'Dark Mode' : 'Light Mode';
-  });
+  /** i18n key of the current mode, such as "Dark mode". */
+  protected readonly themeLabel = computed(() => (this.currentTheme() === 'dark' ? 'THEME.DARK' : 'THEME.LIGHT'));
+  /** i18n key of the accessible name. It starts with the visible mode, so voice control can say it. */
+  protected readonly accessibleName = computed(() => (this.currentTheme() === 'dark' ? 'THEME.SWITCH_FROM_DARK' : 'THEME.SWITCH_FROM_LIGHT'));
   readonly themeIcon = computed(() => {
     const theme = this.currentTheme();
     return theme === 'dark' ? 'Moon' : 'Sun';
@@ -135,15 +137,6 @@ export class ThemeControllerComponent {
     if (this.disabled()) return;
 
     this.toggleTheme(event);
-  }
-
-  /**
-   * Get ARIA label for accessibility
-   */
-  getAriaLabel(): string {
-    const current = this.currentTheme();
-    const opposite = current === 'dark' ? 'light' : 'dark';
-    return `Switch to ${opposite} mode. Current: ${this.themeLabel()}`;
   }
 
   /**

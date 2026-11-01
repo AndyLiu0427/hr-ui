@@ -145,7 +145,6 @@ export class TextareaComponent implements FormValueControl<string> {
       'focus:border-transparent',
       'focus:outline-2',
       'focus:outline-primary',
-      'focus:outline-offset-transparent',
       'resize-none'
     ];
 
@@ -154,7 +153,7 @@ export class TextareaComponent implements FormValueControl<string> {
     } else if (this.disabled()) {
       classes.push('disabled:border-hr-neutral-800', 'disabled:bg-hr-neutral-900', 'disabled:text-disabled', 'cursor-not-allowed');
     } else if (!this.value()) {
-      classes.push('text-3', 'focus:!border-transparent', 'focus:outline-2', 'focus:outline-primary', 'focus:outline-offset-transparent');
+      classes.push('text-3', 'focus:!border-transparent', 'focus:outline-2', 'focus:outline-primary');
     }
 
     return classes.join(' ');

@@ -38,5 +38,12 @@
   "TABLE_COMPONENT": {
     "ACTIONS": "操作",
     "NO_ACTIONS": "沒有可用的操作"
+  },
+  "THEME": {
+    "LABEL": "主題",
+    "LIGHT": "淺色模式",
+    "DARK": "深色模式",
+    "SWITCH_FROM_LIGHT": "淺色模式。切換到深色模式。",
+    "SWITCH_FROM_DARK": "深色模式。切換到淺色模式。"
   }
 }

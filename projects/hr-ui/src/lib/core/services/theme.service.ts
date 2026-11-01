@@ -1,15 +1,6 @@
 import { computed, effect, signal, inject, CSP_NONCE, DOCUMENT, Service } from '@angular/core';
 
 /**
- * Theme configuration interface
- */
-export interface ThemeConfig {
-  name: string;
-  displayName: string;
-  variables: Record<string, string>;
-}
-
-/**
  * Available theme types
  */
 export type ThemeMode = 'light' | 'dark';
@@ -48,19 +39,6 @@ export class ThemeService {
     isTransitioning: this._isTransitioning()
   }));
 
-  // Theme configurations
-  private readonly themeConfigs: Record<'light' | 'dark', ThemeConfig> = {
-    light: {
-      name: 'light',
-      displayName: 'Light Mode',
-      variables: {}
-    },
-    dark: {
-      name: 'dark',
-      displayName: 'Dark Mode',
-      variables: {}
-    }
-  };
 
   constructor() {
     this.initializeTheme();
@@ -219,33 +197,11 @@ export class ThemeService {
     this.setTheme(currentMode === 'light' ? 'dark' : 'light');
   }
 
-  /**
-   * Get current theme configuration
-   */
-  getCurrentThemeConfig(): ThemeConfig {
-    return this.themeConfigs[this._themeMode()];
-  }
 
   /**
    * Check if current theme is dark
    */
   isDarkMode(): boolean {
     return this._themeMode() === 'dark';
-  }
-
-  /**
-   * Get theme icon name for UI
-   */
-  getThemeIcon(): string {
-    const mode = this._themeMode();
-    return mode === 'dark' ? 'Moon' : 'Sun';
-  }
-
-  /**
-   * Get theme display label
-   */
-  getThemeLabel(): string {
-    const mode = this._themeMode();
-    return mode === 'dark' ? 'Dark Mode' : 'Light Mode';
   }
 }

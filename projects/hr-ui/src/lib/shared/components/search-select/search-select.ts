@@ -383,7 +383,7 @@ export class SearchSelectComponent implements AfterViewInit {
     if (this.hasError()) {
       classes.push('!border-transparent', 'outline-2', '!outline-hr-red-500');
     } else if (this.isOpen()) {
-      classes.push('!border-transparent', 'outline-2', 'outline-primary', 'outline-offset-transparent');
+      classes.push('!border-transparent', 'outline-2', 'outline-primary');
     }
 
     return classes.join(' ');

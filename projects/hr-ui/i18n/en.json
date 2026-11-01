@@ -38,5 +38,12 @@
   "TABLE_COMPONENT": {
     "ACTIONS": "Actions",
     "NO_ACTIONS": "No actions available"
+  },
+  "THEME": {
+    "LABEL": "Theme",
+    "LIGHT": "Light mode",
+    "DARK": "Dark mode",
+    "SWITCH_FROM_LIGHT": "Light mode. Switch to dark mode.",
+    "SWITCH_FROM_DARK": "Dark mode. Switch to light mode."
   }
 }

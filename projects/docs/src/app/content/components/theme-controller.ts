@@ -19,8 +19,8 @@ export const doc: ComponentDoc = {
     }
   ],
   accessibility: [
-    'The button is named after what it does, such as "Switch to dark mode. Current: Light Mode".',
-    'A polite live region announces the switch, such as "Switching to dark mode". With reduced motion, the circular reveal is skipped.'
+    'The button name starts with the mode on screen, then says what the button does, such as "Light mode. Switch to dark mode." The text comes from the i18n files.',
+    'A polite live region announces the new mode, such as "Dark mode". With reduced motion, the circular reveal is skipped.'
   ],
   api: ['ThemeControllerComponent']
 };

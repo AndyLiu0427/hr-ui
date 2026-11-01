@@ -618,7 +618,7 @@ export class SelectComponent<T extends SelectChangeValue = SelectChangeValue> im
         ? 'cursor-pointer'
         : 'cursor-pointer hover:border-primary-300';
     const error = this.hasError() && !bare ? '!border-transparent outline-2 !outline-hr-red-500' : '';
-    const open = this.isOpen() && !bare ? '!border-transparent outline-2 outline-primary outline-offset-transparent' : '';
+    const open = this.isOpen() && !bare ? '!border-transparent outline-2 outline-primary' : '';
 
     return [base, size, state, error, open, this.bareFocusRing()].filter(Boolean).join(' ');
   });
