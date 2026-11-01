@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed, ChangeDetectionStrategy, ElementRef, viewChild, effect } from '@angular/core';
+import { Component, input, output, signal, computed, ChangeDetectionStrategy, ElementRef, viewChild, effect, untracked } from '@angular/core';
 
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -65,26 +65,30 @@ export interface SliderInputs {
         (keydown)="onKeyDown($event)"
         (click)="onSliderClick($event)"
       >
+        <!-- The bars and knob glide for a click or arrow key, and follow the pointer exactly while dragged. -->
         <!-- Left progress bar -->
         <div
-          class="absolute top-1.5 left-0 h-2 rounded-full transition-all duration-300 ease-out"
+          class="absolute top-1.5 left-0 h-2 rounded-full transition-[width] duration-150 ease-[var(--ease-smooth-out)] motion-reduce:transition-none"
           [class.bg-primary-solid]="leftColor() === 'primary'"
           [class.bg-hr-neutral-800]="leftColor() === 'neutral'"
           [style.width.%]="displayLeftPercent()"
+          [style.transition]="isDragging() ? 'none' : null"
         ></div>
 
         <!-- Right progress bar -->
         <div
-          class="absolute top-1.5 right-0 h-2 rounded-full transition-all duration-300 ease-out"
+          class="absolute top-1.5 right-0 h-2 rounded-full transition-[width] duration-150 ease-[var(--ease-smooth-out)] motion-reduce:transition-none"
           [class.bg-primary-solid]="rightColor() === 'primary'"
           [class.bg-hr-neutral-800]="rightColor() === 'neutral'"
           [style.width.%]="displayRightPercent()"
+          [style.transition]="isDragging() ? 'none' : null"
         ></div>
 
         <!-- Draggable knob -->
         <div
           #knob
-          class="absolute top-0 h-5 w-5 rounded-full transition-all duration-300 ease-out"
+          class="absolute top-0 h-5 w-5 rounded-full transition-[left] duration-150 ease-[var(--ease-smooth-out)] motion-reduce:transition-none"
+          [style.transition]="isDragging() ? 'none' : null"
           [class.cursor-grab]="!isDragging()"
           [class.cursor-grabbing]="isDragging()"
           [class.bg-primary-solid]="leftColor() === 'primary'"
@@ -194,10 +198,12 @@ export class SliderComponent {
       this.percentageChange.emit(value);
     });
 
-    // Clean up on drag end
+    // The user's value shows until the caller's value comes back. Clearing it on release sent the
+    // knob back to the old value until the debounced change arrived, then forward again.
     effect(() => {
-      if (!this.isDragging()) {
-        this.draggingLeftPercent.set(null);
+      this.leftPercent();
+      if (!untracked(this.isDragging)) {
+        untracked(() => this.draggingLeftPercent.set(null));
       }
     });
   }
@@ -277,7 +283,6 @@ export class SliderComponent {
     }
 
     this.isDragging.set(false);
-    this.draggingLeftPercent.set(null);
 
     // Remove global listeners
     document.removeEventListener('mousemove', this.onMouseMove);
@@ -291,7 +296,6 @@ export class SliderComponent {
     }
 
     this.isDragging.set(false);
-    this.draggingLeftPercent.set(null);
 
     // Remove global listeners
     document.removeEventListener('touchmove', this.onTouchMove);

@@ -343,8 +343,9 @@ export class SearchSelectComponent implements AfterViewInit {
       'bg-secondary',
       'border',
       'border-primary',
-      'transition-all',
-      'duration-300',
+      'transition-colors',
+      'duration-150',
+      'ease-out',
       'select-none',
       'px-2',
       'text-sm',
@@ -369,7 +370,7 @@ export class SearchSelectComponent implements AfterViewInit {
     return classes.join(' ');
   });
 
-  readonly menuClasses = computed(() => 'bg-secondary border border-primary rounded-xl shadow-hr-sm overflow-hidden');
+  readonly menuClasses = computed(() => 'oct-overlay-enter bg-secondary border border-primary rounded-xl shadow-hr-sm overflow-hidden');
 
   private readonly wasEverOpened = signal(false);
 

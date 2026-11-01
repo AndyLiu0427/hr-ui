@@ -63,7 +63,7 @@
         } @else {
           <oct-icon
             name="ChevronDown"
-            [class]="'transition-all duration-300 origin-center' + (isDisabled() ? ' !text-hr-neutral-600' : ' !text-3')"
+            [class]="'transition-transform duration-150 ease-out motion-reduce:transition-none origin-center' + (isDisabled() ? ' !text-hr-neutral-600' : ' !text-3')"
             [class.rotate-180]="isOpen()"
           />
         }
@@ -94,7 +94,7 @@
       <input
         #searchInput
         type="text"
-        class="w-full px-2 py-1.5 text-sm bg-transparent text-1 outline-none placeholder:text-3"
+        class="w-full px-2 py-1.5 text-base sm:text-sm bg-transparent text-1 outline-none placeholder:text-3"
         [placeholder]="searchPlaceholder()"
         [value]="searchQuery()"
         (input)="onSearchInput($event)"

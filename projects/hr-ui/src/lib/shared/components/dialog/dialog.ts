@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnDestroy, effect, input, output, computed, signal, viewChild, ElementRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, DestroyRef, OnDestroy, effect, inject, input, output, computed, signal, viewChild, ElementRef } from '@angular/core';
 import { ButtonComponent } from '../button/button';
 
 /** RWD-optimized size classes: mobile-first with progressive enhancement */
@@ -27,16 +27,25 @@ const SIZE_CLASSES: Record<string, string> = {
   },
   template: `
     @if (isOpen()) {
-      <div class="fixed inset-0 z-50 bg-black/50" (click)="dismiss()"></div>
+      <div
+        class="fixed inset-0 z-50 bg-black/50"
+        animate.enter="dialog-backdrop-enter"
+        animate.leave="dialog-backdrop-leave"
+        (click)="dismiss()"
+      ></div>
 
       <div class="dialog-wrapper fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
         <div
           #container
           role="dialog"
           aria-modal="true"
+          [attr.aria-label]="ariaLabel() || null"
+          [attr.aria-labelledby]="ariaLabel() ? null : titleId()"
           tabindex="-1"
           (keydown.tab)="holdFocus($event)"
           (keydown.shift.tab)="holdFocus($event)"
+          animate.enter="dialog-panel-enter"
+          animate.leave="dialog-panel-leave"
           class="dialog-container relative flex flex-col rounded-lg sm:rounded-xl w-full bg-secondary border border-primary shadow-hr-sm overflow-hidden"
           [class]="containerClass()"
           [style.max-width]="customMaxWidth()"
@@ -71,6 +80,45 @@ const SIZE_CLASSES: Record<string, string> = {
 
       .dialog-container {
         pointer-events: auto;
+      }
+
+      /*
+       * Enter: the backdrop fades in and the panel grows from 96% as it fades in. The exit is
+       * shorter. A leaving dialog takes no clicks, so a second click cannot close it twice.
+       */
+      .dialog-backdrop-enter {
+        animation: dialog-fade-in 200ms var(--ease-smooth-out);
+      }
+
+      .dialog-panel-enter {
+        animation: dialog-panel-in 200ms var(--ease-smooth-out);
+      }
+
+      .dialog-backdrop-leave,
+      .dialog-panel-leave {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 150ms var(--ease-smooth-out);
+      }
+
+      .dialog-panel-leave {
+        transform: scale(0.96);
+        transition:
+          opacity 150ms var(--ease-smooth-out),
+          transform 150ms var(--ease-smooth-out);
+      }
+
+      @keyframes dialog-fade-in {
+        from {
+          opacity: 0;
+        }
+      }
+
+      @keyframes dialog-panel-in {
+        from {
+          opacity: 0;
+          transform: scale(0.96);
+        }
       }
 
       /*
@@ -120,6 +168,14 @@ const SIZE_CLASSES: Record<string, string> = {
         .dialog-container.is-shaking {
           animation: none;
         }
+
+        .dialog-panel-enter {
+          animation-name: dialog-fade-in;
+        }
+
+        .dialog-panel-leave {
+          transform: none;
+        }
       }
     `
   ]
@@ -140,6 +196,10 @@ export class DialogComponent implements OnDestroy {
   persistent = input<boolean>(false);
   /** What the close control announces. Overridable, because a dialog may end in more than closing. */
   closeLabel = input<string>('Close dialog');
+  /** The dialog's name for screen readers, when it has no oct-dialog-header to take it from. */
+  ariaLabel = input<string>();
+  /** Set by oct-dialog-header, so a dialog with a visible title is named by it. */
+  readonly titleId = signal<string | null>(null);
 
   openChange = output<boolean>();
   dialogClose = output<void>();
@@ -270,13 +330,27 @@ export class DialogComponent implements OnDestroy {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex items-start justify-between relative pt-4 px-4 sm:pt-4 sm:px-6">
-      <div class="text-1 text-lg sm:text-lg font-semibold flex-1 pr-8">
+      <div [id]="titleId" class="text-1 text-lg sm:text-lg font-semibold flex-1 pr-8">
         <ng-content></ng-content>
       </div>
     </div>
   `
 })
-export class DialogHeaderComponent {}
+export class DialogHeaderComponent {
+  private static nextId = 0;
+  protected readonly titleId = `oct-dialog-title-${DialogHeaderComponent.nextId++}`;
+
+  constructor() {
+    // Through DI, so a header inside the caller's own component still names its dialog.
+    const dialog = inject(DialogComponent, { optional: true });
+    dialog?.titleId.set(this.titleId);
+    inject(DestroyRef).onDestroy(() => {
+      if (dialog?.titleId() === this.titleId) {
+        dialog.titleId.set(null);
+      }
+    });
+  }
+}
 
 export type DialogContentPadding = 'none' | 'md';
 

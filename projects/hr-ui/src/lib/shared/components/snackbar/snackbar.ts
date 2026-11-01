@@ -9,13 +9,19 @@ import {
   OnDestroy,
   ElementRef,
   inject,
-  afterRenderEffect
+  afterRenderEffect,
+  viewChild,
+  DOCUMENT
 } from '@angular/core';
 
 import { IconComponent } from '../icon/icon';
 import { SnackbarType, SnackbarPosition, SnackbarSize } from './snackbar.interface';
 import { trigger, transition, style, animate, state, AnimationEvent } from '@angular/animations';
 import { ButtonComponent } from '../button/button';
+import { prefersReducedMotion } from '../../../utils/reduced-motion';
+
+/** --ease-smooth-out. The animations package cannot read CSS variables, so the curve is spelled out. */
+const SMOOTH_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
 @Component({
   selector: 'oct-snackbar',
@@ -39,10 +45,10 @@ import { ButtonComponent } from '../button/button';
           opacity: 1
         })
       ),
-      transition('void => in', [animate('300ms cubic-bezier(0.4, 0, 0.2, 1)')]),
+      transition('void => in', [animate(`250ms ${SMOOTH_OUT}`)]),
       transition('in => void', [
         animate(
-          '200ms cubic-bezier(0.4, 0, 1, 1)',
+          `150ms ${SMOOTH_OUT}`,
           style({
             transform: '{{slideDirection}}',
             opacity: 0
@@ -53,7 +59,8 @@ import { ButtonComponent } from '../button/button';
   ]
 })
 export class SnackbarComponent implements OnInit, OnDestroy {
-  private elementRef = inject(ElementRef);
+  private readonly document = inject(DOCUMENT);
+  private readonly box = viewChild<ElementRef<HTMLElement>>('box');
 
   readonly message = input.required<string>();
   readonly description = input<string>();
@@ -76,9 +83,14 @@ export class SnackbarComponent implements OnInit, OnDestroy {
   readonly animationState = signal<'void' | 'in'>('void');
   readonly copied = signal(false);
 
-  private dismissAnimationFrameId?: number;
-  private dismissStartTime?: number;
+  private dismissTimeoutId?: ReturnType<typeof setTimeout>;
+  /** Time left to read before it closes itself; null when it does not close itself. */
+  private remainingMs: number | null = null;
+  private timerStartedAt = 0;
+  private hovered = false;
+  private focusWithin = false;
   private copiedTimeoutId?: ReturnType<typeof setTimeout>;
+  private readonly onVisibilityChange = (): void => this.syncDismissTimer();
 
   constructor() {
     // Measure height after render using afterRenderEffect read phase
@@ -101,8 +113,11 @@ export class SnackbarComponent implements OnInit, OnDestroy {
       'shadow-hr-sm',
       'backdrop-blur-sm',
       'border',
-      'transition-all',
-      'duration-300',
+      // A restack moves the box with translate (see snackbarStyle), so only translate animates.
+      'transition-[translate]',
+      'duration-250',
+      'ease-[var(--ease-smooth-out)]',
+      'motion-reduce:transition-none',
       'cursor-pointer',
       'select-none',
       'min-w-80'
@@ -114,13 +129,13 @@ export class SnackbarComponent implements OnInit, OnDestroy {
       lg: ['px-5', 'py-4', 'gap-4']
     };
 
-    // Base position without offset (offset will be applied via style)
+    // Base position without offset (offset and centring are applied via style)
     const positionClasses = {
       'top-left': ['left-4'],
-      'top-center': ['left-1/2', '-translate-x-1/2'],
+      'top-center': ['left-1/2'],
       'top-right': ['right-4'],
       'bottom-left': ['left-4'],
-      'bottom-center': ['left-1/2', '-translate-x-1/2'],
+      'bottom-center': ['left-1/2'],
       'bottom-right': ['right-4']
     };
 
@@ -137,21 +152,23 @@ export class SnackbarComponent implements OnInit, OnDestroy {
     return classes.join(' ');
   });
 
+  /**
+   * The edge stays fixed; the stack offset is a translate, so a restack animates without layout.
+   * translate also does the centring, which a -translate-x-1/2 class would fight over.
+   */
   readonly snackbarStyle = computed(() => {
     const position = this.position();
-    const offset = this.offset();
+    const x = position.endsWith('center') ? '-50%' : '0px';
 
-    // Apply offset based on position (top or bottom)
     if (position.includes('top')) {
-      return { top: `${16 + offset}px` };
+      return { top: '16px', translate: `${x} ${this.offset()}px` };
     } else {
-      return { bottom: `${16 + offset}px` };
+      return { bottom: '16px', translate: `${x} ${-this.offset()}px` };
     }
   });
 
   private measureHeight(): void {
-    const element = this.elementRef.nativeElement as HTMLElement;
-    const snackbarElement = element.querySelector('[role="alert"]') as HTMLElement;
+    const snackbarElement = this.box()?.nativeElement;
 
     if (snackbarElement && this.isVisible()) {
       const height = snackbarElement.offsetHeight;
@@ -216,6 +233,9 @@ export class SnackbarComponent implements OnInit, OnDestroy {
 
   readonly slideDirection = computed(() => {
     const position = this.position();
+    if (prefersReducedMotion()) {
+      return 'none';
+    }
     if (position.includes('top')) {
       return 'translateY(-100%)';
     } else {
@@ -243,13 +263,31 @@ export class SnackbarComponent implements OnInit, OnDestroy {
     });
 
     if (!this.persistent() && this.duration() > 0) {
-      this.startDismissTimer();
+      this.remainingMs = this.duration();
+      this.document.addEventListener('visibilitychange', this.onVisibilityChange);
+      this.syncDismissTimer();
     }
   }
 
   ngOnDestroy(): void {
-    this.clearDismissTimer();
+    this.stopDismissTimer();
+    this.document.removeEventListener('visibilitychange', this.onVisibilityChange);
     clearTimeout(this.copiedTimeoutId);
+  }
+
+  setHovered(hovered: boolean): void {
+    this.hovered = hovered;
+    this.syncDismissTimer();
+  }
+
+  setFocusWithin(focused: boolean): void {
+    this.focusWithin = focused;
+    this.syncDismissTimer();
+  }
+
+  /** Focus moving between the box's own buttons still counts as inside. */
+  onFocusOut(event: FocusEvent): void {
+    this.setFocusWithin(!!this.box()?.nativeElement.contains(event.relatedTarget as Node | null));
   }
 
   /** The event is taken so the close button's click does not bubble to the box and copy as well. */
@@ -272,7 +310,7 @@ export class SnackbarComponent implements OnInit, OnDestroy {
 
   /** Copies what the box says: it carries `select-none`, so there is no selecting the text by hand. */
   async onSnackbarClick(): Promise<void> {
-    this.clearDismissTimer();
+    this.stopDismissTimer();
     try {
       await navigator.clipboard.writeText([this.message(), this.description()].filter(Boolean).join('\n'));
     } catch {
@@ -284,31 +322,30 @@ export class SnackbarComponent implements OnInit, OnDestroy {
     this.copiedTimeoutId = setTimeout(() => this.copied.set(false), 1500);
   }
 
-  private startDismissTimer(): void {
-    this.clearDismissTimer();
-    this.dismissStartTime = performance.now();
-    const duration = this.duration();
+  /**
+   * The clock runs only while the reader could be reading: it stops while the pointer or focus is on
+   * the box, and while the tab is in the background, then resumes with the time that was left.
+   */
+  private syncDismissTimer(): void {
+    if (this.remainingMs === null) return;
 
-    const checkDismissTime = (currentTime: number) => {
-      if (!this.dismissStartTime) return;
-
-      const elapsed = currentTime - this.dismissStartTime;
-
-      if (elapsed >= duration) {
+    const paused = this.hovered || this.focusWithin || this.document.hidden;
+    if (paused && this.dismissTimeoutId !== undefined) {
+      clearTimeout(this.dismissTimeoutId);
+      this.dismissTimeoutId = undefined;
+      this.remainingMs -= Date.now() - this.timerStartedAt;
+    } else if (!paused && this.dismissTimeoutId === undefined) {
+      this.timerStartedAt = Date.now();
+      this.dismissTimeoutId = setTimeout(() => {
+        this.stopDismissTimer();
         this.onDismiss();
-      } else {
-        this.dismissAnimationFrameId = requestAnimationFrame(checkDismissTime);
-      }
-    };
-
-    this.dismissAnimationFrameId = requestAnimationFrame(checkDismissTime);
+      }, Math.max(0, this.remainingMs));
+    }
   }
 
-  private clearDismissTimer(): void {
-    if (this.dismissAnimationFrameId) {
-      cancelAnimationFrame(this.dismissAnimationFrameId);
-      this.dismissAnimationFrameId = undefined;
-    }
-    this.dismissStartTime = undefined;
+  private stopDismissTimer(): void {
+    clearTimeout(this.dismissTimeoutId);
+    this.dismissTimeoutId = undefined;
+    this.remainingMs = null;
   }
 }

@@ -169,7 +169,8 @@ export class BaseOverlayService {
       .flexibleConnectedTo(origin)
       .withPositions(this.getDefaultPositions())
       .withFlexibleDimensions(false)
-      .withPush(false);
+      .withPush(false)
+      .withTransformOriginOn('.oct-overlay-enter');
 
     const defaultConfig: OverlayConfig = {
       positionStrategy,

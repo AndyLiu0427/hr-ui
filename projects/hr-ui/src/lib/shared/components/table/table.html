@@ -2,7 +2,7 @@
   <div class="relative">
     <div
       #tableContainer
-      class="hide-scrollbars relative border border-primary rounded-lg bg-secondary transition-all duration-300"
+      class="hide-scrollbars relative border border-primary rounded-lg bg-secondary"
       [class.overflow-auto]="!loading() && paginatedData().length > 0"
       [class.overflow-x-auto]="!loading() && paginatedData().length === 0"
       [class.overflow-y-hidden]="!loading() && paginatedData().length === 0"
@@ -28,7 +28,7 @@
         [style.min-width.px]="tableMinWidth()"
       >
         <thead
-          class="sticky top-0 z-5 transition-color duration-300 bg-secondary shadow-[inset_0_-1px_0_theme(colors.neutral.800)]"
+          class="sticky top-0 z-5 bg-secondary shadow-[inset_0_-1px_0_theme(colors.neutral.800)]"
           [class.min-h-10]="!dense()"
           [class.min-h-8]="dense()"
         >
@@ -54,6 +54,7 @@
               [style.z-index]="column.zIndex || (column.fixed ? 1 : 'auto')"
               [class]="getHeaderClass(column)"
               [title]="!isSelectionColumn(column) ? (column.label | translate) : ''"
+              [attr.aria-sort]="isColumnSortable(column) ? ariaSort(column.key) : null"
             >
               @if (isSelectionColumn(column)) {
               <div class="flex items-center justify-center">
@@ -66,6 +67,29 @@
                 </oct-checkbox>
                 }
               </div>
+              } @else if (isColumnSortable(column)) {
+              <button
+                type="button"
+                class="group/sort flex w-full min-w-0 items-start gap-2 rounded-sm cursor-pointer [text-align:inherit] oct-focus-ring"
+                [class.justify-start]="!column.align || column.align === 'left'"
+                [class.justify-center]="column.align === 'center'"
+                [class.justify-end]="column.align === 'right'"
+                (click)="sort(column.key)"
+              >
+                <oct-text color="2" variant="xs" weight="medium" [truncate]="false" [attr.data-header-label]="column.key"
+                  >{{ column.label | translate }}</oct-text
+                >
+                <!-- The arrow is drawn only where it says something: on the column actually being
+                     sorted, or on the one under the pointer or keyboard focus. A per-column pair of
+                     chevrons at rest is one piece of furniture per column and says nothing about the sort. -->
+                <oct-icon
+                  [name]="getSortIcon(column.key)"
+                  size="sm"
+                  aria-hidden="true"
+                  class="shrink-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible/sort:opacity-100 group-hover/sort:text-primary"
+                  [class.opacity-0]="getSortDirection(column.key) === null"
+                />
+              </button>
               } @else {
               <div
                 class="flex min-w-0 items-start gap-2"
@@ -76,19 +100,6 @@
                 <oct-text color="2" variant="xs" weight="medium" [truncate]="false" [attr.data-header-label]="column.key"
                   >{{ column.label | translate }}</oct-text
                 >
-
-                @if (sortable() && column.sortable !== false) {
-                <!-- The arrow is drawn only where it says something: on the column actually being
-                     sorted, or on the one under the pointer. A per-column pair of chevrons at rest
-                     is one piece of furniture per column and says nothing about the current sort. -->
-                <oct-icon
-                  [name]="getSortIcon(column.key)"
-                  size="sm"
-                  class="shrink-0 cursor-pointer transition-opacity duration-150 group-hover:opacity-100 hover:text-primary"
-                  [class.opacity-0]="getSortDirection(column.key) === null"
-                  (click)="sort(column.key)"
-                />
-                }
               </div>
               }
               <!-- Column resize handle -->
@@ -107,11 +118,11 @@
           </tr>
         </thead>
 
-        <tbody class="transition-all duration-300">
+        <tbody>
           @for (row of paginatedData(); track trackByRow($index, row); let
           isEven = $even; let isLast = $last; let rowIndex = $index) {
           <tr
-            class="group/row border-primary transition-all duration-300"
+            class="group/row border-primary"
             [class.border-b]="!isLast"
             [class.bg-hr-neutral-900]="striped() && isEven"
             [class.cursor-pointer]="clickableRows()"
@@ -262,7 +273,7 @@
                   [attr.inputmode]="column.editInteger ? 'numeric' : 'decimal'"
                   [attr.min]="column.editMin"
                   [attr.step]="column.editStep ?? (column.editInteger ? '1' : 'any')"
-                  class="w-full min-w-0 bg-transparent border-none outline-none text-1 text-sm tabular-nums py-0.5 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                  class="w-full min-w-0 bg-transparent border-none outline-none text-1 text-base sm:text-sm tabular-nums py-0.5 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                   [class.text-right]="column.align === 'right'"
                   [class.text-center]="column.align === 'center'"
                 />
@@ -299,7 +310,7 @@
                   (blur)="commitEdit(rowIndex, column, row)"
                   (keydown)="onEditKeydown($event, rowIndex, column, row)"
                   (click)="$event.stopPropagation()"
-                  class="w-full min-w-0 bg-transparent border-none outline-none text-1 text-sm py-0.5"
+                  class="w-full min-w-0 bg-transparent border-none outline-none text-1 text-base sm:text-sm py-0.5"
                   [class.text-right]="column.align === 'right'"
                   [class.text-center]="column.align === 'center'"
                 />
@@ -342,9 +353,9 @@
         </tbody>
 
         @if (footerTemplate(); as template) {
-        <tfoot class="sticky bottom-0 z-5 outline outline-hr-neutral-800 transition-color duration-300">
+        <tfoot class="sticky bottom-0 z-5 outline outline-hr-neutral-800">
           <tr>
-            <td [attr.colspan]="enhancedColumns().length" class="p-2 bg-secondary transition-color duration-300">
+            <td [attr.colspan]="enhancedColumns().length" class="p-2 bg-secondary">
               <ng-container
                 [ngTemplateOutlet]="template"
                 [ngTemplateOutletContext]="{

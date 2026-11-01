@@ -1,4 +1,4 @@
-import { computed, effect, signal, inject, DOCUMENT, Service } from '@angular/core';
+import { computed, effect, signal, inject, CSP_NONCE, DOCUMENT, Service } from '@angular/core';
 
 /**
  * Theme configuration interface
@@ -30,6 +30,7 @@ export interface ThemeState {
 @Service()
 export class ThemeService {
   private readonly document = inject(DOCUMENT);
+  private readonly nonce = inject(CSP_NONCE, { optional: true });
   private readonly storageKey = 'app-theme';
 
   // Signals for reactive state management
@@ -103,6 +104,8 @@ export class ThemeService {
       return;
     }
 
+    const freeze = this.freezeTransitions();
+
     // Remove both classes first
     root.classList.remove('light', 'dark');
 
@@ -111,6 +114,12 @@ export class ThemeService {
 
     // Also set data-theme for backward compatibility (optional)
     root.setAttribute('data-theme', theme);
+
+    if (freeze) {
+      // Style the new theme now, while the freeze applies; the next frame lets transitions back in.
+      void root.offsetHeight;
+      freeze.view.requestAnimationFrame(() => freeze.style.remove());
+    }
 
     // Update theme-color meta tag for mobile browsers
     this.updateThemeColorMeta(theme);
@@ -121,6 +130,24 @@ export class ThemeService {
         detail: { theme }
       })
     );
+  }
+
+  /**
+   * Every transition off, so components take the new colours at once instead of each fading on its
+   * own timing. hr-ui's only !important, and it is removed on the next frame.
+   */
+  private freezeTransitions(): { style: HTMLStyleElement; view: Window } | null {
+    const view = this.document.defaultView;
+    if (!view?.requestAnimationFrame) {
+      return null;
+    }
+    const style = this.document.createElement('style');
+    if (this.nonce) {
+      style.nonce = this.nonce;
+    }
+    style.textContent = '*,*::before,*::after{transition:none!important}';
+    this.document.head.appendChild(style);
+    return { style, view };
   }
 
   /**

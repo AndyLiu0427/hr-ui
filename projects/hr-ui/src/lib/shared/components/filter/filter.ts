@@ -12,17 +12,13 @@ import {
   signal,
   computed,
   model,
-  DestroyRef,
-  Injector,
-  afterNextRender
+  DestroyRef
 } from '@angular/core';
 
 import { Overlay, OverlayRef, OverlayModule, ConnectedPosition } from '@angular/cdk/overlay';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Subject, EMPTY, timer } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '../button/button';
@@ -67,19 +63,13 @@ export function enumToFilterOptions<T>(enumObj: Record<string, T>): FilterOption
   }
 })
 export class FilterComponent<T> {
-  private static readonly DESKTOP_ANIMATION_DURATION_MS = 150;
-
   private readonly overlay = inject(Overlay);
   private readonly viewContainerRef = inject(ViewContainerRef);
   private readonly elementRef = inject(ElementRef);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly injector = inject(Injector);
   private readonly breakpointObserver = inject(BreakpointObserver);
   private overlayRef?: OverlayRef;
 
-  private readonly closeAnimation$ = new Subject<boolean>();
-
-  readonly isAnimating = signal<boolean>(false);
   readonly isMobile = signal<boolean>(false);
 
   label = input.required<string>();
@@ -141,18 +131,6 @@ export class FilterComponent<T> {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(result => this.isMobile.set(result.matches));
 
-    this.closeAnimation$
-      .pipe(
-        switchMap(shouldClose => (shouldClose ? timer(FilterComponent.DESKTOP_ANIMATION_DURATION_MS) : EMPTY)),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe(() => {
-        this.isAnimating.set(false);
-        this.closeOverlay();
-        this.isOpen.set(false);
-        this.searchQuery.set('');
-      });
-
     effect(() => {
       const values = this.selectedValues();
       this.selections.set(new Set(values));
@@ -187,20 +165,9 @@ export class FilterComponent<T> {
   closeMenu(): void {
     if (!this.isOpen()) return;
 
-    if (this.isMobile()) {
-      this.isOpen.set(false);
-      this.searchQuery.set('');
-      return;
-    }
-
-    afterNextRender(
-      () => {
-        if (this.isOpen()) {
-          this.closeAnimation$.next(true);
-        }
-      },
-      { injector: this.injector }
-    );
+    this.closeOverlay();
+    this.isOpen.set(false);
+    this.searchQuery.set('');
   }
 
   toggleOption(value: unknown): void {
@@ -283,7 +250,8 @@ export class FilterComponent<T> {
       .withPositions(positions)
       .withPush(false)
       .withViewportMargin(8)
-      .withFlexibleDimensions(true);
+      .withFlexibleDimensions(true)
+      .withTransformOriginOn('.oct-overlay-enter');
 
     this.overlayRef = this.overlay.create({
       positionStrategy,
@@ -297,16 +265,6 @@ export class FilterComponent<T> {
 
     const portal = new TemplatePortal(template, this.viewContainerRef);
     this.overlayRef.attach(portal);
-
-    this.isAnimating.set(false);
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (this.isOpen()) {
-          this.isAnimating.set(true);
-        }
-      });
-    });
 
     this.overlayRef
       .keydownEvents()

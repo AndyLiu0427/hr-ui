@@ -28,7 +28,14 @@ export interface BadgeProps {
         <span [class]="textClasses()">{{ text() }}</span>
       }
       @if (dismissible()) {
-        <oct-icon name="X" [size]="iconSize()" class="cursor-pointer hover:opacity-70 transition-opacity duration-200" (click)="onDismiss($event)" />
+        <!-- p-1.5 makes the hit area 24px or more; -m-1.5 gives the space back, so the badge keeps its size. -->
+        <button
+          type="button"
+          class="-m-1.5 inline-flex shrink-0 items-center justify-center rounded-full p-1.5 cursor-pointer hover:opacity-70 transition-opacity duration-150 ease-out oct-focus-ring"
+          [attr.aria-label]="'Remove ' + text()"
+          (click)="onDismiss($event)">
+          <oct-icon name="X" [size]="iconSize()" aria-hidden="true" />
+        </button>
       }
     </span>
   `,
@@ -46,7 +53,7 @@ export class BadgeComponent {
   readonly dismiss = output<void>();
 
   readonly badgeClasses = computed(() => {
-    const baseClasses = ['inline-flex', 'items-center', 'justify-center', 'font-medium', 'rounded-full', 'transition-all', 'duration-300'];
+    const baseClasses = ['inline-flex', 'items-center', 'justify-center', 'font-medium', 'rounded-full'];
 
     const sizeClasses: Record<BadgeSize, string[]> = {
       sm: ['px-1.5', 'py-0.5', 'text-xs', 'leading-4'],

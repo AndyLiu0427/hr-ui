@@ -48,10 +48,10 @@
       [attr.aria-label]="'Status: ' + status()">
 
       @if (status() === 'online') {
-        <!-- Online: with ping animation -->
+        <!-- Online: three pings, then still. forwards leaves the ring at the keyframes' end (invisible). -->
         <span [class]="statusClasses()">
           <span
-            class="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75"
+            class="absolute inline-flex size-full rounded-full bg-emerald-400 opacity-75 motion-safe:animate-[ping_1s_cubic-bezier(0,0,0.2,1)_3_forwards] motion-reduce:hidden"
             aria-hidden="true">
           </span>
           <span [class]="statusInnerClasses()" aria-hidden="true"></span>

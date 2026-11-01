@@ -35,7 +35,11 @@ export interface TextInputs {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'textClasses()',
-    '(click)': 'onHostClick($event)'
+    '[attr.role]': 'link() ? "button" : null',
+    '[attr.tabindex]': 'link() ? 0 : null',
+    '(click)': 'onHostClick($event)',
+    '(keydown.enter)': 'onHostClick($event)',
+    '(keydown.space)': 'onHostClick($event)'
   }
 })
 export class TextComponent implements TextInputs {
@@ -65,8 +69,8 @@ export class TextComponent implements TextInputs {
   // Computed signal for optimized class calculation
   textClasses = computed(() => {
     const baseClasses = this.truncate()
-      ? (['block', 'duration-300', 'transition-all', 'overflow-hidden', 'text-ellipsis'] as const)
-      : (['block', 'duration-300', 'transition-all', 'min-w-0', 'break-words'] as const);
+      ? (['block', 'overflow-hidden', 'text-ellipsis'] as const)
+      : (['block', 'min-w-0', 'break-words'] as const);
 
     // Color classes based on design system colors
     const colorClasses = {
@@ -103,7 +107,7 @@ export class TextComponent implements TextInputs {
     } as const;
 
     // Link styling - separate from weight
-    const linkClasses = this.link() ? 'underline decoration-1 underline-offset-2 hover:decoration-2 cursor-pointer' : '';
+    const linkClasses = this.link() ? 'underline decoration-1 underline-offset-2 hover:decoration-2 cursor-pointer oct-focus-ring' : '';
 
     // Nowrap styling - prevents text from wrapping
     // Check both input signal and attribute presence

@@ -1,5 +1,7 @@
 import { Directive, ElementRef, EmbeddedViewRef, OnDestroy, Renderer2, TemplateRef, ViewContainerRef, inject, input } from '@angular/core';
 
+import { prefersReducedMotion } from '../../utils/reduced-motion';
+
 export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 export type TooltipColor = 'default' | 'primary' | 'blue' | 'red' | 'purple' | 'amber';
 
@@ -51,6 +53,9 @@ const VISIBLE = 'opacity-100 scale-100';
 
 const ARROW_SIZE = 8; // px — keep in sync with the w-2 h-2 below
 
+/** A tooltip that opens this soon after another one closed skips the delay and the pop. */
+const WARM_MS = 300;
+
 // Arrow surfaces per color — bg only, matching each bubble (no border).
 const ARROW_COLOR_CLASSES: Record<TooltipColor, string> = {
   default: 'bg-hr-neutral-50',
@@ -63,9 +68,6 @@ const ARROW_COLOR_CLASSES: Record<TooltipColor, string> = {
 
 const isTouchPointer = (): boolean =>
   typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(hover: none)').matches;
-
-const prefersReducedMotion = (): boolean =>
-  typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /**
  * Hover/focus tooltip. Two modes:
@@ -105,6 +107,8 @@ export class TooltipDirective implements OnDestroy {
   private delayTimer: ReturnType<typeof setTimeout> | null = null;
   private visibleBaseClass = '';
   private static nextId = 0;
+  /** Shared by every trigger, so moving along a row of them reads as one tooltip that moves. */
+  private static lastClosedAt = -Infinity;
 
   private get isRich(): boolean {
     return !!this.octTooltipContent();
@@ -118,11 +122,12 @@ export class TooltipDirective implements OnDestroy {
     if (!this.isRich && !this.octTooltip()) return;
 
     this.clearTimer();
+    const warm = performance.now() - TooltipDirective.lastClosedAt < WARM_MS;
     const delay = this.octTooltipShowDelay();
-    if (delay > 0) {
-      this.delayTimer = setTimeout(() => this.create(), delay);
+    if (delay > 0 && !warm) {
+      this.delayTimer = setTimeout(() => this.create(false), delay);
     } else {
-      this.create();
+      this.create(warm);
     }
   }
 
@@ -143,7 +148,8 @@ export class TooltipDirective implements OnDestroy {
     }
   }
 
-  private create(): void {
+  /** `instant` skips the enter animation: the user is already reading tooltips. */
+  private create(instant: boolean): void {
     this.remove();
     const position = this.octTooltipPosition();
     const id = `oct-tooltip-${TooltipDirective.nextId++}`;
@@ -158,7 +164,7 @@ export class TooltipDirective implements OnDestroy {
     const wrapper = this.renderer.createElement('div') as HTMLElement;
     wrapper.id = id;
     wrapper.setAttribute('role', 'tooltip');
-    wrapper.className = `${this.visibleBaseClass} ${enter}`;
+    wrapper.className = `${this.visibleBaseClass} ${instant ? VISIBLE : enter}`;
 
     if (this.isRich) {
       this.embeddedView = this.vcr.createEmbeddedView(this.octTooltipContent()!);
@@ -186,10 +192,12 @@ export class TooltipDirective implements OnDestroy {
     this.renderer.setAttribute(this.el.nativeElement, 'aria-describedby', id);
     this.positionTooltip(wrapper, position);
 
-    requestAnimationFrame(() => {
-      if (!this.wrapperEl) return;
-      this.wrapperEl.className = `${this.visibleBaseClass} ${VISIBLE}`;
-    });
+    if (!instant) {
+      requestAnimationFrame(() => {
+        if (!this.wrapperEl) return;
+        this.wrapperEl.className = `${this.visibleBaseClass} ${VISIBLE}`;
+      });
+    }
   }
 
   /**
@@ -273,6 +281,7 @@ export class TooltipDirective implements OnDestroy {
 
   private remove(): void {
     if (this.wrapperEl) {
+      TooltipDirective.lastClosedAt = performance.now();
       this.renderer.removeAttribute(this.el.nativeElement, 'aria-describedby');
       this.wrapperEl.remove();
       this.wrapperEl = null;

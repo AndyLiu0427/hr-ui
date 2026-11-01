@@ -10,54 +10,37 @@
 <ng-template #menuTemplate>
   <div
     cdkMenu
-    class="bg-secondary border border-primary rounded-xl p-1 shadow-hr-lg backdrop-blur-sm overflow-hidden"
-    role="menu"
-    [style.min-width]="width()">
+    class="oct-overlay-enter bg-secondary border border-primary rounded-xl p-1 shadow-hr-lg backdrop-blur-sm overflow-hidden"
+    [style.min-width]="width()"
+    (keydown.tab)="onMenuTab($event)"
+    (keydown.shift.tab)="onMenuTab($event)">
 
     @for (section of menuSections(); track $index; let sectionIndex = $index; let isLast = $last) {
       <div class="flex flex-col gap-1 px-1 py-0">
         @for (item of section.items; track $index; let itemIndex = $index) {
-          <div
-            cdkMenuItem
-            class="flex items-center gap-2 px-2 py-2 rounded-lg transition-colors duration-150 ease-in-out"
-            [class.font-semibold]="isHeader(item, sectionIndex, itemIndex)"
-            [class.font-normal]="!isHeader(item, sectionIndex, itemIndex)"
-            [class.text-1]="!item.disabled"
-            [class.text-3]="item.disabled"
-            [class.cursor-pointer]="!item.disabled && !isHeader(item, sectionIndex, itemIndex)"
-            [class.cursor-default]="isHeader(item, sectionIndex, itemIndex) || item.disabled"
-            [class.cursor-not-allowed]="item.disabled"
-            [class.hover:bg-hover]="!item.disabled && !isHeader(item, sectionIndex, itemIndex)"
-            role="menuitem"
-            [attr.aria-disabled]="item.disabled || isHeader(item, sectionIndex, itemIndex)"
-            [attr.tabindex]="item.disabled || isHeader(item, sectionIndex, itemIndex) ? -1 : 0"
-            (click)="handleItemClick(item, sectionIndex, itemIndex)">
-
-            @if (item.avatar) {
-              <oct-avatar
-                [src]="item.avatar.src || ''"
-                [name]="item.avatar.name || ''"
-                [alt]="item.avatar.alt || ''"
-                [status]="item.avatar.status || 'none'"
-                size="lg"
-                class="flex-shrink-0 pr-2">
-              </oct-avatar>
-            } @else if (item.icon) {
-              <oct-icon [name]="item.icon" class="flex-shrink-0" />
-            }
-
-            <span class="flex-1 min-w-0 text-sm text-1 leading-5 truncate">{{ item.label }}</span>
-
-            @if (item.shortcut) {
-              <span class="text-xs text-2 font-normal leading-4 flex-shrink-0">{{ item.shortcut }}</span>
-            }
-
-            @if (item.hasChevron) {
-              <div class="flex items-center justify-center w-5 h-5 flex-shrink-0">
-                <oct-icon name="ChevronRight" />
-              </div>
-            }
-          </div>
+          @if (item.disabled || isHeader(item, sectionIndex, itemIndex)) {
+            <!-- Not a cdkMenuItem, so the arrow keys pass over it. -->
+            <div
+              class="flex items-center gap-2 px-2 py-2 rounded-lg"
+              [class.font-semibold]="isHeader(item, sectionIndex, itemIndex)"
+              [class.font-normal]="!isHeader(item, sectionIndex, itemIndex)"
+              [class.text-1]="!item.disabled"
+              [class.text-3]="item.disabled"
+              [class.cursor-default]="!item.disabled"
+              [class.cursor-not-allowed]="item.disabled"
+              role="menuitem"
+              aria-disabled="true"
+              (click)="handleItemClick(item, sectionIndex, itemIndex)">
+              <ng-container [ngTemplateOutlet]="itemContent" [ngTemplateOutletContext]="{ $implicit: item }" />
+            </div>
+          } @else {
+            <div
+              cdkMenuItem
+              class="flex items-center gap-2 px-2 py-2 rounded-lg font-normal text-1 cursor-pointer hover:bg-hr-neutral-900 focus-visible:bg-hr-neutral-900 oct-focus-ring"
+              (cdkMenuItemTriggered)="handleItemClick(item, sectionIndex, itemIndex)">
+              <ng-container [ngTemplateOutlet]="itemContent" [ngTemplateOutletContext]="{ $implicit: item }" />
+            </div>
+          }
         }
       </div>
 
@@ -66,4 +49,31 @@
       }
     }
   </div>
+</ng-template>
+
+<ng-template #itemContent let-item>
+  @if (item.avatar) {
+    <oct-avatar
+      [src]="item.avatar.src || ''"
+      [name]="item.avatar.name || ''"
+      [alt]="item.avatar.alt || ''"
+      [status]="item.avatar.status || 'none'"
+      size="lg"
+      class="flex-shrink-0 pr-2">
+    </oct-avatar>
+  } @else if (item.icon) {
+    <oct-icon [name]="item.icon" class="flex-shrink-0" />
+  }
+
+  <span class="flex-1 min-w-0 text-sm leading-5 truncate" [title]="item.label">{{ item.label }}</span>
+
+  @if (item.shortcut) {
+    <span class="text-xs text-2 font-normal leading-4 flex-shrink-0">{{ item.shortcut }}</span>
+  }
+
+  @if (item.hasChevron) {
+    <div class="flex items-center justify-center w-5 h-5 flex-shrink-0">
+      <oct-icon name="ChevronRight" />
+    </div>
+  }
 </ng-template>

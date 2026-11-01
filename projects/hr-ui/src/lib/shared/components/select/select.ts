@@ -569,7 +569,7 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
     const bare = this.bare();
     const base = bare
       ? 'flex items-center w-full h-full select-none px-2 text-sm gap-x-2 bg-transparent border-none rounded-r-[7px]'
-      : 'flex items-center w-full rounded-lg bg-secondary border border-primary transition-all duration-300 select-none px-2 text-sm gap-x-2 outline-primary';
+      : 'flex items-center w-full rounded-lg bg-secondary border border-primary transition-colors duration-150 ease-out select-none px-2 text-sm gap-x-2 outline-primary';
     const sizeMap = { sm: 'py-1.5', md: 'py-2', lg: 'py-2.5' };
     const size = sizeMap[this.size()];
     const state = this.isDisabled()
@@ -596,7 +596,7 @@ export class SelectComponent implements FormValueControl<SelectValue>, OnInit {
       : 'group-focus:outline group-focus:outline-2 group-focus:outline-primary group-focus:-outline-offset-2';
   });
 
-  readonly menuClasses = 'bg-secondary border border-primary rounded-xl shadow-hr-lg overflow-hidden w-full box-border';
+  readonly menuClasses = 'oct-overlay-enter bg-secondary border border-primary rounded-xl shadow-hr-lg overflow-hidden w-full box-border';
 
   private markTouched(): void {
     this.isTouched.set(true);

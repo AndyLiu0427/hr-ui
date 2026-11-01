@@ -564,10 +564,8 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
 
   // Public methods
   sort(columnKey: string): void {
-    if (!this.sortable()) return;
-
     const column = this.columns().find(col => col.key === columnKey);
-    if (!column || !column.sortable) return;
+    if (!column || !this.isColumnSortable(column)) return;
 
     const currentSort = this.currentSort();
     let direction: SortDirection = 'asc';
@@ -659,6 +657,18 @@ export class TableComponent<T = any> implements OnInit, OnDestroy {
   getSortDirection(columnKey: string): SortDirection {
     const sort = this.currentSort();
     return sort.key === columnKey ? sort.direction : null;
+  }
+
+  /** A column sorts only when it asks to. The header renders as a sort button only then. */
+  isColumnSortable(column: TableColumn<T>): boolean {
+    return this.sortable() && !!column.sortable;
+  }
+
+  ariaSort(columnKey: string): 'ascending' | 'descending' | 'none' {
+    const direction = this.getSortDirection(columnKey);
+    if (direction === 'asc') return 'ascending';
+    if (direction === 'desc') return 'descending';
+    return 'none';
   }
 
   getSortIcon(columnKey: string): string {

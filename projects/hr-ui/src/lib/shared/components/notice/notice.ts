@@ -4,6 +4,7 @@ import { IconComponent } from '../icon/icon';
 import { ButtonComponent } from '../button/button';
 import { icons } from 'lucide-angular';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { prefersReducedMotion } from '../../../utils/reduced-motion';
 
 export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
 
@@ -11,7 +12,7 @@ export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
   selector: 'oct-notice',
   template: `
     @if (!isDismissed()) {
-      <div [class]="combinedClasses()" [@noticeAnimation]="animationState()" role="alert" [attr.aria-live]="ariaLive()">
+      <div [class]="combinedClasses()" [@noticeAnimation]="{ value: animationState(), params: { offset: enterOffset } }" [attr.role]="variant() === 'error' ? 'alert' : 'status'">
         <!-- Icon (if provided or default based on variant) -->
         @if (iconName(); as name) {
           <oct-icon [name]="name" [class]="iconColorClass() + ' mt-[2px]'" />
@@ -65,8 +66,9 @@ export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
         'void',
         style({
           opacity: 0,
-          transform: 'translateY(-8px)'
-        })
+          transform: '{{offset}}'
+        }),
+        { params: { offset: 'translateY(-8px)' } }
       ),
       state(
         'visible',
@@ -76,7 +78,8 @@ export type NoticeVariant = 'info' | 'success' | 'warning' | 'error';
         })
       ),
       transition('void => visible', [animate('200ms ease-out')]),
-      transition('visible => void', [animate('150ms ease-in')])
+      // The --ease-smooth-out curve: an exit should start fast, not slow like ease-in.
+      transition('visible => void', [animate('150ms cubic-bezier(0.22, 1, 0.36, 1)')])
     ])
   ]
 })
@@ -100,6 +103,8 @@ export class NoticeComponent {
   // Internal state
   readonly isDismissed = signal(false);
   readonly animationState = signal<'void' | 'visible'>('visible');
+  /** Reduced motion: the notice fades in place instead of sliding. */
+  protected readonly enterOffset = prefersReducedMotion() ? 'none' : 'translateY(-8px)';
 
   // Computed properties for variant-based styling
   readonly noticeClasses = computed(() => {
@@ -136,7 +141,7 @@ export class NoticeComponent {
   });
 
   readonly combinedClasses = computed(() => {
-    const baseClasses = 'flex items-start gap-2 p-4 rounded-xl transition-all duration-300';
+    const baseClasses = 'flex items-start gap-2 p-4 rounded-xl';
     const variantClass = this.noticeClasses();
     const customClass = this.class();
 
@@ -162,11 +167,6 @@ export class NoticeComponent {
     return null;
   });
 
-
-  readonly ariaLive = computed(() => {
-    const variant = this.variant();
-    return variant === 'error' || variant === 'warning' ? 'assertive' : 'polite';
-  });
 
   onActionClick(): void {
     this.actionClick.emit();

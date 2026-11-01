@@ -39,7 +39,7 @@
   >
     @if (searchable()) {
       <div class="px-4 pt-3">
-        <div class="flex items-center rounded-lg border border-primary transition-all duration-100 hover:border-primary-300 focus-within:!outline focus-within:!outline-2 focus-within:!outline-primary outline-transparent bg-secondary">
+        <div class="flex items-center rounded-lg border border-primary transition-colors duration-150 ease-out hover:border-primary-300 focus-within:!outline focus-within:!outline-2 focus-within:!outline-primary outline-transparent bg-secondary">
           <oct-icon name="Search" class="ml-3 text-3" />
           <input
             type="search"
@@ -109,11 +109,7 @@
 } @else {
   <ng-template #desktopMenuTemplate>
     <div
-      class="bg-secondary rounded-lg shadow-hr-lg border border-primary overflow-hidden transition-all duration-200 ease-out"
-      [class.opacity-0]="!isAnimating()"
-      [class.opacity-100]="isAnimating()"
-      [class.-translate-y-2]="!isAnimating()"
-      [class.translate-y-0]="isAnimating()"
+      class="oct-overlay-enter bg-secondary rounded-lg shadow-hr-lg border border-primary overflow-hidden"
       role="menu"
       [attr.aria-label]="label() + ' filter menu'"
       (click)="$event.stopPropagation()"
@@ -135,11 +131,11 @@
 
       @if (searchable()) {
         <div class="px-2 pt-2">
-          <div class="flex items-center rounded-lg border border-primary transition-all duration-100 hover:border-primary-300 focus-within:!outline focus-within:!outline-2 focus-within:!outline-primary outline-transparent bg-secondary">
+          <div class="flex items-center rounded-lg border border-primary transition-colors duration-150 ease-out hover:border-primary-300 focus-within:!outline focus-within:!outline-2 focus-within:!outline-primary outline-transparent bg-secondary">
             <input
               #searchInput
               type="search"
-              class="flex-1 min-w-0 p-2 text-1 text-sm bg-transparent border-none outline-none placeholder:text-3"
+              class="flex-1 min-w-0 p-2 text-1 text-base sm:text-sm bg-transparent border-none outline-none placeholder:text-3"
               [placeholder]="searchPlaceholder()"
               [value]="searchQuery()"
               (input)="onSearchInput($event)"

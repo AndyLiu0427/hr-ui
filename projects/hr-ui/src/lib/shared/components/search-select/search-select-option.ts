@@ -28,13 +28,13 @@ import { SearchSelectOption } from './search-select';
           @if (option().colorTag) {
             <oct-color-tag variant="inline" [color]="option().colorTag!" />
           }
-          <oct-text color="1" variant="xs" class="truncate flex-1 min-w-0">{{ option().label }}</oct-text>
+          <oct-text color="1" variant="xs" class="truncate flex-1 min-w-0" [title]="option().label">{{ option().label }}</oct-text>
           @if (option().badge) {
             <oct-badge class="shrink-0" [text]="option().badge!.text" [color]="option().badge!.color ?? 'neutral'" size="sm" />
           }
         </div>
         @if (option().description) {
-          <oct-text color="3" variant="xs" class="truncate">{{ option().description }}</oct-text>
+          <oct-text color="3" variant="xs" class="truncate" [title]="option().description">{{ option().description }}</oct-text>
         }
       </div>
 

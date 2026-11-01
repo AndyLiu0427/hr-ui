@@ -43,7 +43,8 @@ export const fieldShellClass = ({ hasError, isDisabled, suppressFocusRing = fals
     'overflow-hidden',
     'border',
     'border-primary',
-    'transition-[border-color,outline-color,outline-width]',
+    // Not outline-width: the focus ring appears at full width at once.
+    'transition-[border-color,outline-color]',
     'ease-out',
     'duration-100',
     'hover:duration-200',
