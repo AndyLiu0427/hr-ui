@@ -16,6 +16,7 @@ const PADDING_CLASSES: Record<CardPadding, string> = {
   lg: 'p-4 sm:p-6 md:p-8'
 };
 
+/** A surface that groups related content. Fill it with oct-card-header, oct-card-content and oct-card-footer. */
 @Component({
   selector: 'oct-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,8 +30,11 @@ const PADDING_CLASSES: Record<CardPadding, string> = {
   `
 })
 export class CardComponent {
+  /** Classes added to the host element, such as a width or a margin. */
   readonly customClass = input<string>('');
+  /** 'success' or 'error' draws a coloured ring around the card, for example after a check passes or fails. */
   readonly status = input<CardStatus>('initial');
+  /** Inner padding. It grows with the screen width, and 'none' suits content that has its own padding. */
   readonly padding = input<CardPadding>('md');
 
   protected readonly hostClasses = computed(() => {
@@ -57,6 +61,7 @@ export class CardComponent {
   });
 }
 
+/** The top of a card: stacks a title and a description. */
 @Component({
   selector: 'oct-card-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,6 +76,7 @@ export class CardComponent {
 })
 export class CardHeaderComponent {}
 
+/** The main content of a card. */
 @Component({
   selector: 'oct-card-content',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -81,6 +87,7 @@ export class CardHeaderComponent {}
 })
 export class CardContentComponent {}
 
+/** The bottom row of a card: puts its first and last child at either end, such as a status and an action. */
 @Component({
   selector: 'oct-card-footer',
   changeDetection: ChangeDetectionStrategy.OnPush,

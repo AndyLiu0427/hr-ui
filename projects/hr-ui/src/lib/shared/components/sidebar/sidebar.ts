@@ -83,6 +83,10 @@ const RAIL_HOVER_INTENT_MS = 100;
 const FLYOUT_CLOSE_GRACE_MS = 140;
 const FLYOUT_GAP_PX = 8;
 
+/**
+ * The main navigation of an app: sections of pages, groups that open in place, a Pinned block,
+ * and an icon rail. Pages are router links and pin labels come from ngx-translate, so it needs both.
+ */
 @Component({
   selector: 'oct-unified-sidebar',
   templateUrl: './sidebar.html',
@@ -96,16 +100,22 @@ export class UnifiedSidebarComponent {
   private readonly translate = inject(TranslateService);
   private readonly injector = inject(Injector);
 
+  /** Shows the icon rail instead of the full sidebar. The host owns this value. */
   readonly collapsed = input<boolean>(false);
+  /** The sections and their pages. A section with kind 'pinned' is the Pinned block. */
   readonly config = input.required<SidebarConfig>();
   /** Shows an item's `preview` card on hover. Turn off to keep `preview` only as data, such as for search. */
   readonly showPreview = input<boolean>(true);
   /** Routes of the open groups. Every group starts closed; the host decides what to remember. */
   readonly openGroups = model<string[]>([]);
 
+  /** Emits when a click in the rail asks the sidebar to open. Set collapsed to false in response. */
   readonly collapsedToggled = output<void>();
+  /** Emits when the user picks a page, for example to close a drawer on a phone. */
   readonly itemClicked = output<void>();
+  /** Emits an item when the pointer enters it and it has a preview, and null when the pointer leaves. */
   readonly itemHovered = output<SidebarItem | null>();
+  /** Emits the page whose pin the user clicked. Flip its pinned flag and update the Pinned section. */
   readonly pinToggled = output<SidebarItem>();
 
   private readonly sidebarRoot = viewChild.required<ElementRef<HTMLElement>>('sidebarRoot');
