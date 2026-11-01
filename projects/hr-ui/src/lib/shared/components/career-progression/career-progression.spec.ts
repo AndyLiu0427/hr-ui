@@ -74,6 +74,24 @@ describe('CareerProgressionComponent', () => {
     expect(leafText()[0]).not.toContain('Crew');
   });
 
+  it('names the assignment button by its department, job title and dates', async () => {
+    ref.setInput('contracts', [contract()]);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('button').getAttribute('aria-label')).toBe('DEPT_A, Crew, 01 Jan 2024 - 30 Jun 2024');
+  });
+
+  it('leaves the job title out of the button name when the assignment has none', async () => {
+    ref.setInput('contracts', [
+      contract({
+        clients: [{ name: 'Client A', assignments: [{ id: 'a-1', department: 'DEPT_A', startDate: '2024-01-01', endDate: '2024-06-30' }] }]
+      })
+    ]);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('button').getAttribute('aria-label')).toBe('DEPT_A, 01 Jan 2024 - 30 Jun 2024');
+  });
+
   it('gives one contract a branch per client', async () => {
     ref.setInput('contracts', [
       contract({

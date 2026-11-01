@@ -76,6 +76,11 @@ export class CareerProgressionComponent {
     return `${start} - ${end}`;
   }
 
+  /** Names an assignment button by what it shows, with commas where the row has dots. */
+  assignmentLabel(assignment: CareerProgressionAssignment): string {
+    return [assignment.department, assignment.jobTitle, this.formatDateRange(assignment.startDate, assignment.endDate)].filter(Boolean).join(', ');
+  }
+
   /**
    * True when the contract has not ended: no end date, or one that has not
    * passed. Status is deliberately not consulted - assignments keep the Active
